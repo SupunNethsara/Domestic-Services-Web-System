@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router";
+import axios from 'axios';
 import './Style.css'
 import { useState } from "react";
 export default function ClientRegister() {
@@ -17,24 +18,25 @@ export default function ClientRegister() {
 
   const handlesubmit = async (e) => {
     e.preventDefault();
-
-    if (password !== confirmPassword) {
-      alert("Passowrd not matching")
+  
+    if (password.trim() !== confirmPassword.trim()) {
+      alert("Password and confirmation password do not match");
       return;
     }
+  
     try {
-      const response = await axios.post('', {
-        fname, lname, mobile, email, password, confirmPassword
+      const response = await axios.post('http://127.0.0.1:8000/api/ClientRegister', {
+        fname, lname, mobile, email, password, password_confirmation: confirmPassword
       });
       console.log("Response:", response.data);
-      alert("Registration Sucessfull!")
-      navigate('/dashboard')
-
+      alert("Registration Successful!");
+      navigate('/dashboard');
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);
       alert("Registration failed!");
     }
-  }
+  };
+  
 
 
   return (
@@ -89,32 +91,32 @@ export default function ClientRegister() {
             <form onSubmit={handlesubmit} class="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2">
               <div>
                 <label class="block mb-2 text-sm text-gray-600">First Name</label>
-                <input type="text" placeholder="John" value={fname} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg    focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                <input type="text" placeholder="John" onChange={(e) => setFname(e.target.value)} value={fname} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg    focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
               </div>
 
               <div>
                 <label class="block mb-2 text-sm text-gray-600 ">Last name</label>
-                <input type="text" placeholder="Snow" value={lname} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg    focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                <input type="text" placeholder="Snow" onChange={(e) => setLname(e.target.value)} value={lname} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg    focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
               </div>
 
               <div>
                 <label class="block mb-2 text-sm text-gray-600 ">Phone number</label>
-                <input type="text" placeholder="XXX-XX-XXXX-XXX" value={mobile} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg    focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                <input type="text" placeholder="XXX-XX-XXXX-XXX" onChange={(e) => setMobile(e.target.value)} value={mobile} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg    focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
               </div>
 
               <div>
                 <label class="block mb-2 text-sm text-gray-600 ">Email address</label>
-                <input type="email" placeholder="johnsnow@example.com" value={email} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg    focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                <input type="email" placeholder="johnsnow@example.com" onChange={(e) => setEmail(e.target.value)} value={email} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg    focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
               </div>
 
               <div>
                 <label class="block mb-2 text-sm text-gray-600 ">Password</label>
-                <input type="password" placeholder="Enter your password" value={password} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                <input type="password" placeholder="Enter your password" onChange={(e) => setPassword(e.target.value)} value={password} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
               </div>
 
               <div>
                 <label class="block mb-2 text-sm text-gray-600 ">Confirm password</label>
-                <input type="password" placeholder="Enter your password" value={confirmPassword} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg  dark:text-gray-300  focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                <input type="password" placeholder="Enter your password" onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg  dark:text-gray-300  focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
               </div>
 
               <button type="submit"
