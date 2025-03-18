@@ -30,7 +30,7 @@ export default function ClientRegister() {
       });
       console.log("Response:", response.data);
       alert("Registration Successful!");
-      navigate('/dashboard');
+      navigate('/login');
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);
       alert("Registration failed!");

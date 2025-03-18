@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate , Routes, Route } from "react-router";
 const Welcome = () => {
-  const [isSinhala, setIsSinhala] = useState(true);
+  const [isSinhala, setIsSinhala] = useState(false);
   const navigate = useNavigate();
   return (
     <div className="relative h-screen bg-gradient-to-r from-blue-500 to-cyan-400 text-white text-center">
@@ -45,7 +45,7 @@ const Welcome = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           transition={{ duration: 0.3 }}
-          onClick={() => navigate("/select-role")}
+          onClick={() => navigate("/user-select")}
         >
 
           {isSinhala ? "ආරම්භය" : "Get Started"}

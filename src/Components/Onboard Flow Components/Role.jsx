@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const RoleSelection = () => {
   const navigate = useNavigate();
-const[isSinhala , setIsSinhala] = useState(true);
+const[isSinhala , setIsSinhala] = useState(false);
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-green-500 to-blue-400 text-white text-center">
      <div className="absolute top-4 right-4">
