@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import axios from "axios";
 export default function WorkerRegister() {
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const [fname, setFname] = useState('');
   const [lname, setLname] = useState('');
   const [mobile, setMobile] = useState('');
@@ -120,7 +120,17 @@ export default function WorkerRegister() {
                     clip-rule="evenodd" />
                 </svg>
               </button>
+              
             </form>
+            <p className="mt-6 text-sm text-left text-gray-500">
+              Do you have an account?{" "}
+              <button
+                onClick={() => navigate("/login")}
+                className="text-blue-500 hover:underline focus:outline-none"
+              >
+                Login
+              </button>
+            </p>
           </motion.div>
         </div>
       </div>
