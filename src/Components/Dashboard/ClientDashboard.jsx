@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import TooltipsWithTabs from './DashboardComponents/TooltipsWithTabs';
+import { Link, Outlet } from 'react-router-dom';
 
 
 
@@ -7,6 +8,20 @@ export default function ClientDashboard() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [Dropdownpost, setDropdownpost] = useState(false);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleScrollPost = () => {
+    setDropdownpost(!Dropdownpost);
+  }
+
   return (
     <div>
       <div class="min-h-screen bg-gray-100">
@@ -22,7 +37,7 @@ export default function ClientDashboard() {
               <div class="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
                 <div class="flex items-center px-6  md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
                   <div class="w-full">
-            <TooltipsWithTabs/>
+                    <TooltipsWithTabs />
                   </div>
                 </div>
               </div>
@@ -128,75 +143,51 @@ export default function ClientDashboard() {
           <div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
             <div className="max-h-max pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0">
               <div className='p-2'>
-                <a href="#" class="bg-gray-100 text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
+                <Link to='clienthome'>
+                  <a href="#" class="bg-gray-100 text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
+                    <svg class="text-gray-500 mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Dashboard
+                  </a>
+                </Link>
 
-                  <svg class="text-gray-500 mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                  </svg>
-                  Dashboard
-                </a>
 
-                <a href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
-
+                <a onClick={handleScrollPost} href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
                   <svg class="text-gray-400 group-hover:text-gray-500 mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
-                  Team
+                  Post
                 </a>
+                {Dropdownpost && (
+                  <ul className='ml-10'>
+                    <Link to='makepost'>
+                      <a href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
+                        Make Post
+                      </a>
+                    </Link>
 
-                <a href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
 
-                  <svg class="text-gray-400 group-hover:text-gray-500 mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                  </svg>
-                  Projects
-                </a>
+                  </ul>
+                )}
 
-                <a href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
-
-                  <svg class="text-gray-400 group-hover:text-gray-500 mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  Calendar
-                </a>
-
-                <a href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
-
-                  <svg class="text-gray-400 group-hover:text-gray-500 mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                  </svg>
-                  Documents
-                </a>
-                <a href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
-
-                  <svg class="text-gray-400 group-hover:text-gray-500 mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                  Reports
-                </a>
               </div>
             </div>
           </div>
 
           {/* Main Content */}
-          <div className=" lg:min-w-0 lg:flex-1 m-2 h-screen">
-            <div className="h-full   ">
-              <div className="relative h-full" style={{ minHeight: "36rem" }}>
-                <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                  <div class="flex-shrink-0">
-                    <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <a href="#" class="focus:outline-none">
-                      <span class="absolute inset-0" aria-hidden="true"></span>
-                      <p class="text-sm font-medium text-gray-900">Leslie Alexander</p>
-                      <p class="text-sm text-gray-500 truncate">Co-Founder / CEO</p>
-                    </a>
-                  </div>
-                </div>
+          <div className="w-full m-2 h-screen">
+            <div className="h-full w-full">
+              <div className="relative h-full w-full" style={{ minHeight: "36rem" }}>
+                <Outlet context={{
+                  isModalOpen,
+                  handleOpenModal,
+                  handleCloseModal,
+                }} />
               </div>
             </div>
           </div>
+
 
           {/* Right Sidebar */}
           <div className="border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
