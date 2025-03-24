@@ -11,6 +11,8 @@ import ClientDashboard from './Components/Dashboard/ClientDashboard';
 import WorkerDashboard from './Components/Dashboard/WorkerDashboard';
 import ClientHome from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientHome';
 import MakePost from './Components/Dashboard/DashboardComponents/Client Routes Component/MakePost';
+import WorkerHome from './Components/Dashboard/DashboardComponents/Worker Routes Component/WorkerHome';
+import MakeRequest from './Components/Dashboard/DashboardComponents/Worker Routes Component/MakeRequest';
 
 function App() {
   return (
@@ -21,12 +23,20 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/Client-Register" element={<ClientRegister />} />
       <Route path="/Worker-Register" element={<WorkersRegister />} />
+
+
       <Route path="/client-dashboard" element={<ClientDashboard />} >
         <Route index element={<ClientHome />} />
-        <Route path="clienthome" element={<ClientHome/>} />
-        <Route path="makepost" element={<MakePost/>} />
+        <Route path="clienthome" element={<ClientHome />} />
+        <Route path="makepost" element={<MakePost />} />
       </Route>
-      <Route path="/worker-dashboard" element={<WorkerDashboard />} />
+      <Route path="/worker-dashboard" element={<WorkerDashboard />} >
+        <Route index element={<WorkerHome />} />
+        <Route path="workerhome" element={<WorkerHome />} />
+        <Route path="makerequest" element={<MakeRequest/>} />
+      </Route>
+
+
     </Routes>
   );
 }

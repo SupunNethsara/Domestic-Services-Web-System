@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import TooltipsWithTabs from './DashboardComponents/TooltipsWithTabs';
 import { Link, Outlet } from 'react-router-dom';
-
+import axios from 'axios';
 
 
 export default function ClientDashboard() {
@@ -21,6 +21,25 @@ export default function ClientDashboard() {
   const handleScrollPost = () => {
     setDropdownpost(!Dropdownpost);
   }
+
+  const logout = async () => {
+    try {
+      const token = localStorage.getItem("token"); 
+      const response = await axios.get('http://127.0.0.1:8000/api/logout', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log(response.data);
+      localStorage.removeItem("token");
+      window.location.href = "/login"; 
+    } catch (error) {
+      console.error("Logout failed", error.response?.data || error.message);
+    }
+  };
+  
+  
+  
 
   return (
     <div>
@@ -80,7 +99,7 @@ export default function ClientDashboard() {
 
                       <a href="#" class="block py-2 px-4 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
 
-                      <a href="#" class="block py-2 px-4 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
+                      <a onClick={logout} href="#" class="block py-2 px-4 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
                     </div>
                   )}
 
@@ -129,7 +148,7 @@ export default function ClientDashboard() {
 
                   <a href="#" class="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">Settings</a>
 
-                  <a href="#" class="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">Sign out</a>
+                  <a  onClick={logout} href="#" class="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">Sign out</a>
                 </div>
               )}
 
