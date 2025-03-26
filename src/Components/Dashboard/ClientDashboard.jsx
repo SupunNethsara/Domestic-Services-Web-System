@@ -24,7 +24,7 @@ export default function ClientDashboard() {
 
   const logout = async () => {
     try {
-      const token = localStorage.getItem("token"); 
+      const token = localStorage.getItem("token");
       const response = await axios.get('http://127.0.0.1:8000/api/logout', {
         headers: {
           Authorization: `Bearer ${token}`
@@ -32,14 +32,14 @@ export default function ClientDashboard() {
       });
       console.log(response.data);
       localStorage.removeItem("token");
-      window.location.href = "/login"; 
+      window.location.href = "/login";
     } catch (error) {
       console.error("Logout failed", error.response?.data || error.message);
     }
   };
-  
-  
-  
+
+
+
 
   return (
     <div>
@@ -148,7 +148,7 @@ export default function ClientDashboard() {
 
                   <a href="#" class="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">Settings</a>
 
-                  <a  onClick={logout} href="#" class="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">Sign out</a>
+                  <a onClick={logout} href="#" class="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">Sign out</a>
                 </div>
               )}
 
@@ -156,7 +156,7 @@ export default function ClientDashboard() {
           </nav>
 
         </header>
-        <div className=" block min-w-0 bg-[#F2F4F7] xl:flex m-2 ">
+        <div className=" block min-w-0 bg-[#F2F4F7] xl:flex m-2 h-full ">
 
           {/* Left Sidebar */}
           <div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
@@ -170,11 +170,18 @@ export default function ClientDashboard() {
                     Dashboard
                   </a>
                 </Link>
-
+                <Link to ='makeprofile'>
+                  <a href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
+                    <svg class="text-gray-400 group-hover:text-gray-500 mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    Make Your Profile
+                  </a>
+                </Link>
 
                 <a onClick={handleScrollPost} href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
                   <svg class="text-gray-400 group-hover:text-gray-500 mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                   Post
                 </a>
@@ -195,7 +202,7 @@ export default function ClientDashboard() {
           </div>
 
           {/* Main Content */}
-          <div className="w-full m-2 h-screen">
+          <div className="w-full m-2 h-full relative">
             <div className="h-full w-full">
               <div className="relative h-full w-full" style={{ minHeight: "36rem" }}>
                 <Outlet context={{
@@ -209,7 +216,7 @@ export default function ClientDashboard() {
 
 
           {/* Right Sidebar */}
-          <div className="border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
+          <div className="border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full ">
             <div className="h-full pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0"></div>
           </div>
 

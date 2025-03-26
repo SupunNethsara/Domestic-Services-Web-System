@@ -6,10 +6,18 @@ export default function WorkerDashboard() {
    const [isOpen, setIsOpen] = useState(false);
     const [isOpenMenu, setIsOpenMenu] = useState(false);
    const [Dropdownpost, setDropdownpost] = useState(false);
- 
+   const [isModalOpen, setIsModalOpen] = useState(false);
     const handleScrollPost = () => {
       setDropdownpost(!Dropdownpost);
     }
+    const handleOpenModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const handleCloseModal = () => {
+      setIsModalOpen(false);
+    };
+  
     const logout = async () => {
       try {
         const token = localStorage.getItem("token"); 
@@ -183,7 +191,11 @@ export default function WorkerDashboard() {
         <div className="w-full m-2 h-screen">
           <div className="h-full w-full">
             <div className="relative h-full w-full" style={{ minHeight: "36rem" }}>
-        <Outlet/>
+      <Outlet context={{
+                     isModalOpen,
+                     handleOpenModal,
+                     handleCloseModal,
+                   }} />
             </div>
           </div>
         </div>
