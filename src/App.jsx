@@ -14,6 +14,7 @@ import MakePost from './Components/Dashboard/DashboardComponents/Client Routes C
 import WorkerHome from './Components/Dashboard/DashboardComponents/Worker Routes Component/WorkerHome';
 import MakeRequest from './Components/Dashboard/DashboardComponents/Worker Routes Component/MakeRequest';
 import MakeProfile from './Components/Dashboard/DashboardComponents/Client Routes Component/MakeProfile';
+import ProfilePage from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/ProfilePage';
 
 function App() {
   return (
@@ -24,13 +25,14 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/Client-Register" element={<ClientRegister />} />
       <Route path="/Worker-Register" element={<WorkersRegister />} />
-
+     
 
       <Route path="/client-dashboard" element={<ClientDashboard />} >
         <Route index element={<ClientHome />} />
         <Route path="clienthome" element={<ClientHome />} />
         <Route path="makeprofile" element={<MakeProfile />} />
         <Route path="makepost" element={<MakePost />} />
+        <Route path="profilepage" element={<ProfilePage />} />
        
       </Route>
       <Route path="/worker-dashboard" element={<WorkerDashboard />} >

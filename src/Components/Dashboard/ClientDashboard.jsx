@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import TooltipsWithTabs from './DashboardComponents/TooltipsWithTabs';
 import { Link, Outlet } from 'react-router-dom';
 import axios from 'axios';
-import Profile from './DashboardComponents/Client Routes Component/ClientDashboard Components/Profile';
 import Popupadd from './DashboardComponents/Client Routes Component/ClientDashboard Components/Popupadd';
 
 
@@ -97,7 +96,7 @@ export default function ClientDashboard() {
                   {isOpen && (
                     <div class="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
 
-                      <a onClick={openprofilemodal} href="#" class="block py-2 px-4 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+                   <Link to='profilepage'><a  href="#" class="block py-2 px-4 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a></Link>   
 
                       <a href="#" class="block py-2 px-4 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
 

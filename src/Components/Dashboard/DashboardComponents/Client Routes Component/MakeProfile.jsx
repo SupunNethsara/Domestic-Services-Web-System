@@ -1,141 +1,182 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
+import { fill } from '@cloudinary/url-gen/actions/resize';
 
-export default function MakeProfile() {
+export default function ProfileForm() {
+  
+    const [formData, setFormData] = useState({
+        username: '',
+        about: '',
+        first_name: '',
+        last_name: '',
+        email: '',
+        country: '',
+        address: '',
+        city: '',
+        province: '',
+        profile_image: null,
+        cover_image: null
+    });
 
+  
     const [selectedProfileFile, setSelectedProfileFile] = useState(null);
     const [selectedCoverFile, setSelectedCoverFile] = useState(null);
-    const [profileImageUrl, setProfileImageUrl] = useState(null);
-    const [coverImageUrl, setCoverImageUrl] = useState(null);
-    const [username, setUsername] = useState("");
-    const [about, setAbout] = useState("");
-    const [fname, setFname] = useState("");
-    const [lname, setLname] = useState("");
-    const [email, setEmail] = useState("");
-    const [country, setCountry] = useState("");
-    const [address, setAddress] = useState("");
-    const [city, setCity] = useState("");
-    const [province, setProvince] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [profileImageError, setProfileImageError] = useState(false);
+    const [coverImageError, setCoverImageError] = useState(false);
 
-
+    // Cloudinary setup
     const cld = new Cloudinary({
-        cloud: {
-            cloudName: 'dx7waof09' // Replace with your Cloudinary cloud name
-        }
+        cloud: { cloudName: 'dx7waof09' } //my cloud name
     });
-    const uploadImageToCloudinary = async (file, type) => {
+
+    // Handle input changes
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    // Image upload function
+    const uploadImageToCloudinary = async (file) => {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('upload_preset', 'profile_preset'); 
+        formData.append('upload_preset', 'profile_preset');
 
         try {
             const response = await axios.post(
                 `https://api.cloudinary.com/v1_1/dx7waof09/image/upload`,
                 formData
             );
-            
-            if (type === 'profile') {
-                setProfileImageUrl(response.data.secure_url);
-            } else {
-                setCoverImageUrl(response.data.secure_url);
-            }
-            
             return response.data.secure_url;
         } catch (error) {
-            console.error('Error uploading image:', error);
+            console.error('Upload error:', error);
             throw error;
         }
     };
 
-
-    const handleProfileFileChange = (event) => {
-        const file = event.target.files[0];
+    // Handle file selection
+    const handleFileChange = (e, type) => {
+        const file = e.target.files[0];
         if (file) {
-            setSelectedProfileFile(file);
+            if (type === 'profile') {
+                setSelectedProfileFile(file);
+                setProfileImageError(false);
+                setFormData(prev => ({
+                    ...prev,
+                    profile_image: URL.createObjectURL(file)
+                }));
+            } else {
+                setSelectedCoverFile(file);
+                setCoverImageError(false);
+                setFormData(prev => ({
+                    ...prev,
+                    cover_image: URL.createObjectURL(file)
+                }));
+            }
         }
     };
 
-    const handleCoverFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setSelectedCoverFile(file);
-        }
-    };
+    // Load existing profile
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get('http://127.0.0.1:8000/api/profile', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
 
+                if (response.data.profile) {
+                    const profile = response.data.profile;
+                    setIsEditMode(true);
+                    setFormData({
+                        username: profile.username || '',
+                        about: profile.about || '',
+                        first_name: profile.first_name || '',
+                        last_name: profile.last_name || '',
+                        email: profile.email || '',
+                        country: profile.country || '',
+                        address: profile.address || '',
+                        city: profile.city || '',
+                        province: profile.province || '',
+                        profile_image: profile.profile_image,
+                        cover_image: profile.cover_image
+                    });
+                }
+            } catch (error) {
+                console.log("No existing profile found");
+            }
+        };
+
+        fetchProfile();
+    }, []);
+
+    // Form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         setError(null);
-        
+        setSuccess(false);
+
         try {
-            // Upload images to Cloudinary first
-            let profileUrl = null;
-            let coverUrl = null;
-            
+            // Upload new images if selected
+            let profileUrl = formData.profile_image;
+            let coverUrl = formData.cover_image;
+
             if (selectedProfileFile) {
-                profileUrl = await uploadImageToCloudinary(selectedProfileFile, 'profile');
+                profileUrl = await uploadImageToCloudinary(selectedProfileFile);
             }
-            
+
             if (selectedCoverFile) {
-                coverUrl = await uploadImageToCloudinary(selectedCoverFile, 'cover');
+                coverUrl = await uploadImageToCloudinary(selectedCoverFile);
             }
-            
-        
-            const response = await axios.post('http://127.0.0.1:8000/api/createprofile', {
-                username,
-                about,
-                fname,
-                lname,
-                email,
-                country,
-                address,
-                city,
-                province,
-                profileImage: profileUrl,
-                coverImage: coverUrl
-            }, {
+
+            // Prepare final data
+            const profileData = {
+                ...formData,
+                profile_image: profileUrl,
+                cover_image: coverUrl
+            };
+
+            const token = localStorage.getItem('token');
+            const config = {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Authorization': `Bearer ${token}`
                 }
-            });
-            
-            console.log(response);
+            };
+
+            const response = isEditMode
+                ? await axios.put('http://127.0.0.1:8000/api/profile', profileData, config)
+                : await axios.post('http://127.0.0.1:8000/api/profile', profileData, config);
+
             setSuccess(true);
             
-            if (response.status === 201) {
-                setUsername("");
-                setAbout("");
-                setFname("");
-                setLname("");
-                setEmail("");
-                setCountry("");
-                setAddress("");
-                setCity("");
-                setProvince("");
+            if (!isEditMode) {
+                setIsEditMode(true);
                 setSelectedProfileFile(null);
                 setSelectedCoverFile(null);
-                setProfileImageUrl(null);
-                setCoverImageUrl(null);
             }
         } catch (err) {
-            setError(err.response?.data?.message || "Profile creation failed");
-            console.error("Full error:", err);
+            setError(err.response?.data?.message || 
+                (isEditMode ? "Profile update failed" : "Profile creation failed"));
+            console.error("Error:", err.response?.data || err.message);
         } finally {
             setIsSubmitting(false);
         }
     };
 
-
     return (
-        <div className="bg-white border rounded-md border-gray-200">
-        <form onSubmit={handleSubmit} className="space-y-8 divide-y divide-gray-200">
-            <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5 p-6">
+        <div className="bg-white border rounded-md border-gray-200 p-6">
+            <form onSubmit={handleSubmit} className="space-y-8">
+                {/* Error/Success Messages */}
                 {error && (
                     <div className="bg-red-50 border-l-4 border-red-400 p-4">
                         <div className="flex">
@@ -160,76 +201,84 @@ export default function MakeProfile() {
                                 </svg>
                             </div>
                             <div className="ml-3">
-                                <p className="text-sm text-green-700">Profile created successfully!</p>
+                                <p className="text-sm text-green-700">
+                                    {isEditMode ? 'Profile updated successfully!' : 'Profile created successfully!'}
+                                </p>
                             </div>
                         </div>
                     </div>
                 )}
 
+                {/* Form Header */}
                 <div>
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Complete Your Profile</h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                        This information will be displayed publicly so be careful what you share.
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        {isEditMode ? 'Update Your Profile' : 'Complete Your Profile'}
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-500">
+                        This information will be displayed publicly.
                     </p>
                 </div>
 
-                <div className="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
-                    {/* Username */}
-                    <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                        <label htmlFor="username" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                            Username
-                        </label>
-                        <div className="mt-1 sm:mt-0 sm:col-span-2">
+          
+                <div className="space-y-6">
+              
+                    <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
+                        <div className="sm:col-span-3">
+                            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                                Username
+                            </label>
                             <input
                                 type="text"
                                 name="username"
                                 id="username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                className="flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 rounded-md sm:text-sm border-gray-300"
-                                placeholder="Enter your username"
+                                value={formData.username}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 required
                             />
                         </div>
                     </div>
 
-                    {/* About */}
-                    <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                        <label htmlFor="about" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                            About
-                        </label>
-                        <div className="mt-1 sm:mt-0 sm:col-span-2">
+             
+                    <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
+                        <div className="sm:col-span-3">
+                            <label htmlFor="about" className="block text-sm font-medium text-gray-700">
+                                About
+                            </label>
                             <textarea
                                 id="about"
                                 name="about"
                                 rows={3}
-                                value={about}
-                                onChange={(e) => setAbout(e.target.value)}
-                                className="max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
-                                placeholder="A short description about yourself"
+                                value={formData.about}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             />
                         </div>
                     </div>
 
-                    {/* Profile Image */}
-                    <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-center sm:border-t sm:border-gray-200 sm:pt-5">
-                        <label htmlFor="profileImage" className="block text-sm font-medium text-gray-700">
-                            Profile Photo
-                        </label>
-                        <div className="mt-1 sm:mt-0 sm:col-span-2">
-                            <div className="flex items-center">
+             
+                    <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
+                        <div className="sm:col-span-3">
+                            <label className="block text-sm font-medium text-gray-700">
+                                Profile Photo
+                            </label>
+                            <div className="mt-1 flex items-center">
                                 <label className="relative h-12 w-12 rounded-full overflow-hidden bg-gray-100 cursor-pointer">
-                                    {selectedProfileFile ? (
-                                        <img
-                                            src={URL.createObjectURL(selectedProfileFile)}
-                                            alt="Profile"
-                                            className="h-full w-full object-cover"
-                                        />
-                                    ) : profileImageUrl ? (
-                                        <AdvancedImage 
-                                            cldImg={cld.image(profileImageUrl).resize('fill').width(150).height(150)} 
-                                            className="h-full w-full object-cover"
-                                        />
+                                    {formData.profile_image ? (
+                                        !profileImageError && typeof formData.profile_image === 'string' && !formData.profile_image.startsWith('blob:') ? (
+                                            <AdvancedImage 
+                                                cldImg={cld.image(formData.profile_image).resize(fill().width(150).height(150))} 
+                                                onError={() => setProfileImageError(true)}
+                                                className="h-full w-full object-cover"
+                                            />
+                                        ) : (
+                                            <img
+                                                src={formData.profile_image}
+                                                alt="Profile"
+                                                className="h-full w-full object-cover"
+                                                onError={() => setProfileImageError(true)}
+                                            />
+                                        )
                                     ) : (
                                         <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -237,16 +286,15 @@ export default function MakeProfile() {
                                     )}
                                     <input
                                         type="file"
-                                        id="profileImage"
                                         className="absolute inset-0 opacity-0 cursor-pointer"
-                                        onChange={handleProfileFileChange}
+                                        onChange={(e) => handleFileChange(e, 'profile')}
                                         accept="image/*"
                                     />
                                 </label>
                                 <button
                                     type="button"
-                                    className="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    onClick={() => document.getElementById('profileImage').click()}
+                                    className="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    onClick={() => document.querySelector('input[type="file"]').click()}
                                 >
                                     Change
                                 </button>
@@ -254,25 +302,29 @@ export default function MakeProfile() {
                         </div>
                     </div>
 
-                    {/* Cover Image */}
-                    <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                        <label htmlFor="coverImage" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                            Cover photo
-                        </label>
-                        <div className="mt-1 sm:mt-0 sm:col-span-2">
-                            <div className="max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                
+                    <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
+                        <div className="sm:col-span-3">
+                            <label className="block text-sm font-medium text-gray-700">
+                                Cover Photo
+                            </label>
+                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                 <div className="space-y-1 text-center">
-                                    {selectedCoverFile ? (
-                                        <img
-                                            src={URL.createObjectURL(selectedCoverFile)}
-                                            alt="Cover"
-                                            className="mx-auto h-32 w-full object-cover"
-                                        />
-                                    ) : coverImageUrl ? (
-                                        <AdvancedImage 
-                                            cldImg={cld.image(coverImageUrl).resize('fill').width(800).height(300)} 
-                                            className="mx-auto h-32 w-full object-cover"
-                                        />
+                                    {formData.cover_image ? (
+                                        !coverImageError && typeof formData.cover_image === 'string' && !formData.cover_image.startsWith('blob:') ? (
+                                            <AdvancedImage 
+                                                cldImg={cld.image(formData.cover_image).resize(fill().width(800).height(300))} 
+                                                onError={() => setCoverImageError(true)}
+                                                className="mx-auto max-h-32 w-full object-cover"
+                                            />
+                                        ) : (
+                                            <img
+                                                src={formData.cover_image}
+                                                alt="Cover"
+                                                className="mx-auto max-h-32 w-full object-cover"
+                                                onError={() => setCoverImageError(true)}
+                                            />
+                                        )
                                     ) : (
                                         <>
                                             <svg
@@ -290,17 +342,12 @@ export default function MakeProfile() {
                                                 />
                                             </svg>
                                             <div className="flex text-sm text-gray-600 justify-center">
-                                                <label
-                                                    htmlFor="cover-upload"
-                                                    className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
-                                                >
+                                                <label className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                                                     <span>Upload a file</span>
                                                     <input
-                                                        id="cover-upload"
-                                                        name="cover-upload"
                                                         type="file"
                                                         className="sr-only"
-                                                        onChange={handleCoverFileChange}
+                                                        onChange={(e) => handleFileChange(e, 'cover')}
                                                         accept="image/*"
                                                     />
                                                 </label>
@@ -311,162 +358,141 @@ export default function MakeProfile() {
                                     )}
                                 </div>
                             </div>
-                            {(selectedCoverFile || coverImageUrl) && (
-                                <button
-                                    type="button"
-                                    className="mt-2 text-sm text-red-600 hover:text-red-500"
-                                    onClick={() => {
-                                        setSelectedCoverFile(null);
-                                        setCoverImageUrl(null);
-                                    }}
-                                >
-                                    Remove cover photo
-                                </button>
+                        </div>
+                    </div>
+
+               
+                    <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                        <div className="sm:col-span-3">
+                            <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
+                                First name
+                            </label>
+                            <input
+                                type="text"
+                                name="first_name"
+                                id="first_name"
+                                value={formData.first_name}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                required
+                            />
+                        </div>
+
+                        <div className="sm:col-span-3">
+                            <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">
+                                Last name
+                            </label>
+                            <input
+                                type="text"
+                                name="last_name"
+                                id="last_name"
+                                value={formData.last_name}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                required
+                            />
+                        </div>
+
+                        <div className="sm:col-span-4">
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                Email address
+                            </label>
+                            <input
+                                type="email"
+                                name="email"
+                                id="email"
+                                value={formData.email}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                required
+                            />
+                        </div>
+
+                        <div className="sm:col-span-3">
+                            <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+                                Country
+                            </label>
+                            <input
+                                type="text"
+                                name="country"
+                                id="country"
+                                value={formData.country}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                required
+                            />
+                        </div>
+
+                        <div className="sm:col-span-6">
+                            <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                                Street address
+                            </label>
+                            <input
+                                type="text"
+                                name="address"
+                                id="address"
+                                value={formData.address}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                required
+                            />
+                        </div>
+
+                        <div className="sm:col-span-2">
+                            <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                                City
+                            </label>
+                            <input
+                                type="text"
+                                name="city"
+                                id="city"
+                                value={formData.city}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                required
+                            />
+                        </div>
+
+                        <div className="sm:col-span-2">
+                            <label htmlFor="province" className="block text-sm font-medium text-gray-700">
+                                State / Province
+                            </label>
+                            <input
+                                type="text"
+                                name="province"
+                                id="province"
+                                value={formData.province}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+
+         
+                <div className="pt-5">
+                    <div className="flex justify-end">
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    {isEditMode ? 'Updating...' : 'Creating...'}
+                                </>
+                            ) : (
+                                isEditMode ? 'Update Profile' : 'Create Profile'
                             )}
-                        </div>
+                        </button>
                     </div>
                 </div>
-
-                {/* Personal Information */}
-                <div className="pt-8 space-y-6 sm:pt-10 sm:space-y-5">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Personal Information</h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">Use a permanent address where you can receive mail.</p>
-
-                    <div className="space-y-6 sm:space-y-5">
-                        <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                            {/* First Name */}
-                            <div className="sm:col-span-1">
-                                <label htmlFor="fname" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">First Name</label>
-                                <div className="mt-1 sm:mt-0">
-                                    <input
-                                        type="text"
-                                        name="fname"
-                                        id="fname"
-                                        value={fname}
-                                        onChange={(e) => setFname(e.target.value)}
-                                        className="block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
-                                        placeholder="First Name"
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Last Name */}
-                            <div className="sm:col-span-1">
-                                <label htmlFor="lname" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Last Name</label>
-                                <div className="mt-1 sm:mt-0">
-                                    <input
-                                        type="text"
-                                        name="lname"
-                                        id="lname"
-                                        value={lname}
-                                        onChange={(e) => setLname(e.target.value)}
-                                        className="block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
-                                        placeholder="Last Name"
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Email */}
-                            <div className="sm:col-span-1">
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Email</label>
-                                <div className="mt-1 sm:mt-0">
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        id="email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
-                                        placeholder="Your email"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Country */}
-                        <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                            <label htmlFor="country" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Country</label>
-                            <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                <input
-                                    type="text"
-                                    name="country"
-                                    id="country"
-                                    value={country}
-                                    onChange={(e) => setCountry(e.target.value)}
-                                    className="block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
-                                    placeholder="Your Country"
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        {/* Address */}
-                        <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                            <label htmlFor="address" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Address</label>
-                            <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                <input
-                                    type="text"
-                                    name="address"
-                                    id="address"
-                                    value={address}
-                                    onChange={(e) => setAddress(e.target.value)}
-                                    className="block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
-                                    placeholder="Your Street Address"
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        {/* City */}
-                        <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                            <label htmlFor="city" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">City</label>
-                            <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                <input
-                                    type="text"
-                                    name="city"
-                                    id="city"
-                                    value={city}
-                                    onChange={(e) => setCity(e.target.value)}
-                                    className="block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
-                                    placeholder="Your City"
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        {/* Province */}
-                        <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                            <label htmlFor="province" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Province</label>
-                            <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                <input
-                                    type="text"
-                                    name="province"
-                                    id="province"
-                                    value={province}
-                                    onChange={(e) => setProvince(e.target.value)}
-                                    className="block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
-                                    placeholder="Your Province"
-                                    required
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    {isSubmitting ? 'Saving...' : 'Save Profile'}
-                </button>
-            </div>
-        </form>
-    </div>
+            </form>
+        </div>
     );
 }
