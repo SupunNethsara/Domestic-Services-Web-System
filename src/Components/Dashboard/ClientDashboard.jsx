@@ -3,6 +3,7 @@ import TooltipsWithTabs from './DashboardComponents/TooltipsWithTabs';
 import { Link, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import Popupadd from './DashboardComponents/Client Routes Component/ClientDashboard Components/Popupadd';
+import MakePostModal from './DashboardComponents/Client Routes Component/ClientDashboard Components/MakePostModal';
 
 
 export default function ClientDashboard() {
@@ -11,6 +12,9 @@ export default function ClientDashboard() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [Dropdownpost, setDropdownpost] = useState(false);
+  const [postmodal, setPostModal] = useState(false);
+
+
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -21,6 +25,18 @@ export default function ClientDashboard() {
 
   const handleScrollPost = () => {
     setDropdownpost(!Dropdownpost);
+  }
+
+  const openPostModal=()=>{
+    if(!postmodal){
+      setPostModal(true);
+    }
+  }
+
+  const closemodal=()=>{
+    if(postmodal){
+      setPostModal(false);
+    }
   }
 
   const logout = async () => {
@@ -106,7 +122,7 @@ export default function ClientDashboard() {
 
                 </div>
 
-                <a href="#" class="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"> New Project </a>
+                <a onClick={openPostModal} href="#" class="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"> Create Post </a>
               </div>
             </div>
           </div>
@@ -159,7 +175,7 @@ export default function ClientDashboard() {
         </header>
         <div className=" block min-w-0 bg-[#F2F4F7] xl:flex m-2 h-full ">
         <Popupadd/>
-      
+      <MakePostModal postmodal ={postmodal} closemodal={closemodal}/>
         
           {/* Left Sidebar */}
           <div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
