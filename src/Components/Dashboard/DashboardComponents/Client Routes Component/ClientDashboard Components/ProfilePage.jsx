@@ -111,7 +111,7 @@ const ModernProfile = () => {
             <div className="mt-4 sm:mt-0 space-x-3">
               <button 
                 className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
-                onClick={() => navigate(`/profile/edit`)}
+                onClick={() => navigate('makeprofile')}
               >
                 Edit Profile
               </button>

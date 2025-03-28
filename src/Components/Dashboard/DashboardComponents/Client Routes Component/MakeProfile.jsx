@@ -5,7 +5,7 @@ import { Cloudinary } from '@cloudinary/url-gen';
 import { fill } from '@cloudinary/url-gen/actions/resize';
 
 export default function ProfileForm() {
-  
+   
     const [formData, setFormData] = useState({
         username: '',
         about: '',
@@ -20,19 +20,17 @@ export default function ProfileForm() {
         cover_image: null
     });
 
-  
+    // UI state
     const [selectedProfileFile, setSelectedProfileFile] = useState(null);
     const [selectedCoverFile, setSelectedCoverFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
-    const [profileImageError, setProfileImageError] = useState(false);
-    const [coverImageError, setCoverImageError] = useState(false);
 
     // Cloudinary setup
     const cld = new Cloudinary({
-        cloud: { cloudName: 'dx7waof09' } //my cloud name
+        cloud: { cloudName: 'dx7waof09' }
     });
 
     // Handle input changes
@@ -44,18 +42,18 @@ export default function ProfileForm() {
         }));
     };
 
-    // Image upload function
+    // Image upload function - returns full URL
     const uploadImageToCloudinary = async (file) => {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'profile_preset');
+        const uploadData = new FormData();
+        uploadData.append('file', file);
+        uploadData.append('upload_preset', 'profile_preset');
 
         try {
             const response = await axios.post(
                 `https://api.cloudinary.com/v1_1/dx7waof09/image/upload`,
-                formData
+                uploadData
             );
-            return response.data.secure_url;
+            return response.data.secure_url; // Return full URL
         } catch (error) {
             console.error('Upload error:', error);
             throw error;
@@ -68,17 +66,15 @@ export default function ProfileForm() {
         if (file) {
             if (type === 'profile') {
                 setSelectedProfileFile(file);
-                setProfileImageError(false);
                 setFormData(prev => ({
                     ...prev,
-                    profile_image: URL.createObjectURL(file)
+                    profile_image: URL.createObjectURL(file) 
                 }));
             } else {
                 setSelectedCoverFile(file);
-                setCoverImageError(false);
                 setFormData(prev => ({
                     ...prev,
-                    cover_image: URL.createObjectURL(file)
+                    cover_image: URL.createObjectURL(file) 
                 }));
             }
         }
@@ -106,12 +102,12 @@ export default function ProfileForm() {
                         address: profile.address || '',
                         city: profile.city || '',
                         province: profile.province || '',
-                        profile_image: profile.profile_image,
-                        cover_image: profile.cover_image
+                        profile_image: profile.profile_image, // Should be full URL
+                        cover_image: profile.cover_image      // Should be full URL
                     });
                 }
             } catch (error) {
-                console.log("No existing profile found");
+                console.log("No existing profile found or error:", error);
             }
         };
 
@@ -127,22 +123,22 @@ export default function ProfileForm() {
 
         try {
             // Upload new images if selected
-            let profileUrl = formData.profile_image;
-            let coverUrl = formData.cover_image;
+            let profileImageUrl = formData.profile_image;
+            let coverImageUrl = formData.cover_image;
 
             if (selectedProfileFile) {
-                profileUrl = await uploadImageToCloudinary(selectedProfileFile);
+                profileImageUrl = await uploadImageToCloudinary(selectedProfileFile);
             }
 
             if (selectedCoverFile) {
-                coverUrl = await uploadImageToCloudinary(selectedCoverFile);
+                coverImageUrl = await uploadImageToCloudinary(selectedCoverFile);
             }
 
-            // Prepare final data
+            // Prepare final data with URLs
             const profileData = {
                 ...formData,
-                profile_image: profileUrl,
-                cover_image: coverUrl
+                profile_image: profileImageUrl,
+                cover_image: coverImageUrl
             };
 
             const token = localStorage.getItem('token');
@@ -173,10 +169,15 @@ export default function ProfileForm() {
         }
     };
 
+    // Helper to determine if image is a Cloudinary URL
+    const isCloudinaryUrl = (url) => {
+        return url && typeof url === 'string' && url.includes('res.cloudinary.com');
+    };
+
     return (
         <div className="bg-white border rounded-md border-gray-200 p-6">
             <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Error/Success Messages */}
+               
                 {error && (
                     <div className="bg-red-50 border-l-4 border-red-400 p-4">
                         <div className="flex">
@@ -209,7 +210,6 @@ export default function ProfileForm() {
                     </div>
                 )}
 
-            
                 <div>
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
                         {isEditMode ? 'Update Your Profile' : 'Complete Your Profile'}
@@ -219,9 +219,7 @@ export default function ProfileForm() {
                     </p>
                 </div>
 
-          
                 <div className="space-y-6">
-              
                     <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
                         <div className="sm:col-span-3">
                             <label htmlFor="username" className="block text-sm font-medium text-gray-700">
@@ -239,7 +237,6 @@ export default function ProfileForm() {
                         </div>
                     </div>
 
-             
                     <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
                         <div className="sm:col-span-3">
                             <label htmlFor="about" className="block text-sm font-medium text-gray-700">
@@ -256,7 +253,6 @@ export default function ProfileForm() {
                         </div>
                     </div>
 
-             
                     <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
                         <div className="sm:col-span-3">
                             <label className="block text-sm font-medium text-gray-700">
@@ -265,18 +261,22 @@ export default function ProfileForm() {
                             <div className="mt-1 flex items-center">
                                 <label className="relative h-12 w-12 rounded-full overflow-hidden bg-gray-100 cursor-pointer">
                                     {formData.profile_image ? (
-                                        !profileImageError && typeof formData.profile_image === 'string' && !formData.profile_image.startsWith('blob:') ? (
-                                            <AdvancedImage 
-                                                cldImg={cld.image(formData.profile_image).resize(fill().width(150).height(150))} 
-                                                onError={() => setProfileImageError(true)}
-                                                className="h-full w-full object-cover"
-                                            />
-                                        ) : (
+                                        typeof formData.profile_image === 'string' && formData.profile_image.startsWith('blob:') ? (
                                             <img
                                                 src={formData.profile_image}
                                                 alt="Profile"
                                                 className="h-full w-full object-cover"
-                                                onError={() => setProfileImageError(true)}
+                                            />
+                                        ) : isCloudinaryUrl(formData.profile_image) ? (
+                                            <img
+                                                src={formData.profile_image}
+                                                alt="Profile"
+                                                className="h-full w-full object-cover"
+                                            />
+                                        ) : (
+                                            <AdvancedImage 
+                                                cldImg={cld.image(formData.profile_image).resize(fill().width(150).height(150))}
+                                                className="h-full w-full object-cover"
                                             />
                                         )
                                     ) : (
@@ -302,66 +302,80 @@ export default function ProfileForm() {
                         </div>
                     </div>
 
-                
                     <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
                         <div className="sm:col-span-3">
                             <label className="block text-sm font-medium text-gray-700">
                                 Cover Photo
                             </label>
-                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                <div className="space-y-1 text-center">
-                                    {formData.cover_image ? (
-                                        !coverImageError && typeof formData.cover_image === 'string' && !formData.cover_image.startsWith('blob:') ? (
-                                            <AdvancedImage 
-                                                cldImg={cld.image(formData.cover_image).resize(fill().width(800).height(300))} 
-                                                onError={() => setCoverImageError(true)}
-                                                className="mx-auto max-h-32 w-full object-cover"
-                                            />
-                                        ) : (
+                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md relative">
+                                {formData.cover_image ? (
+                                    <div className="w-full h-full">
+                                        {typeof formData.cover_image === 'string' && formData.cover_image.startsWith('blob:') ? (
                                             <img
                                                 src={formData.cover_image}
                                                 alt="Cover"
-                                                className="mx-auto max-h-32 w-full object-cover"
-                                                onError={() => setCoverImageError(true)}
+                                                className="mx-auto max-h-64 w-full object-cover rounded-md"
                                             />
-                                        )
-                                    ) : (
-                                        <>
-                                            <svg
-                                                className="mx-auto h-12 w-12 text-gray-400"
-                                                stroke="currentColor"
-                                                fill="none"
-                                                viewBox="0 0 48 48"
-                                                aria-hidden="true"
-                                            >
-                                                <path
-                                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                    strokeWidth={2}
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
+                                        ) : isCloudinaryUrl(formData.cover_image) ? (
+                                            <img
+                                                src={formData.cover_image}
+                                                alt="Cover"
+                                                className="mx-auto max-h-64 w-full object-cover rounded-md"
+                                            />
+                                        ) : (
+                                            <AdvancedImage 
+                                                cldImg={cld.image(formData.cover_image).resize(fill().width(800).height(300))} 
+                                                className="mx-auto max-h-64 w-full object-cover rounded-md"
+                                            />
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="space-y-1 text-center">
+                                        <svg
+                                            className="mx-auto h-12 w-12 text-gray-400"
+                                            stroke="currentColor"
+                                            fill="none"
+                                            viewBox="0 0 48 48"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                strokeWidth={2}
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg>
+                                        <div className="flex text-sm text-gray-600 justify-center">
+                                            <label className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                                <span>Upload a file</span>
+                                                <input
+                                                    type="file"
+                                                    className="sr-only"
+                                                    onChange={(e) => handleFileChange(e, 'cover')}
+                                                    accept="image/*"
                                                 />
-                                            </svg>
-                                            <div className="flex text-sm text-gray-600 justify-center">
-                                                <label className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                                    <span>Upload a file</span>
-                                                    <input
-                                                        type="file"
-                                                        className="sr-only"
-                                                        onChange={(e) => handleFileChange(e, 'cover')}
-                                                        accept="image/*"
-                                                    />
-                                                </label>
-                                                <p className="pl-1">or drag and drop</p>
-                                            </div>
-                                            <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                                        </>
-                                    )}
-                                </div>
+                                            </label>
+                                            <p className="pl-1">or drag and drop</p>
+                                        </div>
+                                        <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                    </div>
+                                )}
+                                {formData.cover_image && (
+                                    <button
+                                        type="button"
+                                        className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-md hover:bg-gray-100"
+                                        onClick={() => document.querySelector('input[type="file"][accept="image/*"]').click()}
+                                    >
+                                        <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>
 
-               
+
                     <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                         <div className="sm:col-span-3">
                             <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
@@ -470,7 +484,6 @@ export default function ProfileForm() {
                     </div>
                 </div>
 
-         
                 <div className="pt-5">
                     <div className="flex justify-end">
                         <button

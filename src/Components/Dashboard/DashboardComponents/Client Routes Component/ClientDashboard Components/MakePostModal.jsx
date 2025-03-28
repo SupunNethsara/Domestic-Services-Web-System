@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-export default function MakePostModal({ postmodal, closemodal }) {
+export default function MakePostModal({ postmodal, closemodal}) {
     const [formData, setFormData] = useState({
         description: '',
         cover_image: null
@@ -8,6 +9,7 @@ export default function MakePostModal({ postmodal, closemodal }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [coverImageError, setCoverImageError] = useState(false);
     const [selectedCoverFile, setSelectedCoverFile] = useState(null);
+    const [error, setError] = useState(null);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -20,8 +22,15 @@ export default function MakePostModal({ postmodal, closemodal }) {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+          
+            if (file.size > 10 * 1024 * 1024) {
+                setError('File size exceeds 10MB limit');
+                return;
+            }
+            
             setSelectedCoverFile(file);
             setCoverImageError(false);
+            setError(null);
             setFormData(prev => ({
                 ...prev,
                 cover_image: URL.createObjectURL(file)
@@ -29,9 +38,87 @@ export default function MakePostModal({ postmodal, closemodal }) {
         }
     };
 
-    const handleSubmit = (e) => {
+    const uploadImageToCloudinary = async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'profile_preset');
+
+        try {
+            const response = await axios.post(
+                `https://api.cloudinary.com/v1_1/dx7waof09/image/upload`,
+                formData
+            );
+            return response.data.secure_url;
+        } catch (error) {
+            console.error('Upload error:', error);
+            throw error;
+        }
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!formData.description.trim()) {
+            setError('Please enter a description');
+            return;
+        }
+
+        setIsSubmitting(true);
+        setError(null);
+
+        try {
+          
+            let coverUrl = null;
+            if (selectedCoverFile) {
+                coverUrl = await uploadImageToCloudinary(selectedCoverFile);
+            }
+
+            const postData = {
+                content: formData.description,
+                image: coverUrl
+            };
+            
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Authentication token not found');
+            }
+
        
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+
+           
+            const response = await axios.post(
+                'https://your-api-endpoint.com/posts',
+                postData,
+                config
+            );
+
+          
+            if (onPostCreated) {
+                onPostCreated(response.data);
+            }
+
+        
+            closemodal();
+            setFormData({
+                description: '',
+                cover_image: null
+            });
+            setSelectedCoverFile(null);
+
+        } catch (err) {
+            console.error("Post creation error:", err);
+            setError(err.response?.data?.message || 
+                   err.message || 
+                   'Failed to create post. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (!postmodal) return null;
@@ -39,7 +126,7 @@ export default function MakePostModal({ postmodal, closemodal }) {
     return (
         <div style={{ backgroundColor: 'rgba(0,0,0,0.7)' }} className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
             <div className="relative w-full max-w-2xl bg-white rounded-lg shadow-lg">
-                {/* Modal Header */}
+          
                 <div className="flex items-center justify-between p-4 border-b border-gray-200">
                     <h3 className="text-xl font-semibold text-gray-900">
                         Create Post
@@ -56,7 +143,7 @@ export default function MakePostModal({ postmodal, closemodal }) {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    {/* Modal Body */}
+          
                     <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3 m-5">
                         <div className="sm:col-span-3">
                             <label className="block text-sm font-medium text-gray-700">
@@ -65,12 +152,27 @@ export default function MakePostModal({ postmodal, closemodal }) {
                             <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                 <div className="space-y-1 text-center">
                                     {formData.cover_image ? (
-                                        <img
-                                            src={formData.cover_image}
-                                            alt="Preview"
-                                            className="mx-auto max-h-32 w-full object-cover"
-                                            onError={() => setCoverImageError(true)}
-                                        />
+                                        <div className="relative">
+                                            <img
+                                                src={formData.cover_image}
+                                                alt="Preview"
+                                                className="mx-auto max-h-32 w-full object-cover"
+                                                onError={() => setCoverImageError(true)}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setFormData(prev => ({...prev, cover_image: null}));
+                                                    setSelectedCoverFile(null);
+                                                }}
+                                                className="absolute top-0 right-0 p-1 bg-gray-800 bg-opacity-50 rounded-full text-white hover:bg-opacity-70"
+                                                disabled={isSubmitting}
+                                            >
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     ) : (
                                         <>
                                             <svg
@@ -110,6 +212,12 @@ export default function MakePostModal({ postmodal, closemodal }) {
                     </div>
 
                     <div className="p-4 space-y-4">
+                        {error && (
+                            <div className="p-3 text-sm text-red-700 bg-red-100 rounded-lg">
+                                {error}
+                            </div>
+                        )}
+                        
                         <textarea
                             name="description"
                             className="w-full p-3 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -151,7 +259,7 @@ export default function MakePostModal({ postmodal, closemodal }) {
                         </div>
                     </div>
 
-                    {/* Modal Footer */}
+             
                     <div className="flex items-center justify-end p-4 border-t border-gray-200">
                         <button
                             type="button"
