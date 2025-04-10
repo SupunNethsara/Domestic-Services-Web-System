@@ -4,7 +4,7 @@ import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { fill } from '@cloudinary/url-gen/actions/resize';
 
-export default function ProfileForm() {
+export default function MakeProfileOwrkers() {
    
     const [formData, setFormData] = useState({
         username: '',

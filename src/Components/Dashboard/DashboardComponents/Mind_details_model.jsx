@@ -3,7 +3,7 @@ import { X, Image, Smile, Video } from 'lucide-react';
 
 export default function MindDetailsModal({ onClose }) {
   return (
-    <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)'}} className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)'}} className=" z-40 fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-4">
  
         <div className="flex justify-between items-center border-b border-gray-300 pb-2">
