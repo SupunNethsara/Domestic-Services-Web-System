@@ -47,7 +47,7 @@ export default function ClientDashboard() {
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
   const handleScrollPost = () => setDropdownpost(!Dropdownpost);
-  const openPostModal = () => !postmodal && setPostModal(true);
+  const openPostModal = () =>!postmodal && setPostModal(true);
   const closemodal = () => postmodal && setPostModal(false);
 
   const logout = async () => {

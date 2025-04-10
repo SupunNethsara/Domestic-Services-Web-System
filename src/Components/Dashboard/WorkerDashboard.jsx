@@ -1,10 +1,12 @@
-import { React, useState , useEffect } from 'react'
+import { React, useState, useEffect } from 'react'
 import { Link, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import BottomNav from './DashboardComponents/TooltipsWithTabs';
+import WorkerPostModal from './DashboardComponents/Worker Routes Component/WorkerDashboard Components/WorkerPostModal';
 export default function WorkerDashboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const [postmodal, setPostModal] = useState(false);
   const [Dropdownpost, setDropdownpost] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profile, setProfile] = useState(null);
@@ -29,6 +31,8 @@ export default function WorkerDashboard() {
     fetchProfile();
   }, []);
 
+  const openPostModal = () =>!postmodal && setPostModal(true);
+  const closemodal = () => postmodal && setPostModal(false);
 
   const handleScrollPost = () => {
     setDropdownpost(!Dropdownpost);
@@ -56,6 +60,13 @@ export default function WorkerDashboard() {
       console.error("Logout failed", error.response?.data || error.message);
     }
   };
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -102,13 +113,13 @@ export default function WorkerDashboard() {
 
                 <div class="flex-shrink-0 relative ml-5">
                   <div>
-                  <button onClick={() => setIsOpen(!isOpen)} type="button" class="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                    <button onClick={() => setIsOpen(!isOpen)} type="button" class="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                       <span class="sr-only">Open user menu</span>
                       {profile?.profile_image ? (
-                        <img 
-                          class="h-8 w-8 rounded-full" 
-                          src={profile.profile_image} 
-                          alt="Profile" 
+                        <img
+                          class="h-8 w-8 rounded-full"
+                          src={profile.profile_image}
+                          alt="Profile"
                         />
                       ) : (
                         <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
@@ -123,19 +134,19 @@ export default function WorkerDashboard() {
                   {isOpen && (
                     <div class="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
 
-                      <Link to="workerprofile" className="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">
+                      <Link to="workerprofile" className="text-sm block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">
                         Your Profile
                       </Link>
 
-                      <a href="#" class="block py-2 px-4 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
+                      <Link to="" class="text-sm block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</Link>
 
-                      <a onClick={logout} href="#" class="block py-2 px-4 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
+                      <a onClick={logout} href="#" class="text-sm block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
                     </div>
                   )}
 
                 </div>
 
-                <a href="#" class="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"> Create Post </a>
+                <a onClick={openPostModal} href="#" class="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"> Create Post </a>
               </div>
             </div>
           </div>
@@ -188,7 +199,7 @@ export default function WorkerDashboard() {
 
         </header>
         <div className="block min-w-0 h-m  bg-[#F2F4F7] xl:flex m-2">
-
+          <WorkerPostModal postmodal={postmodal} closemodal={closemodal} />
           {/* Left Sidebar */}
           <div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
             <div className="max-h-max pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0">
