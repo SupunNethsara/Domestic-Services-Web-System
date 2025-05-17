@@ -19,6 +19,7 @@ import MakeProfileOwrkers from './Components/Dashboard/DashboardComponents/Worke
 import WorkerProfile from './Components/Dashboard/DashboardComponents/Worker Routes Component/WorkerDashboard Components/WorkerProfile';
 import AdminDashbaord from './Components/Dashboard/DashboardComponents/Admin Panel/AdminDashbaord';
 import Statics_dashboard from './Components/Dashboard/DashboardComponents/Admin Panel/Routing Components/Statics_dashboard';
+import UserTable from './Components/Dashboard/DashboardComponents/Admin Panel/Routing Components/UserTable';
 
 function App() {
   return (
@@ -30,11 +31,11 @@ function App() {
       <Route path="/Client-Register" element={<ClientRegister />} />
       <Route path="/Worker-Register" element={<WorkersRegister />} />
       <Route path="/adminpanel" element={<AdminDashbaord />}>
-      <Route path="statics" element={<Statics_dashboard />} />
-
+        <Route path="statics" element={<Statics_dashboard />} />
+        <Route path="user_manage" element={<UserTable />} />
 
       </Route>
-       <Route path="/client-dashboard" element={<ClientDashboard />} >
+      <Route path="/client-dashboard" element={<ClientDashboard />} >
         <Route index element={<ClientHome />} />
         <Route path="clienthome" element={<ClientHome />} />
         <Route path="makeprofile" element={<MakeProfile />} />

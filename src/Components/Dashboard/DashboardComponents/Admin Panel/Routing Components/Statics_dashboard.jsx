@@ -6,9 +6,7 @@ function Statics_dashboard() {
 
             <div className="mb-6 flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-gray-900">My Dashboard</h2>
-                <button className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    + New Task
-                </button>
+         
             </div>
 
 
