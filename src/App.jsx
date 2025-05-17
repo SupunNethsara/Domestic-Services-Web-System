@@ -18,6 +18,7 @@ import ProfilePage from './Components/Dashboard/DashboardComponents/Client Route
 import MakeProfileOwrkers from './Components/Dashboard/DashboardComponents/Worker Routes Component/MakeProfileWorkers';
 import WorkerProfile from './Components/Dashboard/DashboardComponents/Worker Routes Component/WorkerDashboard Components/WorkerProfile';
 import AdminDashbaord from './Components/Dashboard/DashboardComponents/Admin Panel/AdminDashbaord';
+import Statics_dashboard from './Components/Dashboard/DashboardComponents/Admin Panel/Routing Components/Statics_dashboard';
 
 function App() {
   return (
@@ -28,9 +29,12 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/Client-Register" element={<ClientRegister />} />
       <Route path="/Worker-Register" element={<WorkersRegister />} />
-    <Route path="/adminpanel" element={<AdminDashbaord/>}/>
+      <Route path="/adminpanel" element={<AdminDashbaord />}>
+      <Route path="statics" element={<Statics_dashboard />} />
 
-      <Route path="/client-dashboard" element={<ClientDashboard />} >
+
+      </Route>
+       <Route path="/client-dashboard" element={<ClientDashboard />} >
         <Route index element={<ClientHome />} />
         <Route path="clienthome" element={<ClientHome />} />
         <Route path="makeprofile" element={<MakeProfile />} />
@@ -41,7 +45,7 @@ function App() {
       <Route path="/worker-dashboard" element={<WorkerDashboard />} >
         <Route index element={<WorkerHome />} />
         <Route path="workerhome" element={<WorkerHome />} />
-        <Route path="makeworkerprofile" element={<MakeProfileOwrkers/>} />
+        <Route path="makeworkerprofile" element={<MakeProfileOwrkers />} />
         <Route path="makerequest" element={<MakeRequest />} />
         <Route path="workerprofile" element={<WorkerProfile />} />
       </Route>

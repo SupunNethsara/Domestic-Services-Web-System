@@ -12,7 +12,7 @@ function Sidebar() {
 
                 <nav className="space-y-1">
                     <Link
-                        to=""
+                        to="statics"
                         className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-indigo-700 bg-indigo-50"
                     >
                         <FiHome className="mr-3 h-5 w-5" />
