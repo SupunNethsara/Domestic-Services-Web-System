@@ -17,6 +17,7 @@ import MakeProfile from './Components/Dashboard/DashboardComponents/Client Route
 import ProfilePage from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/ProfilePage';
 import MakeProfileOwrkers from './Components/Dashboard/DashboardComponents/Worker Routes Component/MakeProfileWorkers';
 import WorkerProfile from './Components/Dashboard/DashboardComponents/Worker Routes Component/WorkerDashboard Components/WorkerProfile';
+import AdminDashbaord from './Components/Dashboard/DashboardComponents/Admin Panel/AdminDashbaord';
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/Client-Register" element={<ClientRegister />} />
       <Route path="/Worker-Register" element={<WorkersRegister />} />
-
+    <Route path="/adminpanel" element={<AdminDashbaord/>}/>
 
       <Route path="/client-dashboard" element={<ClientDashboard />} >
         <Route index element={<ClientHome />} />

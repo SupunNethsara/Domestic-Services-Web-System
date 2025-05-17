@@ -28,7 +28,12 @@ export default function Login() {
       if (role === "client") {
         navigate("/client-dashboard");
         console.log('Login Successfull');
-      } else if (role === "worker") {
+      }
+      else if (role == "admin") {
+        navigate("/adminpanel")
+        console.log("navigate to Admin panel")
+      }
+      else if (role === "worker") {
         navigate("/worker-dashboard");
         console.log('Login Successfull');
       } else {
