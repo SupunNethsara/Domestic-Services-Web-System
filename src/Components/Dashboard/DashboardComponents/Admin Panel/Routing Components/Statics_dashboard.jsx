@@ -6,10 +6,7 @@ function Statics_dashboard() {
 
             <div className="mb-6 flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-gray-900">My Dashboard</h2>
-         
             </div>
-
-
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-6">
                 <div className="bg-white overflow-hidden shadow rounded-lg">
                     <div className="px-4 py-5 sm:p-6">
