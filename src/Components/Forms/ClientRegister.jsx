@@ -42,12 +42,47 @@ export default function ClientRegister() {
   return (
     <section class="bg-white ">
       <div class="flex justify-center min-h-screen ">
-        <motion.div initial={{ x: -100 }}
+      <motion.div
+          initial={{ x: -100 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1 }} class="hidden bg-cover p-10 justify-center items-center  lg:block lg:w-2/5 bg-blue-500">
-
-          <img className="mt-10" src="" alt="" />
-        </motion.div>
+          transition={{ duration: 1 }}
+          className="hidden bg-cover p-10 justify-center items-center lg:flex lg:w-2/5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-xl relative"
+        >
+          <div className="text-center">
+            <h2 className="text-5xl font-bold text-white mb-4 tracking-tighter">HOME HEROES</h2>
+            <p className="text-blue-100 text-lg mb-8">Modern living solutions</p>
+            <div className="mt-12 mx-auto w-3/4">
+              <svg
+                viewBox="0 0 512 512"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-full h-auto"
+              >
+                <path
+                  d="M256 32L0 160V480H512V160L256 32Z"
+                  fill="white"
+                  fillOpacity="0.2"
+                />
+                <path
+                  d="M416 480V256H320V480H416Z"
+                  fill="white"
+                  fillOpacity="0.4"
+                />
+                <path
+                  d="M192 480V256H96V480H192Z"
+                  fill="white"
+                  fillOpacity="0.4"
+                />
+                <path
+                  d="M256 32L0 160H512L256 32Z"
+                  fill="white"
+                  fillOpacity="0.6"
+                />
+              </svg>
+            </div>
+          </div>
+         
+      </motion.div>
 
         <div class="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5 ">
 

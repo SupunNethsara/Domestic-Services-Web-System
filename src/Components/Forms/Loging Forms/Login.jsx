@@ -15,16 +15,16 @@ export default function Login() {
         email,
         password,
       });
-  
+
       const { role, token } = response.data;
-  
+
       if (!role || !token) {
         throw new Error("Invalid response from server");
       }
-  
+
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
-  
+
       if (role === "client") {
         navigate("/client-dashboard");
         console.log('Login Successfull');
@@ -38,7 +38,7 @@ export default function Login() {
       console.log("Login Failed", error.response ? error.response.data : error);
     }
   };
-  
+
   return (
     <section className="bg-white">
       <div className="flex justify-center min-h-screen">
@@ -46,9 +46,41 @@ export default function Login() {
           initial={{ x: -100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1 }}
-          className="hidden bg-cover p-10 justify-center items-center lg:block lg:w-2/5 bg-blue-500"
+          className="hidden bg-cover p-10 justify-center items-center lg:flex lg:w-2/5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-xl relative"
         >
-          <img className="mt-10" src="" alt="" />
+          <div className="text-center">
+            <h2 className="text-5xl font-bold text-white mb-4 tracking-tighter">HOME HEROES</h2>
+            <p className="text-blue-100 text-lg mb-8">Modern living solutions</p>
+            <div className="mt-12 mx-auto w-3/4">
+              <svg
+                viewBox="0 0 512 512"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-full h-auto"
+              >
+                <path
+                  d="M256 32L0 160V480H512V160L256 32Z"
+                  fill="white"
+                  fillOpacity="0.2"
+                />
+                <path
+                  d="M416 480V256H320V480H416Z"
+                  fill="white"
+                  fillOpacity="0.4"
+                />
+                <path
+                  d="M192 480V256H96V480H192Z"
+                  fill="white"
+                  fillOpacity="0.4"
+                />
+                <path
+                  d="M256 32L0 160H512L256 32Z"
+                  fill="white"
+                  fillOpacity="0.6"
+                />
+              </svg>
+            </div>
+          </div>
         </motion.div>
 
         <div className="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5">
@@ -58,45 +90,42 @@ export default function Login() {
             transition={{ duration: 1 }}
             className="w-full"
           >
-            <h1 className="text-2xl font-semibold tracking-wider text-gray-800 capitalize">
-              Welcome Back!
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome Back!</h1>
+            <p className="text-gray-500 mb-8">Please enter your credentials to login to your account.</p>
 
-            <p className="mt-4 text-gray-500">
-              Please enter your credentials to login to your account.
-            </p>
-
-            <form onSubmit={handlelogin} className="grid grid-cols-1 gap-6 mt-8">
+            <form onSubmit={handlelogin} className="space-y-6">
               <div>
-                <label className="block mb-2 text-sm text-gray-600">Email address</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email address</label>
                 <input
                   type="email"
                   placeholder="johnsnow@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className="w-full px-4 py-3 text-gray-700 border border-gray-300 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
                 />
               </div>
 
               <div>
-                <label className="block mb-2 text-sm text-gray-600">Password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                 <input
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className="w-full px-4 py-3 text-gray-700 border border-gray-300 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
                 />
               </div>
 
               <button
                 type="submit"
-                className="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+                className="w-full px-6 py-3 text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow hover:shadow-md transition-all duration-300 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 font-medium flex items-center justify-center"
               >
-                <span>Login</span>
+                <span>Sign In</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-5 h-5 rtl:-scale-x-100"
+                  className="w-5 h-5 ml-2"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -108,6 +137,7 @@ export default function Login() {
                 </svg>
               </button>
             </form>
+
 
             <p className="mt-6 text-sm text-center text-gray-500">
               Don't have an account?{" "}

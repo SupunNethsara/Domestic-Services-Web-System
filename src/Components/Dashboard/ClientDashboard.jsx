@@ -81,7 +81,7 @@ export default function ClientDashboard() {
 
   return (
     <div>
-      <div className="min-h-screen bg-gray-100">
+      <div className=" absolute min-h-screen bg-gray-100">
         <header className="bg-white shadow-sm lg:static lg:overflow-y-visible">
           <div className="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative flex justify-between xl:grid xl:grid-cols-12 lg:gap-8">
