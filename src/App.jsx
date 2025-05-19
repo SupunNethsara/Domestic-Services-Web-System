@@ -20,11 +20,13 @@ import WorkerProfile from './Components/Dashboard/DashboardComponents/Worker Rou
 import AdminDashbaord from './Components/Dashboard/DashboardComponents/Admin Panel/AdminDashbaord';
 import Statics_dashboard from './Components/Dashboard/DashboardComponents/Admin Panel/Routing Components/Statics_dashboard';
 import UserTable from './Components/Dashboard/DashboardComponents/Admin Panel/Routing Components/UserTable';
+import UsersWeb from './Components/Web/UsersWeb';
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Welcome />} />
+      <Route path='/' element={<UsersWeb/>}/>
+      <Route path="/Welcome" element={<Welcome />} />
       <Route path="/user-select" element={<UserSelection />} />
       <Route path="/select-role" element={<RoleSelection />} />
       <Route path="/login" element={<Login />} />
