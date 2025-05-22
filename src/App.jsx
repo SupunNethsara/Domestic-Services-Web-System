@@ -21,7 +21,7 @@ import AdminDashbaord from './Components/Dashboard/DashboardComponents/Admin Pan
 import Statics_dashboard from './Components/Dashboard/DashboardComponents/Admin Panel/Routing Components/Statics_dashboard';
 import UserTable from './Components/Dashboard/DashboardComponents/Admin Panel/Routing Components/UserTable';
 import UsersWeb from './Components/Web/UsersWeb';
-
+import '@fortawesome/fontawesome-free/css/all.min.css';
 function App() {
   return (
     <Routes>

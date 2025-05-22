@@ -1,12 +1,11 @@
 import React from 'react'
-import Navbar from './Components/Navbar'
-import Hero from './Components/Hero'
+import FullWeb from './Components/FullWeb'
 
 function UsersWeb() {
   return (
     <div>
-        {/* <Navbar/> */}
-        <Hero/>
+    <FullWeb/>
+  
     </div>
   )
 }
