@@ -32,7 +32,9 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/Client-Register" element={<ClientRegister />} />
       <Route path="/Worker-Register" element={<WorkersRegister />} />
+
       <Route path="/adminpanel" element={<AdminDashbaord />}>
+        <Route index element={<Statics_dashboard />} /> 
         <Route path="statics" element={<Statics_dashboard />} />
         <Route path="user_manage" element={<UserTable />} />
 

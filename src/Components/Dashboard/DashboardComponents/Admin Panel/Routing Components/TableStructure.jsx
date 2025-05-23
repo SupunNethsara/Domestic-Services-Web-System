@@ -6,6 +6,7 @@ function TableStructure() {
         profile: []
     });
     const [error, setError] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
     const fetchData = async () => {
         try {
             const response = await axios.get('http://127.0.0.1:8000/api/GetUsers');
@@ -26,11 +27,36 @@ function TableStructure() {
         return data.profile.find(profile => profile.user_id === userId);
     }
 
+    const filteredUsers = data.users.filter(user => {
+        if (searchTerm === '') {
+            return true; // Show all users if search term is empty
+        }
+
+        const profile = getUserProfile(user.id);
+        if (!profile) {
+            return false; // User without profile cannot be matched by name/email
+        }
+
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        
+        const fullName = ((profile.first_name || '') + ' ' + (profile.last_name || '')).toLowerCase();
+        const email = (profile.email || '').toLowerCase();
+
+        return fullName.includes(lowerSearchTerm) || email.includes(lowerSearchTerm);
+    });
+
     return (
         <div>
             <div class="flex flex-col">
                 <div class=" overflow-x-auto pb-4">
                     <div class="block">
+                        <input
+                            type="text"
+                            placeholder="Search by name or email..."
+                            className="my-4 p-2 border border-gray-300 rounded-md w-full md:w-1/3"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                         <div class="overflow-x-auto w-full  border rounded-lg border-gray-300">
                             <table class="w-full rounded-xl">
                                 <thead>
@@ -48,7 +74,7 @@ function TableStructure() {
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-300 ">
-                                    {data.users.map((user, index) => {
+                                    {filteredUsers.map((user, index) => {
                                         const profile = getUserProfile(user.id);
                                         return (
                                             <tr key={index} class="bg-white transition-all duration-500 hover:bg-gray-50">

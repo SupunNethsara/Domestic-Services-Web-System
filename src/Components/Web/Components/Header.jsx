@@ -1,9 +1,11 @@
 import React from 'react'
+import { useNavigate } from 'react-router';
 
-function Header({isScrolled , toggleMenu ,toggleSearch ,isSearchOpen , isMenuOpen}) {
-  return (
-    <div>
-           <header className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-lg' : 'bg-transparent'}`}>
+function Header({ isScrolled, toggleMenu, toggleSearch, isSearchOpen, isMenuOpen }) {
+    const navigate = useNavigate();
+    return (
+        <div>
+            <header className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-lg' : 'bg-transparent'}`}>
                 <div className="container mx-auto px-6 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
@@ -42,7 +44,7 @@ function Header({isScrolled , toggleMenu ,toggleSearch ,isSearchOpen , isMenuOpe
                             <button className="bg-white text-[#1E88E5] border border-[#1E88E5] px-4 py-2 rounded-button hover:bg-[#F5F9FF] transition duration-300 whitespace-nowrap cursor-pointer">
                                 Login
                             </button>
-                            <button className="bg-[#1E88E5] text-white px-4 py-2 rounded-button hover:bg-[#1976D2] transition duration-300 whitespace-nowrap cursor-pointer">
+                            <button onClick={() => navigate("/Welcome")} className="bg-[#1E88E5] text-white px-4 py-2 rounded-button hover:bg-[#1976D2] transition duration-300 whitespace-nowrap cursor-pointer">
                                 Register
                             </button>
                             <button
@@ -53,13 +55,13 @@ function Header({isScrolled , toggleMenu ,toggleSearch ,isSearchOpen , isMenuOpe
                             </button>
                         </div>
                     </div>
-                 {isMenuOpen && (
-                        <div className="md:hidden mt-4 pb-4">
+                    {isMenuOpen && (
+                        <div className="md:hidden bg-blue-500 text-white p-5 mt-4 pb-4">
                             <nav className="flex flex-col space-y-3">
-                                <a href="#" className="text-gray-700 hover:text-[#1E88E5] font-medium transition duration-300 cursor-pointer">Home</a>
-                                <a href="#" className="text-gray-700 hover:text-[#1E88E5] font-medium transition duration-300 cursor-pointer">Services</a>
-                                <a href="#" className="text-gray-700 hover:text-[#1E88E5] font-medium transition duration-300 cursor-pointer">About</a>
-                                <a href="#" className="text-gray-700 hover:text-[#1E88E5] font-medium transition duration-300 cursor-pointer">Contact</a>
+                                <a href="#" className=" hover:text-[#1E88E5] font-medium transition duration-300 cursor-pointer">Home</a>
+                                <a href="#" className=" hover:text-[#1E88E5] font-medium transition duration-300 cursor-pointer">Services</a>
+                                <a href="#" className=" hover:text-[#1E88E5] font-medium transition duration-300 cursor-pointer">About</a>
+                                <a href="#" className=" hover:text-[#1E88E5] font-medium transition duration-300 cursor-pointer">Contact</a>
                                 <div className="relative mt-2">
                                     <input
                                         type="text"
@@ -73,8 +75,8 @@ function Header({isScrolled , toggleMenu ,toggleSearch ,isSearchOpen , isMenuOpe
                     )}
                 </div>
             </header>
-    </div>
-  )
+        </div>
+    )
 }
 
 export default Header
