@@ -29,16 +29,16 @@ function TableStructure() {
 
     const filteredUsers = data.users.filter(user => {
         if (searchTerm === '') {
-            return true; // Show all users if search term is empty
+            return true;
         }
 
         const profile = getUserProfile(user.id);
         if (!profile) {
-            return false; // User without profile cannot be matched by name/email
+            return false;
         }
 
         const lowerSearchTerm = searchTerm.toLowerCase();
-        
+
         const fullName = ((profile.first_name || '') + ' ' + (profile.last_name || '')).toLowerCase();
         const email = (profile.email || '').toLowerCase();
 
@@ -49,14 +49,26 @@ function TableStructure() {
         <div>
             <div class="flex flex-col">
                 <div class=" overflow-x-auto pb-4">
-                    <div class="block">
-                        <input
-                            type="text"
-                            placeholder="Search by name or email..."
-                            className="my-4 p-2 border border-gray-300 rounded-md w-full md:w-1/3"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+                    <div class="block m-2">
+                        <div className="relative my-4 w-full md:w-1/3">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Search by name or email..."
+                                className="p-3 pl-10 w-full border-0 rounded-lg 
+                   bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 
+                   text-gray-700 placeholder-gray-400 
+                   transition-all duration-200 
+                   shadow-sm hover:shadow-md focus:shadow-lg
+                   outline-none"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
                         <div class="overflow-x-auto w-full  border rounded-lg border-gray-300">
                             <table class="w-full rounded-xl">
                                 <thead>
@@ -108,8 +120,8 @@ function TableStructure() {
                                                 </td>
                                                 <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                                                     <div className={`py-1.5 px-2.5 rounded-full flex justify-center w-20 items-center gap-1 ${user.role === 'admin' ? 'bg-purple-50' :
-                                                            user.role === 'worker' ? 'bg-blue-50' :
-                                                                'bg-emerald-50'
+                                                        user.role === 'worker' ? 'bg-blue-50' :
+                                                            'bg-emerald-50'
                                                         }`}>
                                                         <svg width="5" height="6" viewBox="0 0 5 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                             <circle cx="2.5" cy="3" r="2.5" fill={
@@ -119,8 +131,8 @@ function TableStructure() {
                                                             }></circle>
                                                         </svg>
                                                         <span className={`font-medium text-xs ${user.role === 'admin' ? 'text-purple-600' :
-                                                                user.role === 'worker' ? 'text-blue-600' :
-                                                                    'text-emerald-600'
+                                                            user.role === 'worker' ? 'text-blue-600' :
+                                                                'text-emerald-600'
                                                             }`}>
                                                             {user.role}
                                                         </span>

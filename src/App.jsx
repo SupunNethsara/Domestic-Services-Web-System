@@ -22,10 +22,11 @@ import Statics_dashboard from './Components/Dashboard/DashboardComponents/Admin 
 import UserTable from './Components/Dashboard/DashboardComponents/Admin Panel/Routing Components/UserTable';
 import UsersWeb from './Components/Web/UsersWeb';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import PostTable from './Components/Dashboard/DashboardComponents/Admin Panel/Routing Components/PostTable';
 function App() {
   return (
     <Routes>
-      <Route path='/' element={<UsersWeb/>}/>
+      <Route path='/' element={<UsersWeb />} />
       <Route path="/Welcome" element={<Welcome />} />
       <Route path="/user-select" element={<UserSelection />} />
       <Route path="/select-role" element={<RoleSelection />} />
@@ -34,10 +35,10 @@ function App() {
       <Route path="/Worker-Register" element={<WorkersRegister />} />
 
       <Route path="/adminpanel" element={<AdminDashbaord />}>
-        <Route index element={<Statics_dashboard />} /> 
+        <Route index element={<Statics_dashboard />} />
         <Route path="statics" element={<Statics_dashboard />} />
         <Route path="user_manage" element={<UserTable />} />
-
+        <Route path="post_manage" element={<PostTable />} />
       </Route>
       <Route path="/client-dashboard" element={<ClientDashboard />} >
         <Route index element={<ClientHome />} />

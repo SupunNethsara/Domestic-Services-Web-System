@@ -5,7 +5,7 @@ import { Cloudinary } from '@cloudinary/url-gen';
 import { fill } from '@cloudinary/url-gen/actions/resize';
 
 export default function ProfileForm() {
-   
+
     const [formData, setFormData] = useState({
         username: '',
         about: '',
@@ -20,7 +20,7 @@ export default function ProfileForm() {
         cover_image: null
     });
 
-  
+
     const [selectedProfileFile, setSelectedProfileFile] = useState(null);
     const [selectedCoverFile, setSelectedCoverFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,7 +33,7 @@ export default function ProfileForm() {
         cloud: { cloudName: 'dx7waof09' }
     });
 
-   
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -52,7 +52,7 @@ export default function ProfileForm() {
                 `https://api.cloudinary.com/v1_1/dx7waof09/image/upload`,
                 uploadData
             );
-            return response.data.secure_url; 
+            return response.data.secure_url;
         } catch (error) {
             console.error('Upload error:', error);
             throw error;
@@ -67,13 +67,13 @@ export default function ProfileForm() {
                 setSelectedProfileFile(file);
                 setFormData(prev => ({
                     ...prev,
-                    profile_image: URL.createObjectURL(file) 
+                    profile_image: URL.createObjectURL(file)
                 }));
             } else {
                 setSelectedCoverFile(file);
                 setFormData(prev => ({
                     ...prev,
-                    cover_image: URL.createObjectURL(file) 
+                    cover_image: URL.createObjectURL(file)
                 }));
             }
         }
@@ -101,8 +101,8 @@ export default function ProfileForm() {
                         address: profile.address || '',
                         city: profile.city || '',
                         province: profile.province || '',
-                        profile_image: profile.profile_image, 
-                        cover_image: profile.cover_image      
+                        profile_image: profile.profile_image,
+                        cover_image: profile.cover_image
                     });
                 }
             } catch (error) {
@@ -113,7 +113,7 @@ export default function ProfileForm() {
         fetchProfile();
     }, []);
 
- 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -121,7 +121,7 @@ export default function ProfileForm() {
         setSuccess(false);
 
         try {
-           
+
             let profileImageUrl = formData.profile_image;
             let coverImageUrl = formData.cover_image;
 
@@ -133,7 +133,7 @@ export default function ProfileForm() {
                 coverImageUrl = await uploadImageToCloudinary(selectedCoverFile);
             }
 
-         
+
             const profileData = {
                 ...formData,
                 profile_image: profileImageUrl,
@@ -153,14 +153,14 @@ export default function ProfileForm() {
                 : await axios.post('http://127.0.0.1:8000/api/profile', profileData, config);
 
             setSuccess(true);
-            
+
             if (!isEditMode) {
                 setIsEditMode(true);
                 setSelectedProfileFile(null);
                 setSelectedCoverFile(null);
             }
         } catch (err) {
-            setError(err.response?.data?.message || 
+            setError(err.response?.data?.message ||
                 (isEditMode ? "Profile update failed" : "Profile creation failed"));
             console.error("Error:", err.response?.data || err.message);
         } finally {
@@ -168,7 +168,6 @@ export default function ProfileForm() {
         }
     };
 
-    // Helper to determine if image is a Cloudinary URL
     const isCloudinaryUrl = (url) => {
         return url && typeof url === 'string' && url.includes('res.cloudinary.com');
     };
@@ -176,7 +175,7 @@ export default function ProfileForm() {
     return (
         <div className="bg-white border rounded-md border-gray-200 p-6">
             <form onSubmit={handleSubmit} className="space-y-8">
-               
+
                 {error && (
                     <div className="bg-red-50 border-l-4 border-red-400 p-4">
                         <div className="flex">
@@ -219,7 +218,7 @@ export default function ProfileForm() {
                 </div>
 
                 <div className="space-y-6">
-                    <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
+                   <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
                         <div className="sm:col-span-3">
                             <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                                 Username
@@ -273,7 +272,7 @@ export default function ProfileForm() {
                                                 className="h-full w-full object-cover"
                                             />
                                         ) : (
-                                            <AdvancedImage 
+                                            <AdvancedImage
                                                 cldImg={cld.image(formData.profile_image).resize(fill().width(150).height(150))}
                                                 className="h-full w-full object-cover"
                                             />
@@ -322,8 +321,8 @@ export default function ProfileForm() {
                                                 className="mx-auto max-h-64 w-full object-cover rounded-md"
                                             />
                                         ) : (
-                                            <AdvancedImage 
-                                                cldImg={cld.image(formData.cover_image).resize(fill().width(800).height(300))} 
+                                            <AdvancedImage
+                                                cldImg={cld.image(formData.cover_image).resize(fill().width(800).height(300))}
                                                 className="mx-auto max-h-64 w-full object-cover rounded-md"
                                             />
                                         )}

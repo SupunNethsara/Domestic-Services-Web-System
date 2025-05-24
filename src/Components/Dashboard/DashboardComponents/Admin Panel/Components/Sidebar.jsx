@@ -1,5 +1,5 @@
 import React from 'react'
-import { FiHome, FiCheckSquare, FiCalendar, FiSettings, FiUsers, FiPieChart, FiBell, FiSearch } from 'react-icons/fi';
+import { FiHome,FiFileText , FiCheckSquare, FiCalendar, FiSettings, FiUsers, FiPieChart, FiBell, FiSearch } from 'react-icons/fi';
 import { Link, Outlet } from 'react-router-dom';
 function Sidebar() {
     return (
@@ -24,6 +24,13 @@ function Sidebar() {
                     >
                         <FiUsers className="mr-3 h-5 w-5" />
                         User Management
+                    </Link>
+                    <Link
+                        to="post_manage"
+                        className="flex mt-2 items-center text-gray-600 px-3 py-2 text-sm font-medium rounded-md "
+                    >
+                        <FiFileText className="mr-3 h-5 w-5" />
+                        Post Management
                     </Link>
                 </nav>
 
