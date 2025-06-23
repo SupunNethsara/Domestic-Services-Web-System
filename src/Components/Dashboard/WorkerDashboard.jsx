@@ -31,7 +31,7 @@ export default function WorkerDashboard() {
     fetchProfile();
   }, []);
 
-  const openPostModal = () =>!postmodal && setPostModal(true);
+  const openPostModal = () => !postmodal && setPostModal(true);
   const closemodal = () => postmodal && setPostModal(false);
 
   const handleScrollPost = () => {
@@ -134,13 +134,13 @@ export default function WorkerDashboard() {
                   {isOpen && (
                     <div class="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
 
-                      <Link to="workerprofile" className="text-sm block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">
+                      <Link to="workerprofile" className="text-sm block rounded-md py-2 px-3  font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">
                         Your Profile
                       </Link>
 
-                      <Link to="" class="text-sm block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</Link>
+                      <Link to="" class="text-sm block rounded-md py-2 px-3 font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</Link>
 
-                      <a onClick={logout} href="#" class="text-sm block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
+                      <a onClick={logout} href="#" class="text-sm block rounded-md py-2 px-3 font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
                     </div>
                   )}
 
@@ -200,7 +200,6 @@ export default function WorkerDashboard() {
         </header>
         <div className="block min-w-0 h-m  bg-[#F2F4F7] xl:flex m-2">
           <WorkerPostModal postmodal={postmodal} closemodal={closemodal} />
-          {/* Left Sidebar */}
           <div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
             <div className="max-h-max pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0">
               <div className='p-2'>
@@ -221,9 +220,34 @@ export default function WorkerDashboard() {
                     Make Your Profile
                   </a>
                 </Link>
-                <a onClick={handleScrollPost} href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
-                  <svg class="text-gray-400 group-hover:text-gray-500 mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                <Link
+                  to='workeravailability'
+                  className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                >
+                  <svg className="text-gray-400 group-hover:text-gray-500 mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Add Availability
+                </Link>
+                <a
+                  onClick={handleScrollPost}
+                  href="#"
+                  className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                >
+                  <svg
+                    className="text-gray-400 group-hover:text-gray-500 mr-4 flex-shrink-0 h-6 w-6"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
                   </svg>
                   Post
                 </a>

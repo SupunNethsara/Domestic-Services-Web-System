@@ -23,6 +23,7 @@ import UserTable from './Components/Dashboard/DashboardComponents/Admin Panel/Ro
 import UsersWeb from './Components/Web/UsersWeb';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import PostTable from './Components/Dashboard/DashboardComponents/Admin Panel/Routing Components/PostTable';
+import Availability from './Components/Dashboard/DashboardComponents/Worker Routes Component/Availability';
 function App() {
   return (
     <Routes>
@@ -54,6 +55,7 @@ function App() {
         <Route path="makeworkerprofile" element={<MakeProfileOwrkers />} />
         <Route path="makerequest" element={<MakeRequest />} />
         <Route path="workerprofile" element={<WorkerProfile />} />
+        <Route path="workeravailability" element={<Availability/>}/>
       </Route>
 
 

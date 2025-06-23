@@ -16,7 +16,7 @@ export default function Login() {
         password,
       });
 
-      const { role, token } = response.data;
+      const { role, token, id } = response.data;
 
       if (!role || !token) {
         throw new Error("Invalid response from server");
@@ -24,6 +24,7 @@ export default function Login() {
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
+      localStorage.setItem("user_id", id);
 
       if (role === "client") {
         navigate("/client-dashboard");
