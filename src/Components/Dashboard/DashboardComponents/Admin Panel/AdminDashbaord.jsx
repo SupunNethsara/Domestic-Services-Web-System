@@ -1,6 +1,4 @@
-import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import { FiHome, FiCheckSquare, FiCalendar, FiSettings, FiUsers, FiPieChart, FiBell, FiSearch } from 'react-icons/fi';
 import Header from './Components/Header';
 import Sidebar from './Components/Sidebar';
 

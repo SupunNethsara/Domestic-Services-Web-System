@@ -19,19 +19,19 @@ export default function ClientDashboard() {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-    if (!token) {
+      if (!token) {
         throw new Error('No authentication token found');
       }
-      
+
       const response = await axios.get('http://127.0.0.1:8000/api/profile', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       setProfile(response.data.profile || {});
     } catch (err) {
       console.error('Failed to fetch profile:', err);
       setError(err.response?.data?.message || err.message || 'Failed to load profile');
-      
+
       if (err.response?.status === 401) {
         window.location.href = '/login';
       }
@@ -47,19 +47,34 @@ export default function ClientDashboard() {
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
   const handleScrollPost = () => setDropdownpost(!Dropdownpost);
-  const openPostModal = () =>!postmodal && setPostModal(true);
+  const openPostModal = () => !postmodal && setPostModal(true);
   const closemodal = () => postmodal && setPostModal(false);
 
   const logout = async () => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      window.location.href = '/login';
+      return;
+    }
+
     try {
-      const token = localStorage.getItem('token');
-      await axios.get('http://127.0.0.1:8000/api/logout', {
-        headers: { Authorization: `Bearer ${token}` }
+      await axios.get('/api/logout', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
+
       localStorage.removeItem('token');
       window.location.href = '/login';
+
     } catch (error) {
       console.error('Logout failed:', error.response?.data || error.message);
+
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+      }
+      window.location.href = '/login';
     }
   };
 
@@ -70,13 +85,9 @@ export default function ClientDashboard() {
       </div>
     );
   }
-
   if (error) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-red-500 text-lg">{error}</div>
-      </div>
-    );
+    localStorage.removeItem('token');
+    window.location.href = '/login';
   }
 
   return (
@@ -87,10 +98,10 @@ export default function ClientDashboard() {
             <div className="relative flex justify-between xl:grid xl:grid-cols-12 lg:gap-8">
               <div className="flex md:absolute md:left-0 md:inset-y-0 lg:static xl:col-span-3">
                 <div className="flex-shrink-0 flex items-center">
-               {/* Want some logo */}
+                  {/* Want some logo */}
                 </div>
               </div>
-              
+
               <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
                 <div className="flex items-center px-6 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
                   <div className="w-full">
@@ -98,12 +109,12 @@ export default function ClientDashboard() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center md:absolute md:right-0 md:inset-y-0 lg:hidden">
-                <button 
-                  onClick={() => setIsOpenMenu(!isOpenMenu)} 
-                  type="button" 
-                  className="-mx-2 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" 
+                <button
+                  onClick={() => setIsOpenMenu(!isOpenMenu)}
+                  type="button"
+                  className="-mx-2 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
                   aria-expanded="false"
                 >
                   <span className="sr-only">Open menu</span>
@@ -112,7 +123,7 @@ export default function ClientDashboard() {
                   </svg>
                 </button>
               </div>
-              
+
               <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-3">
                 <button className="ml-5 flex-shrink-0 bg-white rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   <span className="sr-only">View notifications</span>
@@ -123,19 +134,19 @@ export default function ClientDashboard() {
 
                 <div className="flex-shrink-0 relative ml-5">
                   <div>
-                    <button 
-                      onClick={() => setIsOpen(!isOpen)} 
-                      type="button" 
-                      className="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" 
-                      id="user-menu-button" 
-                      aria-expanded="false" 
+                    <button
+                      onClick={() => setIsOpen(!isOpen)}
+                      type="button"
+                      className="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      id="user-menu-button"
+                      aria-expanded="false"
                       aria-haspopup="true"
                     >
                       <span className="sr-only">Open user menu</span>
                       {profile?.profile_image ? (
-                        <img 
-                          src={profile.profile_image} 
-                          alt="Profile" 
+                        <img
+                          src={profile.profile_image}
+                          alt="Profile"
                           className="h-8 w-8 rounded-full"
                         />
                       ) : (
@@ -163,8 +174,8 @@ export default function ClientDashboard() {
                   )}
                 </div>
 
-                <button 
-                  onClick={openPostModal} 
+                <button
+                  onClick={openPostModal}
                   className="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   Create Post
@@ -196,9 +207,9 @@ export default function ClientDashboard() {
               <div className="max-w-3xl mx-auto px-4 flex items-center sm:px-6">
                 <div onClick={() => setIsOpen(!isOpen)} className="flex-shrink-0">
                   {profile?.profile_image ? (
-                    <img 
-                      src={profile.profile_image} 
-                      alt="Profile" 
+                    <img
+                      src={profile.profile_image}
+                      alt="Profile"
                       className="h-10 w-10 rounded-full"
                     />
                   ) : (
@@ -224,7 +235,7 @@ export default function ClientDashboard() {
                   </svg>
                 </button>
               </div>
-              
+
               {isOpen && (
                 <div className="mt-3 max-w-3xl mx-auto px-2 space-y-1 sm:px-4">
                   <Link to="profilepage" className="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">
@@ -245,7 +256,7 @@ export default function ClientDashboard() {
         <div className="block min-w-0 bg-[#F2F4F7] xl:flex m-2 h-full">
           <Popupadd />
           <MakePostModal postmodal={postmodal} closemodal={closemodal} />
-          
+
           {/* Left Sidebar */}
           <div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
             <div className="max-h-max pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0">
@@ -256,7 +267,7 @@ export default function ClientDashboard() {
                   </svg>
                   Dashboard
                 </Link>
-                
+
                 <Link to="makeprofile" className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">
                   <svg className="text-gray-400 group-hover:text-gray-500 mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -270,7 +281,7 @@ export default function ClientDashboard() {
                   </svg>
                   Post
                 </button>
-                
+
                 {Dropdownpost && (
                   <ul className="ml-10">
                     <Link to="makepost" className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md">

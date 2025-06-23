@@ -1,6 +1,36 @@
+import axios from 'axios';
 import React from 'react'
-import { FiHome,FiFileText , FiCheckSquare, FiCalendar, FiSettings, FiUsers, FiPieChart, FiBell, FiSearch } from 'react-icons/fi';
-import { Link, Outlet } from 'react-router-dom';
+import { FiHome, FiFileText, FiLogOut, FiSettings, FiUsers } from 'react-icons/fi';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+
+const logout = async () => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      window.location.href = '/login';
+      return;
+    }
+
+    try {
+      await axios.get('/api/logout', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+
+    } catch (error) {
+      console.error('Logout failed:', error.response?.data || error.message);
+
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+      }
+      window.location.href = '/login';
+    }
+  };
+
 function Sidebar() {
     return (
         <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
@@ -46,6 +76,15 @@ function Sidebar() {
                             <FiSettings className="mr-3 h-5 w-5" />
                             Settings
                         </Link>
+                    </nav>
+                    <nav className="mt-auto pt-4 space-y-1 border-t border-gray-200">
+                        <button
+                            onClick={logout}
+                            className=" cursor-pointer w-full flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-red-600 hover:bg-red-50"
+                        >
+                            <FiLogOut className="mr-3 h-5 w-5" />
+                            Logout
+                        </button>
                     </nav>
                 </div>
                 <div className="mt-auto p-4 flex items-center">

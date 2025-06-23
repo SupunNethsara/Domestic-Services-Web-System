@@ -41,7 +41,7 @@ function Header({ isScrolled, toggleMenu, toggleSearch, isSearchOpen, isMenuOpen
                                     </div>
                                 )}
                             </div>
-                            <button className="bg-white text-[#1E88E5] border border-[#1E88E5] px-4 py-2 rounded-button hover:bg-[#F5F9FF] transition duration-300 whitespace-nowrap cursor-pointer">
+                            <button onClick={() => navigate("/login")} className="bg-white text-[#1E88E5] border border-[#1E88E5] px-4 py-2 rounded-button hover:bg-[#F5F9FF] transition duration-300 whitespace-nowrap cursor-pointer">
                                 Login
                             </button>
                             <button onClick={() => navigate("/Welcome")} className="bg-[#1E88E5] text-white px-4 py-2 rounded-button hover:bg-[#1976D2] transition duration-300 whitespace-nowrap cursor-pointer">
