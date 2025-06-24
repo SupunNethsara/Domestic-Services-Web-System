@@ -1,355 +1,227 @@
-import React, { useState } from 'react';
-import AvailabilityFormTypes from '../../../../FormTypes/AvailabilityFormTypes';
+import React, { useEffect, useState } from 'react';
+import AvailabilityModal from './AvailabilityModal';
 import axios from 'axios';
-import CommonToast from '../../../../Toast/CommonToast';
+import { 
+  FiCalendar, 
+  FiMapPin, 
+  FiClock, 
+  FiDollarSign, 
+  FiUser, 
+  FiPlus,
+  FiEdit2
+} from 'react-icons/fi';
 
 export default function Availability() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [availabilityData, setAvailabilityData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [toasts, setToasts] = useState([]);
-
-    const addToast = (message, type = 'info') => {
-        const id = Date.now();
-        setToasts((prev) => [...prev, { id, message, type }]);
-        return id;
-    };
-
-    const removeToast = (id) => {
-        setToasts((prev) => prev.filter((toast) => toast.id !== id));
-    };
-
-    const idlocal = localStorage.getItem('user_id');
-    const [formData, setFormData] = useState(AvailabilityFormTypes(idlocal));
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleServiceChange = (index, e) => {
-        const { name, value } = e.target;
-        const services = [...formData.services];
-        services[index][name] = value;
-        setFormData(prev => ({ ...prev, services }));
-    };
-
-    const handleAddService = () => {
-        setFormData(prev => ({
-            ...prev,
-            services: [...prev.services, { name: '', rate_type: 'hourly', rate: '', currency: 'LKR' }]
-        }));
-    };
-
-    const handleRemoveService = (index) => {
-        const services = formData.services.filter((_, i) => i !== index);
-        setFormData(prev => ({ ...prev, services }));
-    };
-
-    const handleTimeChange = (day, field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            weekly_availability: {
-                ...prev.weekly_availability,
-                [day]: {
-                    ...prev.weekly_availability[day],
-                    [field]: value
-                }
-            }
-        }));
-    };
-
-    const handleLocationChange = (index, value) => {
-        const locations = [...formData.locations];
-        locations[index] = value;
-        setFormData(prev => ({ ...prev, locations }));
-    };
-
-    const handleAddLocation = () => {
-        setFormData(prev => ({ ...prev, locations: [...prev.locations, ''] }));
-    };
-
-    const handleRemoveLocation = (index) => {
-        const locations = formData.locations.filter((_, i) => i !== index);
-        setFormData(prev => ({ ...prev, locations }));
-    };
-
-   
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    try {
-      const response = await axios.post('/api/postAvailability', formData);
-      
-      if (response.status === 201 || response.status === 200) {
-        addToast('Availability submitted successfully!', 'success');
-        setFormData(AvailabilityFormTypes(idlocal));
-      } else {
-        addToast('Something went wrong!', 'error');
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      addToast('Submission failed!', 'error');
-    } finally {
-      setLoading(false);
+    const [error, setError] = useState(null);
+    const user_id = localStorage.getItem('user_id');
+ 
+    const handleModal = () => {
+        setIsModalOpen(!isModalOpen);
     }
-  };
 
-  if (loading) {
+    const fetchAvailabilityData = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(`http://127.0.0.1:8000/api/getAvailability/${user_id}`);
+            setAvailabilityData(response.data.data);
+        } catch (err) {
+            setError('Failed to fetch availability data');
+            console.error('API Error:', err);
+        } finally {
+            setLoading(false);
+        }
+    }
+  
+    useEffect(() => {
+        if (user_id) {
+            fetchAvailabilityData();
+        } else {
+            setError('User not authenticated');
+        }
+    }, [user_id]);
+
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
-    );
-  }
-    return (
-        <div className="bg-white border rounded-md border-gray-200 p-6 mr-2">
-                 <CommonToast toasts={toasts} removeToast={removeToast} />
-            <h2 className="text-xl font-semibold mb-1">User Availability</h2>
-            <p className="text-sm text-gray-500 mb-5 ">Set your available data</p>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Worker ID</label>
-                        <input
-                            type="text"
-                            name="worker_id"
-                            disabled
-                            value={formData.worker_id}
-                            onChange={handleChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            required
-                        />
+        <div className="min-h-screen bg-gray-50 p-6">
+            <div className="max-w-7xl mx-auto">
+              
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                    <div className="mb-4 md:mb-0">
+                        <h1 className="text-3xl font-bold text-gray-800 flex items-center">
+                            <FiCalendar className="mr-3 text-indigo-600" />
+                            Your Availability
+                        </h1>
+                        <p className="text-gray-500 mt-2">
+                            Manage your work schedule and service details
+                        </p>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Full Name</label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            required
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Services</h3>
-                    {formData.services.map((service, index) => (
-                        <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 p-4 border border-gray-300 rounded-md">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Service Name</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={service.name}
-                                    onChange={(e) => handleServiceChange(index, e)}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Rate Type</label>
-                                <select
-                                    name="rate_type"
-                                    value={service.rate_type}
-                                    onChange={(e) => handleServiceChange(index, e)}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                >
-                                    <option value="hourly">Hourly</option>
-                                    <option value="job">Per Job</option>
-                                    <option value="daily">Daily</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Rate</label>
-                                <input
-                                    type="number"
-                                    name="rate"
-                                    value={service.rate}
-                                    onChange={(e) => handleServiceChange(index, e)}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                    required
-                                />
-                            </div>
-                            <div className="flex items-end">
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveService(index)}
-                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                >
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-                    ))}
                     <button
-                        type="button"
-                        onClick={handleAddService}
-                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        onClick={handleModal}
+                        className="flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all"
                     >
-                        Add Another Service
-                    </button>
-                </div>
-                <div className="space-y-6">
-                    <div>
-                        <h3 className="text-xl font-semibold text-gray-900">Weekly Availability</h3>
-                        <p className="text-sm text-gray-500 mt-1">Set your available hours for each day</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                        {Object.entries(formData.weekly_availability).map(([day, times]) => (
-                            <div key={day} className="bg-white rounded-lg shadow-xs border border-gray-200 p-5 hover:shadow-sm transition-all">
-                                <div className="flex items-center mb-4">
-                                    <span className="w-7 h-7 flex items-center justify-center bg-indigo-100 text-indigo-700 rounded-lg mr-2 font-medium">
-                                        {day.charAt(0).toUpperCase()}
-                                    </span>
-                                    <h4 className="text-base font-medium text-gray-800 capitalize">{day}</h4>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="relative">
-                                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                            Start time
-                                        </label>
-                                        <div className="relative">
-                                            <input
-                                                type="time"
-                                                value={times.from}
-                                                onChange={(e) => handleTimeChange(day, 'from', e.target.value)}
-                                                className="w-full h-10 bg-gray-50 border-2 border-gray-200 rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 focus:bg-white outline-none transition-all cursor-pointer"
-                                            />
-                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="relative">
-                                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                            End time
-                                        </label>
-                                        <div className="relative">
-                                            <input
-                                                type="time"
-                                                value={times.to}
-                                                onChange={(e) => handleTimeChange(day, 'to', e.target.value)}
-                                                className="w-full h-10 bg-gray-50 border-2 border-gray-200 rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 focus:bg-white outline-none transition-all cursor-pointer"
-                                            />
-                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Service Locations</h3>
-                    {formData.locations.map((location, index) => (
-                        <div key={index} className="flex items-center gap-2 mb-2">
-                            <input
-                                type="text"
-                                value={location}
-                                onChange={(e) => handleLocationChange(index, e.target.value)}
-                                className="flex-1 block border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                required
-                            />
-                            {formData.locations.length > 1 && (
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveLocation(index)}
-                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                >
-                                    Remove
-                                </button>
-                            )}
-                        </div>
-                    ))}
-                    <button
-                        type="button"
-                        onClick={handleAddLocation}
-                        className="mt-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Add Another Location
+                        <FiPlus className="mr-2" />
+                        Add Availability
                     </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Expected Rate Type</label>
-                        <select
-                            name="rate_type"
-                            value={formData.expected_rate.rate_type}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                expected_rate: { ...prev.expected_rate, rate_type: e.target.value }
-                            }))}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        >
-                            <option value="hourly">Hourly</option>
-                            <option value="job">Per Job</option>
-                            <option value="daily">Daily</option>
-                        </select>
+               
+                {loading ? (
+                    <div className="flex justify-center items-center py-12">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Maximum Rate</label>
-                        <input
-                            type="number"
-                            name="max_rate"
-                            value={formData.expected_rate.max_rate}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                expected_rate: { ...prev.expected_rate, max_rate: e.target.value }
-                            }))}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        />
+                ) : error ? (
+                    <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                        <div className="flex">
+                            <div className="flex-shrink-0">
+                                <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-red-700">{error}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Currency</label>
-                        <input
-                            type="text"
-                            name="currency"
-                            value={formData.expected_rate.currency}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                expected_rate: { ...prev.expected_rate, currency: e.target.value }
-                            }))}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            disabled
-                        />
-                    </div>
-                </div>
+                ) : (
+                    <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                        {availabilityData.length > 0 ? (
+                            availabilityData.map(item => (
+                                <div key={item.id} className="p-8">
+                                  
+                                    <div className="flex items-center mb-8 pb-6 border-b border-gray-100">
+                                        <div className="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4">
+                                            <FiUser size={20} />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl font-semibold text-gray-800">{item.name}</h2>
+                                            <p className="text-sm text-gray-500">Worker ID: {item.worker_id}</p>
+                                        </div>
+                                    </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Preferences</label>
-                    <textarea
-                        name="preferences"
-                        value={formData.preferences}
-                        onChange={handleChange}
-                        rows={3}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="Don't prefer homes with dogs, etc."
+                                
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                    
+                                        <div className="space-y-8">
+                                          
+                                            <div className="flex items-start">
+                                                <div className="p-2 rounded-full bg-blue-100 text-blue-600 mr-4 mt-1">
+                                                    <FiCalendar size={16} />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-lg font-medium text-gray-700 mb-2">Availability Type</h3>
+                                                    <p className="capitalize text-gray-600 text-lg">{item.availability_type}</p>
+                                                </div>
+                                            </div>
+
+                                        
+                                            <div className="flex items-start">
+                                                <div className="p-2 rounded-full bg-green-100 text-green-600 mr-4 mt-1">
+                                                    <FiMapPin size={16} />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-lg font-medium text-gray-700 mb-2">Locations</h3>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {item.locations?.map((location, idx) => (
+                                                            <span key={idx} className="inline-block bg-gray-100 rounded-full px-4 py-2 text-sm font-semibold text-gray-700">
+                                                                {location}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                 
+                                        <div className="space-y-8">
+                                          
+                                            <div className="flex items-start">
+                                                <div className="p-2 rounded-full bg-purple-100 text-purple-600 mr-4 mt-1">
+                                                    <FiDollarSign size={16} />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-lg font-medium text-gray-700 mb-2">Rates & Services</h3>
+                                                    <div className="flex flex-wrap gap-2 mb-3">
+                                                        {item.services?.map((service, idx) => (
+                                                            <span key={idx} className="inline-block bg-purple-100 rounded-full px-4 py-2 text-sm font-semibold text-purple-800">
+                                                                {service.name} ({service.rate}{service.currency})
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                    {item.expected_rate && (
+                                                        <p className="text-gray-600">
+                                                            <span className="font-medium">Max Rate:</span> {item.expected_rate.max_rate} {item.expected_rate.currency} ({item.expected_rate.rate_type})
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                        
+                                            {item.preferences && (
+                                                <div className="flex items-start">
+                                                    <div className="p-2 rounded-full bg-yellow-100 text-yellow-600 mr-4 mt-1">
+                                                        <FiClock size={16} />
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="text-lg font-medium text-gray-700 mb-2">Preferences</h3>
+                                                        <p className="text-gray-600">{item.preferences}</p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    
+                                    <div className="mt-10 pt-8 border-t border-gray-100">
+                                        <div className="flex items-center mb-6">
+                                            <div className="p-2 rounded-full bg-yellow-100 text-yellow-600 mr-3">
+                                                <FiClock size={16} />
+                                            </div>
+                                            <h3 className="text-lg font-medium text-gray-700">Weekly Schedule</h3>
+                                        </div>
+                                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                                            {Object.entries(item.weekly_availability || {}).map(([day, times]) => (
+                                                <div key={day} className="bg-gray-50 p-4 rounded-lg">
+                                                    <p className="text-sm font-medium text-gray-500 capitalize mb-2">{day}</p>
+                                                    {times.from && times.to ? (
+                                                        <p className="text-gray-700">{times.from} - {times.to}</p>
+                                                    ) : (
+                                                        <p className="text-gray-400 italic">Not available</p>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="p-12 text-center">
+                                <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gray-100 mb-6">
+                                    <FiCalendar className="h-8 w-8 text-gray-400" />
+                                </div>
+                                <h3 className="text-xl font-medium text-gray-900 mb-2">No availability set</h3>
+                                <p className="text-gray-500 mb-6">Add your availability to start receiving work requests</p>
+                                <button
+                                    onClick={handleModal}
+                                    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+                                >
+                                    <FiPlus className="mr-2" />
+                                    Add Availability
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {isModalOpen && (
+                    <AvailabilityModal
+                        isOpen={isModalOpen}
+                        handleModal={handleModal}
+                        onSuccess={fetchAvailabilityData}
                     />
-                </div>
-
-
-                <div onClick={handleSubmit} className="flex justify-end">
-                    <button
-                        type="submit"
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Save Availability
-                    </button>
-                </div>
-            </form>
+                )}
+            </div>
         </div>
     );
 }
-
