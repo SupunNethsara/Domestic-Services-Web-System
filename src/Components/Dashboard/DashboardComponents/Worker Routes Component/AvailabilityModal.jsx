@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AvailabilityFormTypes from '../../../../FormTypes/AvailabilityFormTypes';
 import axios from 'axios';
 import CommonToast from '../../../../Toast/CommonToast';
 import { FaTimes } from 'react-icons/fa';
-import { opacity } from '@cloudinary/url-gen/actions/adjust';
+import WorkerServices from '../../../../FormTypes/WorkerServices';
 
-function AvailabilityModal({ handleModal , setIsModalOpen }) {
+
+
+function AvailabilityModal({ handleModal, setIsModalOpen }) {
     const [loading, setLoading] = useState(false);
     const [toasts, setToasts] = useState([]);
     const idlocal = localStorage.getItem('user_id');
     const [formData, setFormData] = useState(AvailabilityFormTypes(idlocal));
-
+    const [showServiceDropdown, setShowServiceDropdown] = useState(false);
+    const [serviceSearchTerm, setServiceSearchTerm] = useState("");
+  const [predefinedServices] = useState(WorkerServices);
     const addToast = (message, type = 'info') => {
         const id = Date.now();
         setToasts((prev) => [...prev, { id, message, type }]);
@@ -20,7 +24,6 @@ function AvailabilityModal({ handleModal , setIsModalOpen }) {
     const removeToast = (id) => {
         setToasts((prev) => prev.filter((toast) => toast.id !== id));
     };
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -44,6 +47,24 @@ function AvailabilityModal({ handleModal , setIsModalOpen }) {
     const handleRemoveService = (index) => {
         const services = formData.services.filter((_, i) => i !== index);
         setFormData(prev => ({ ...prev, services }));
+    };
+
+    const handleSelectPredefinedService = (service) => {
+        if (!formData.services.some(s => s.name === service.name)) {
+            const newService = {
+                name: service.name,
+                rate_type: 'hourly',
+                rate: service.defaultRate,
+                currency: 'LKR'
+            };
+            
+            setFormData(prev => ({
+                ...prev,
+                services: [...prev.services, newService]
+            }));
+        }
+        setShowServiceDropdown(false);
+        setServiceSearchTerm("");
     };
 
     const handleTimeChange = (day, field, value) => {
@@ -83,7 +104,7 @@ function AvailabilityModal({ handleModal , setIsModalOpen }) {
             if (response.status === 201 || response.status === 200) {
                 addToast('Availability submitted successfully!', 'success');
                 setFormData(AvailabilityFormTypes(idlocal));
-setIsModalOpen(false);
+                setIsModalOpen(false);
             } else {
                 addToast('Something went wrong!', 'error');
             }
@@ -98,7 +119,6 @@ setIsModalOpen(false);
     if (loading) {
         return (
             <div style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} className="fixed inset-0 flex items-center justify-center z-50">
-
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
             </div>
         );
@@ -107,9 +127,7 @@ setIsModalOpen(false);
     return (
         <>
             <CommonToast toasts={toasts} removeToast={removeToast} />
-            <div
-                className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-40 p-4"
-            >
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-40 p-4">
                 <div className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden">
 
                     <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50">
@@ -124,7 +142,6 @@ setIsModalOpen(false);
                             <FaTimes className="h-6 w-6" />
                         </button>
                     </div>
-
 
                     <div className="p-6 overflow-y-auto max-h-[80vh]">
                         <form onSubmit={handleSubmit} className="space-y-6">
@@ -153,9 +170,51 @@ setIsModalOpen(false);
                                 </div>
                             </div>
 
-
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Services Offered</h3>
+                                
+                              
+                                <div className="relative mb-4">
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="Search predefined services..."
+                                            value={serviceSearchTerm}
+                                            onChange={(e) => setServiceSearchTerm(e.target.value)}
+                                            onFocus={() => setShowServiceDropdown(true)}
+                                            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowServiceDropdown(!showServiceDropdown)}
+                                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                                        >
+                                            Browse
+                                        </button>
+                                    </div>
+                                    
+                                    {showServiceDropdown && (
+                                        <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                                            {predefinedServices
+                                                .filter(service => 
+                                                    service.name.toLowerCase().includes(serviceSearchTerm.toLowerCase())
+                                                )
+                                                .map(service => (
+                                                    <div
+                                                        key={service.id}
+                                                        className="px-4 py-2 hover:bg-indigo-50 cursor-pointer flex justify-between items-center"
+                                                        onClick={() => handleSelectPredefinedService(service)}
+                                                    >
+                                                        <span>{service.name}</span>
+                                                        <span className="text-sm text-gray-500">{service.defaultRate} LKR/hr</span>
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                    )}
+                                </div>
+                                
+                               
                                 {formData.services.map((service, index) => (
                                     <div key={index} className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 p-4 bg-white rounded-lg border border-gray-200">
                                         <div>
@@ -218,11 +277,11 @@ setIsModalOpen(false);
                                     onClick={handleAddService}
                                     className="mt-2 w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition-colors"
                                 >
-                                    + Add Service
+                                    + Add Custom Service
                                 </button>
                             </div>
 
-
+                           
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Weekly Availability</h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -291,7 +350,7 @@ setIsModalOpen(false);
                                 </button>
                             </div>
 
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Preferences</label>
                                     <textarea
@@ -335,7 +394,6 @@ setIsModalOpen(false);
                                     </div>
                                 </div>
                             </div>
-
 
                             <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                                 <button
