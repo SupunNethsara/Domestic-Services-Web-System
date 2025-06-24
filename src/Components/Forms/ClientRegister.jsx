@@ -13,17 +13,14 @@ export default function ClientRegister() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-
-
-
   const handlesubmit = async (e) => {
     e.preventDefault();
-  
+
     if (password.trim() !== confirmPassword.trim()) {
       alert("Password and confirmation password do not match");
       return;
     }
-  
+
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/ClientRegister', {
         fname, lname, mobile, email, password, password_confirmation: confirmPassword
@@ -36,13 +33,11 @@ export default function ClientRegister() {
       alert("Registration failed!");
     }
   };
-  
-
 
   return (
     <section class="bg-white ">
       <div class="flex justify-center min-h-screen ">
-      <motion.div
+        <motion.div
           initial={{ x: -100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1 }}
@@ -81,8 +76,8 @@ export default function ClientRegister() {
               </svg>
             </div>
           </div>
-         
-      </motion.div>
+
+        </motion.div>
 
         <div class="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5 ">
 

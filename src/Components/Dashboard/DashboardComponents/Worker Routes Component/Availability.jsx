@@ -1,31 +1,24 @@
 import React, { useState } from 'react';
+import AvailabilityFormTypes from '../../../../FormTypes/AvailabilityFormTypes';
+import axios from 'axios';
+import CommonToast from '../../../../Toast/CommonToast';
 
-function Availability() {
-  const idlocal = localStorage.getItem('user_id');
-  const [formData, setFormData] = useState({
-        worker_id: idlocal,
-        name: '',
-        services: [{ name: '', rate_type: 'hourly', rate: '', currency: 'LKR' }],
-        availability_type: 'weekly',
-        weekly_availability: {
-            monday: { from: '', to: '' },
-            tuesday: { from: '', to: '' },
-            wednesday: { from: '', to: '' },
-            thursday: { from: '', to: '' },
-            friday: { from: '', to: '' },
-            saturday: { from: '', to: '' },
-            sunday: { from: '', to: '' }
-        },
-        locations: [''],
-        coordinates: { lat: '', lng: '' },
-        preferences: '',
-        expected_rate: {
-            rate_type: 'hourly',
-            max_rate: '',
-            currency: 'LKR'
-        }
-    });
+export default function Availability() {
+    const [loading, setLoading] = useState(false);
+    const [toasts, setToasts] = useState([]);
 
+    const addToast = (message, type = 'info') => {
+        const id = Date.now();
+        setToasts((prev) => [...prev, { id, message, type }]);
+        return id;
+    };
+
+    const removeToast = (id) => {
+        setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    };
+
+    const idlocal = localStorage.getItem('user_id');
+    const [formData, setFormData] = useState(AvailabilityFormTypes(idlocal));
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -78,15 +71,40 @@ function Availability() {
         setFormData(prev => ({ ...prev, locations }));
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Form submitted:', formData);
-       
-};
+   
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      const response = await axios.post('/api/postAvailability', formData);
+      
+      if (response.status === 201 || response.status === 200) {
+        addToast('Availability submitted successfully!', 'success');
+        setFormData(AvailabilityFormTypes(idlocal));
+      } else {
+        addToast('Something went wrong!', 'error');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      addToast('Submission failed!', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
     return (
         <div className="bg-white border rounded-md border-gray-200 p-6 mr-2">
-            <h2 className="text-xl font-semibold mb-4">Availability</h2>
+                 <CommonToast toasts={toasts} removeToast={removeToast} />
+            <h2 className="text-xl font-semibold mb-1">User Availability</h2>
+            <p className="text-sm text-gray-500 mb-5 ">Set your available data</p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -173,37 +191,65 @@ function Availability() {
                         Add Another Service
                     </button>
                 </div>
-                <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Weekly Availability</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-6">
+                    <div>
+                        <h3 className="text-xl font-semibold text-gray-900">Weekly Availability</h3>
+                        <p className="text-sm text-gray-500 mt-1">Set your available hours for each day</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                         {Object.entries(formData.weekly_availability).map(([day, times]) => (
-                            <div key={day} className="border border-gray-300 rounded-md p-4">
-                                <h4 className="text-sm font-medium text-gray-900 capitalize mb-2">{day}</h4>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <div>
-                                        <label className="block text-xs font-medium text-gray-500">From</label>
-                                        <input
-                                            type="time"
-                                            value={times.from}
-                                            onChange={(e) => handleTimeChange(day, 'from', e.target.value)}
-                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                        />
+                            <div key={day} className="bg-white rounded-lg shadow-xs border border-gray-200 p-5 hover:shadow-sm transition-all">
+                                <div className="flex items-center mb-4">
+                                    <span className="w-7 h-7 flex items-center justify-center bg-indigo-100 text-indigo-700 rounded-lg mr-2 font-medium">
+                                        {day.charAt(0).toUpperCase()}
+                                    </span>
+                                    <h4 className="text-base font-medium text-gray-800 capitalize">{day}</h4>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="relative">
+                                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                            Start time
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type="time"
+                                                value={times.from}
+                                                onChange={(e) => handleTimeChange(day, 'from', e.target.value)}
+                                                className="w-full h-10 bg-gray-50 border-2 border-gray-200 rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 focus:bg-white outline-none transition-all cursor-pointer"
+                                            />
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                </svg>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label className="block text-xs font-medium text-gray-500">To</label>
-                                        <input
-                                            type="time"
-                                            value={times.to}
-                                            onChange={(e) => handleTimeChange(day, 'to', e.target.value)}
-                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                        />
+
+                                    <div className="relative">
+                                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                            End time
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type="time"
+                                                value={times.to}
+                                                onChange={(e) => handleTimeChange(day, 'to', e.target.value)}
+                                                className="w-full h-10 bg-gray-50 border-2 border-gray-200 rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 focus:bg-white outline-none transition-all cursor-pointer"
+                                            />
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                </svg>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
-
                 <div>
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Service Locations</h3>
                     {formData.locations.map((location, index) => (
@@ -307,4 +353,3 @@ function Availability() {
     );
 }
 
-export default Availability;
