@@ -3,6 +3,7 @@ import { Link, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import BottomNav from './DashboardComponents/TooltipsWithTabs';
 import WorkerPostModal from './DashboardComponents/Worker Routes Component/WorkerDashboard Components/WorkerPostModal';
+import Popupadd from './DashboardComponents/Client Routes Component/ClientDashboard Components/Popupadd';
 export default function WorkerDashboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
@@ -201,6 +202,7 @@ export default function WorkerDashboard() {
 
         </header>
         <div className="block min-w-0 h-m  bg-[#F2F4F7] xl:flex m-2">
+          <Popupadd/>
           <WorkerPostModal postmodal={postmodal} closemodal={closemodal} />
           <div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
             <div className="max-h-max pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0">

@@ -14,6 +14,7 @@ export default function ClientDashboard() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const[countAvailability , setCountAvailability] = useState(0);
 
   const fetchProfile = async () => {
     try {
@@ -40,8 +41,19 @@ export default function ClientDashboard() {
     }
   };
 
+const fetchWorkers = async () => {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/api/getAvailabilitytoClients');
+    const count = response.data?.data?.length || 0;
+    setCountAvailability(count);
+  } catch (error) {
+    console.error("Error fetching availability:", error);
+  }
+};
+
   useEffect(() => {
     fetchProfile();
+    fetchWorkers();
   }, []);
 
   const handleOpenModal = () => setIsModalOpen(true);
@@ -66,7 +78,7 @@ export default function ClientDashboard() {
       });
 
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      window.location.href = '/';
 
     } catch (error) {
       console.error('Logout failed:', error.response?.data || error.message);
@@ -259,7 +271,6 @@ export default function ClientDashboard() {
           <Popupadd />
           <MakePostModal postmodal={postmodal} closemodal={closemodal} />
 
-          {/* Left Sidebar */}
           <div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
             <div className="max-h-max pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0">
               <div className="p-2">
@@ -284,7 +295,7 @@ export default function ClientDashboard() {
                   </svg>
                   Available Workers
                   <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
-                    1
+                 {countAvailability }
                   </span>
                 </Link>
 

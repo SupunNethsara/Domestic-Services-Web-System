@@ -173,29 +173,6 @@ const WorkerProfile = () => {
             </div>
           </div>
 
-     
-          <div className="bg-gray-50 px-8 py-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white p-4 rounded-lg shadow text-center">
-                <p className="text-2xl font-bold text-gray-900">142</p>
-                <p className="text-sm text-gray-500">Projects</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow text-center">
-                <p className="text-2xl font-bold text-gray-900">24.5K</p>
-                <p className="text-sm text-gray-500">Followers</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow text-center">
-                <p className="text-2xl font-bold text-gray-900">562</p>
-                <p className="text-sm text-gray-500">Following</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow text-center">
-                <p className="text-2xl font-bold text-gray-900">89%</p>
-                <p className="text-sm text-gray-500">Completion</p>
-              </div>
-            </div>
-          </div>
-
-    
           {profile.skills && profile.skills.length > 0 && (
             <div className="px-8 py-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Skills</h2>

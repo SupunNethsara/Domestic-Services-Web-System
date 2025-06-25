@@ -11,8 +11,7 @@ export default function WorkerRequestPosts() {
         const fetchPosts = async () => {
             try {
                 const response = await axios.get('http://127.0.0.1:8000/api/GetWorkerPost'); 
-                console.log("API Response:", response.data); 
-                setPostData(response.data.posts);
+               setPostData(response.data.posts);
                 setLoading(false);
             } catch (err) {
                 console.error("Error fetching posts:", err.response?.data || err.message);
@@ -59,7 +58,7 @@ export default function WorkerRequestPosts() {
                                     <img
                                         src={post.image}
                                         alt="Post content"
-                                        className="w-full h-full object-contain"
+                                        className="w-full h-full object-cover"
                                     />
                                 ) : (
                                     <p className="text-gray-500">Story content appears here</p>

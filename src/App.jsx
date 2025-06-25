@@ -44,7 +44,7 @@ function App() {
       </Route>
       <Route path="/client-dashboard" element={<ClientDashboard />} >
         <Route index element={<ClientHome />} />
-        <Route path='worker_availability' element={<AvailabilityWorkers/>} />
+        <Route path='worker_availability' element={<AvailabilityWorkers />} />
         <Route path="clienthome" element={<ClientHome />} />
         <Route path="makeprofile" element={<MakeProfile />} />
         <Route path="makepost" element={<MakePost />} />
@@ -56,8 +56,9 @@ function App() {
         <Route path="workerhome" element={<WorkerHome />} />
         <Route path="makeworkerprofile" element={<MakeProfileOwrkers />} />
         <Route path="makerequest" element={<MakeRequest />} />
+        <Route path="makeprofile" element={<MakeProfile />} />
         <Route path="workerprofile" element={<WorkerProfile />} />
-        <Route path="workeravailability" element={<Availability/>}/>
+        <Route path="workeravailability" element={<Availability />} />
       </Route>
 
 
