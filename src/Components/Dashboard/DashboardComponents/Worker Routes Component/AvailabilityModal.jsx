@@ -5,16 +5,16 @@ import CommonToast from '../../../../Toast/CommonToast';
 import { FaTimes } from 'react-icons/fa';
 import WorkerServices from '../../../../FormTypes/WorkerServices';
 
-
-
-function AvailabilityModal({ handleModal, setIsModalOpen }) {
+function AvailabilityModal({ handleModal }) {
     const [loading, setLoading] = useState(false);
     const [toasts, setToasts] = useState([]);
     const idlocal = localStorage.getItem('user_id');
     const [formData, setFormData] = useState(AvailabilityFormTypes(idlocal));
     const [showServiceDropdown, setShowServiceDropdown] = useState(false);
     const [serviceSearchTerm, setServiceSearchTerm] = useState("");
-  const [predefinedServices] = useState(WorkerServices);
+    const [predefinedServices] = useState(WorkerServices);
+    const [timeToCopy, setTimeToCopy] = useState({ from: '', to: '' });
+
     const addToast = (message, type = 'info') => {
         const id = Date.now();
         setToasts((prev) => [...prev, { id, message, type }]);
@@ -80,6 +80,25 @@ function AvailabilityModal({ handleModal, setIsModalOpen }) {
         }));
     };
 
+    const copyTimesToAllDays = () => {
+        if (!timeToCopy.from || !timeToCopy.to) return;
+        
+        const updatedAvailability = {};
+        Object.keys(formData.weekly_availability).forEach(day => {
+            updatedAvailability[day] = {
+                from: timeToCopy.from,
+                to: timeToCopy.to
+            };
+        });
+        
+        setFormData(prev => ({
+            ...prev,
+            weekly_availability: updatedAvailability
+        }));
+        
+        addToast('Time range copied to all days!', 'success');
+    };
+
     const handleLocationChange = (index, value) => {
         const locations = [...formData.locations];
         locations[index] = value;
@@ -104,8 +123,7 @@ function AvailabilityModal({ handleModal, setIsModalOpen }) {
             if (response.status === 201 || response.status === 200) {
                 addToast('Availability submitted successfully!', 'success');
                 setFormData(AvailabilityFormTypes(idlocal));
-                setIsModalOpen(false);
-            } else {
+                 } else {
                 addToast('Something went wrong!', 'error');
             }
         } catch (error) {
@@ -173,7 +191,6 @@ function AvailabilityModal({ handleModal, setIsModalOpen }) {
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Services Offered</h3>
                                 
-                              
                                 <div className="relative mb-4">
                                     <div className="flex gap-2">
                                         <input
@@ -214,7 +231,6 @@ function AvailabilityModal({ handleModal, setIsModalOpen }) {
                                     )}
                                 </div>
                                 
-                               
                                 {formData.services.map((service, index) => (
                                     <div key={index} className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 p-4 bg-white rounded-lg border border-gray-200">
                                         <div>
@@ -281,9 +297,43 @@ function AvailabilityModal({ handleModal, setIsModalOpen }) {
                                 </button>
                             </div>
 
-                           
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Weekly Availability</h3>
+                                
+                                <div className="mb-4 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+                                    <h4 className="text-sm font-medium text-indigo-800 mb-2">Copy to all days</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+                                            <input
+                                                type="time"
+                                                value={timeToCopy.from}
+                                                onChange={(e) => setTimeToCopy(prev => ({ ...prev, from: e.target.value }))}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+                                            <input
+                                                type="time"
+                                                value={timeToCopy.to}
+                                                onChange={(e) => setTimeToCopy(prev => ({ ...prev, to: e.target.value }))}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                            />
+                                        </div>
+                                        <div className="flex items-end">
+                                            <button
+                                                type="button"
+                                                onClick={copyTimesToAllDays}
+                                                disabled={!timeToCopy.from || !timeToCopy.to}
+                                                className="w-full py-2 px-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white rounded-md transition-colors"
+                                            >
+                                                Apply to All Days
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {Object.entries(formData.weekly_availability).map(([day, times]) => (
                                         <div key={day} className="bg-white p-4 rounded-lg border border-gray-200">

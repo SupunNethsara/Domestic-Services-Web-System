@@ -76,8 +76,10 @@ export default function WorkerDashboard() {
           <div class="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="relative flex justify-between xl:grid xl:grid-cols-12 lg:gap-8">
               <div class="flex md:absolute md:left-0 md:inset-y-0 lg:static xl:col-span-3">
-                <div class="flex-shrink-0 flex items-center">
-
+                <div className="flex-shrink-0 flex items-center">
+                  <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    Home Heroes
+                  </span>
                 </div>
               </div>
               <div class="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">

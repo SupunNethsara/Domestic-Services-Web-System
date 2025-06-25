@@ -10,6 +10,7 @@ import {
     FiPlus,
     FiEdit2
 } from 'react-icons/fi';
+import DeleteModal from './WorkerDashboard Components/DeleteModal';
 
 export default function Availability() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,11 +18,13 @@ export default function Availability() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const user_id = localStorage.getItem('user_id');
-
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const handleModal = () => {
         setIsModalOpen(!isModalOpen);
     }
-
+const handleDeleteModal =()=>{
+    setIsDeleteModalOpen(!isDeleteModalOpen);
+}
     const fetchAvailabilityData = async () => {
         try {
             setLoading(true);
@@ -42,17 +45,17 @@ export default function Availability() {
             setError('User not authenticated');
         }
     }, [user_id]);
-const handledeleteAvilability = async (user_id) => {
-    try {
-        const response = await axios.delete(`http://127.0.0.1:8000/api/deleteAvailability/${user_id}`);
-        console.log(response.data);
-   
-        fetchAvailabilityData();
-    } catch (err) {
-        console.error('Delete error:', err);
-        setError('Failed to delete availability');
-    }
-};
+    const handledeleteAvilability = async (user_id) => {
+        try {
+            const response = await axios.delete(`http://127.0.0.1:8000/api/deleteAvailability/${user_id}`);
+            console.log(response.data);
+
+            fetchAvailabilityData();
+        } catch (err) {
+            console.error('Delete error:', err);
+            setError('Failed to delete availability');
+        }
+    };
     return (
         <div className="min-h-screen bg-gray-50 p-6">
             <div className="max-w-7xl mx-auto">
@@ -109,13 +112,20 @@ const handledeleteAvilability = async (user_id) => {
                                             <p className="text-sm text-gray-500">Worker ID: {item.worker_id}</p>
                                         </div>
                                         <div className='ml-auto'>
-                                            <button    onClick={() => handledeleteAvilability(item.id)} className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+                                            <button onClick={handleDeleteModal} className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
                                                 Delete
                                             </button>
                                         </div>
+                                        {isDeleteModalOpen && (
+                                            <DeleteModal
+                                               item={item}
+                                               handleDeleteModal={handleDeleteModal}
+                                                handledeleteAvilability={handledeleteAvilability}
+                                            />
+                                        )}
                                     </div>
 
 
@@ -231,7 +241,7 @@ const handledeleteAvilability = async (user_id) => {
                                 </div>
                                 <h3 className="text-xl font-medium text-gray-900 mb-2">No availability set</h3>
                                 <p className="text-gray-500 mb-6">Add your availability to start receiving work requests</p>
-                           
+
                             </div>
                         )}
                     </div>

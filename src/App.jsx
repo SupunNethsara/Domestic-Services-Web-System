@@ -24,6 +24,7 @@ import UsersWeb from './Components/Web/UsersWeb';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import PostTable from './Components/Dashboard/DashboardComponents/Admin Panel/Routing Components/PostTable';
 import Availability from './Components/Dashboard/DashboardComponents/Worker Routes Component/Availability';
+import AvailabilityWorkers from './Components/Dashboard/DashboardComponents/Client Routes Component/AvailabilityWorkers';
 function App() {
   return (
     <Routes>
@@ -43,6 +44,7 @@ function App() {
       </Route>
       <Route path="/client-dashboard" element={<ClientDashboard />} >
         <Route index element={<ClientHome />} />
+        <Route path='worker_availability' element={<AvailabilityWorkers/>} />
         <Route path="clienthome" element={<ClientHome />} />
         <Route path="makeprofile" element={<MakeProfile />} />
         <Route path="makepost" element={<MakePost />} />
