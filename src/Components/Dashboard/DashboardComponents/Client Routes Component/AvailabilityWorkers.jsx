@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FiFilter, FiClock, FiMapPin, FiDollarSign, FiUser, FiCalendar, FiList } from 'react-icons/fi';
+import { FiFilter, FiClock, FiLink, FiMapPin, FiDollarSign, FiUser, FiCalendar, FiList } from 'react-icons/fi';
 import axios from 'axios';
+import WorkersDetailsSection from './ClientDashboard Components/Chat Service/WorkersDetailsSection';
 
 function AvailabilityWorkers() {
   const [workers, setWorkers] = useState([]);
@@ -10,10 +11,16 @@ function AvailabilityWorkers() {
   const [rateFilter, setRateFilter] = useState('');
   const [showFilters, setShowFilters] = useState(true);
   const [selectedWorker, setSelectedWorker] = useState(null);
+  const[selectWorkerModal , setSelectedWorkerModal] = useState(null);
   const [servicesModal, setServicesModal] = useState({
     open: false,
     worker: null
   });
+  const [isChatModal, setIsChatModal] = useState(false);
+  const handleChatModalOpenClose = (worker = null) => {
+    setSelectedWorkerModal(worker);
+    setIsChatModal(!isChatModal);
+  };
 
   const fetchWorkers = async () => {
     try {
@@ -31,14 +38,14 @@ function AvailabilityWorkers() {
   }, []);
 
   const filteredWorkers = workers.filter(worker => {
-    const matchesLocation = locationFilter 
+    const matchesLocation = locationFilter
       ? worker.locations.some(loc => loc.toLowerCase().includes(locationFilter.toLowerCase()))
       : true;
-    
-    const matchesRate = rateFilter 
+
+    const matchesRate = rateFilter
       ? worker.services.some(service => service.rate <= parseInt(rateFilter))
       : true;
-    
+
     return matchesLocation && matchesRate;
   });
 
@@ -88,7 +95,7 @@ function AvailabilityWorkers() {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-gray-800">Available Workers</h2>
-          <button 
+          <button
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors"
           >
@@ -146,8 +153,8 @@ function AvailabilityWorkers() {
                 <div className="flex items-start mb-4">
                   <div className="bg-indigo-100 p-3 rounded-full mr-4">
                     {worker.profile_image ? (
-                      <img 
-                        src={worker.profile_image} 
+                      <img
+                        src={worker.profile_image}
                         alt={worker.name}
                         className="h-10 w-10 rounded-full object-cover"
                       />
@@ -193,11 +200,24 @@ function AvailabilityWorkers() {
 
                 <button
                   onClick={() => setSelectedWorker(worker)}
-                  className="mt-4 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition-colors flex items-center justify-center"
+                  className="mt-4 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-xs text-white rounded-md transition-colors flex items-center justify-center"
                 >
                   <FiClock className="mr-2" />
                   View Schedule
                 </button>
+                <button
+                  onClick={() => handleChatModalOpenClose(worker)}
+                  className="mt-4 w-full py-2 bg-green-600 hover:bg-green-700 text-xs text-white rounded-md transition-colors flex items-center justify-center"
+                >
+                  <FiLink className="mr-2" />
+                  Connect
+                </button>
+                {isChatModal && (
+                  <WorkersDetailsSection
+                    handelChatModalOpenClose={handleChatModalOpenClose}
+                 workerData={selectWorkerModal}
+                  />
+                )}
               </div>
             </div>
           ))}
@@ -206,14 +226,14 @@ function AvailabilityWorkers() {
 
 
       {servicesModal.open && (
-        <div  style={{backgroundColor:'rgba(0,0,0,0.5)'}} className="fixed inset-0 flex items-center justify-center p-4 z-50 ">
+        <div style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} className="fixed inset-0 flex items-center justify-center p-4 z-50 ">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold text-gray-800">
                   {servicesModal.worker?.name}'s Services
                 </h3>
-                <button 
+                <button
                   onClick={closeServicesModal}
                   className="text-gray-400 hover:text-gray-600"
                 >
@@ -251,14 +271,14 @@ function AvailabilityWorkers() {
         </div>
       )}
 
-  
+
       {selectedWorker && (
-        <div style={{backgroundColor:'rgba(0,0,0,0.5)'}} className="fixed inset-0 flex items-center justify-center p-4 z-50 ">
+        <div style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} className="fixed inset-0 flex items-center justify-center p-4 z-50 ">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold text-gray-800">{selectedWorker.name}'s Schedule</h3>
-                <button 
+                <button
                   onClick={() => setSelectedWorker(null)}
                   className="text-gray-400 hover:text-gray-600"
                 >
