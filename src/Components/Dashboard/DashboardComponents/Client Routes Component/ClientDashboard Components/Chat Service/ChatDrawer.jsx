@@ -4,7 +4,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 
 function ChatDrawer({ onClose, worker }) {
-
+   
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
@@ -14,13 +14,11 @@ function ChatDrawer({ onClose, worker }) {
     const [isTyping, setIsTyping] = useState(false);
     const [isSending, setIsSending] = useState(false);
 
- 
-    const messagesEndRef = useRef(null);
+   const messagesEndRef = useRef(null);
     const typingTimeoutRef = useRef(null);
     const pusherRef = useRef(null);
     const channelRef = useRef(null);
     const presenceChannelRef = useRef(null);
-
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -65,52 +63,73 @@ function ChatDrawer({ onClose, worker }) {
                 setIsLoading(true);
                 await loadMessages();
 
-                
+
                 pusherRef.current = new Pusher('3381d7d311e6c0a37731', {
                     cluster: 'ap2',
                     forceTLS: true,
-                    authEndpoint: 'http://localhost:8000/api/broadcasting/auth',
+                    authEndpoint: '/broadcasting/auth',
                     auth: {
                         headers: {
                             'Authorization': `Bearer ${currentUser.token}`,
-                            'Accept': 'application/json'
-
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
                         }
                     }
                 });
 
-                pusherRef.current.connection.bind('state_change', (states) => {
-                    console.log('Pusher state:', states.current);
-                });
 
-                channelRef.current = pusherRef.current.subscribe(`private-chat.${currentUser.id}`);
+                channelRef.current = pusherRef.current.subscribe(`chat.${currentUser.id}`);
+
 
                 channelRef.current.bind('message', (data) => {
-                    console.log('Received message:', data);
+                    if (!data || typeof data !== 'object') return;
 
                     const newMsg = {
-                        id: data.id,
-                        text: data.message,
-                        sender: data.sender_id.toString() === currentUser.id.toString()
+                        id: data.id || `temp-${Date.now()}`,
+                        text: data.message || '',
+                        sender: data.sender_id?.toString() === currentUser.id.toString()
                             ? 'user'
                             : 'worker',
-                        timestamp: data.timestamp
+                        timestamp: data.timestamp || new Date().toISOString()
                     };
 
                     setMessages(prev => {
-                        if (!prev.some(msg => msg.id === newMsg.id)) {
-                            return [...prev, newMsg];
+                        const currentMessages = Array.isArray(prev) ? prev : [];
+
+                        if (!currentMessages.some(msg => msg.id === newMsg.id)) {
+                            return [...currentMessages, newMsg];
                         }
-                        return prev;
+                        return currentMessages;
                     });
+                   
                 });
 
-                channelRef.current.bind('pusher:subscription_succeeded', () => {
-                    console.log('Subscribed to channel:', `private-chat.${currentUser.id}`);
+
+                presenceChannelRef.current = pusherRef.current.subscribe(`chat.${worker.worker_id}`);
+
+                presenceChannelRef.current.bind('pusher:subscription_succeeded', () => {
+                    setIsOnline(true);
+                });
+
+                presenceChannelRef.current.bind('pusher:member_removed', () => {
+                    setIsOnline(false);
+                });
+
+
+                channelRef.current.bind('client-typing', (data) => {
+                    if (data?.userId !== currentUser.id) {
+                        setIsTyping(true);
+                    }
+                });
+
+                channelRef.current.bind('client-stop-typing', (data) => {
+                    if (data?.userId !== currentUser.id) {
+                        setIsTyping(false);
+                    }
                 });
 
             } catch (err) {
-                console.error('Chat error:', err);
+                console.error('Chat initialization error:', err);
                 setError('Failed to initialize chat');
             } finally {
                 setIsLoading(false);
@@ -119,8 +138,17 @@ function ChatDrawer({ onClose, worker }) {
 
         initializeChat();
 
+
         return () => {
-            if (pusherRef.current) pusherRef.current.disconnect();
+            if (channelRef.current) {
+                channelRef.current.unbind_all();
+            }
+            if (presenceChannelRef.current) {
+                presenceChannelRef.current.unbind_all();
+            }
+            if (pusherRef.current) {
+                pusherRef.current.disconnect();
+            }
         };
     }, [currentUser, worker?.worker_id]);
 
@@ -143,6 +171,7 @@ function ChatDrawer({ onClose, worker }) {
             }
         }, 1000);
     };
+
     const handleSendMessage = async (e) => {
         e.preventDefault();
 
@@ -162,15 +191,14 @@ function ChatDrawer({ onClose, worker }) {
                 }
             });
 
-          
-            if (response.data?.id || response.data?.message) {
+            if (response.data?.id) {
                 setNewMessage('');
             } else {
                 throw new Error('Message not saved');
             }
         } catch (error) {
             console.error('Error sending message:', error);
-            setError(error.response?.data?.message || error.message || 'Failed to send message');
+            setError(error.response?.data?.message || 'Failed to send message');
             setTimeout(() => setError(null), 3000);
         } finally {
             setIsSending(false);

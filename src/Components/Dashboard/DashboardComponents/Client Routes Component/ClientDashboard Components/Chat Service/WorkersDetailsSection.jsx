@@ -16,7 +16,7 @@ function WorkersDetailsSection({ handelChatModalOpenClose, workerData }) {
     const { handleChatDrawer } = useOutletContext();
     const handleStartChat = () => {
         handelChatModalOpenClose();
-        handleChatDrawer(workerData.worker_id);
+        handleChatDrawer(workerData);
     };
     return (
         <div style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}

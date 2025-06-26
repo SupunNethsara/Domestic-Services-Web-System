@@ -25,6 +25,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import PostTable from './Components/Dashboard/DashboardComponents/Admin Panel/Routing Components/PostTable';
 import Availability from './Components/Dashboard/DashboardComponents/Worker Routes Component/Availability';
 import AvailabilityWorkers from './Components/Dashboard/DashboardComponents/Client Routes Component/AvailabilityWorkers';
+import ChatSection from './Components/Dashboard/DashboardComponents/Worker Routes Component/WorkerDashboard Components/Chat Services/ChatSection';
 function App() {
   return (
     <Routes>
@@ -59,6 +60,7 @@ function App() {
         <Route path="makeprofile" element={<MakeProfile />} />
         <Route path="workerprofile" element={<WorkerProfile />} />
         <Route path="workeravailability" element={<Availability />} />
+        <Route path="chat" element={<ChatSection />} />
       </Route>
 
 
