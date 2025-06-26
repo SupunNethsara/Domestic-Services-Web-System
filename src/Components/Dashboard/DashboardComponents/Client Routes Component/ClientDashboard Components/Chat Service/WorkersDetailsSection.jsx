@@ -9,8 +9,15 @@ import {
     FiInfo,
     FiMessageSquare
 } from 'react-icons/fi';
+import { useOutletContext } from 'react-router';
 
 function WorkersDetailsSection({ handelChatModalOpenClose, workerData }) {
+    
+    const { handleChatDrawer } = useOutletContext();
+    const handleStartChat = () => {
+        handelChatModalOpenClose();
+        handleChatDrawer(workerData.worker_id);
+    };
     return (
         <div style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -54,7 +61,7 @@ function WorkersDetailsSection({ handelChatModalOpenClose, workerData }) {
                         </div>
                     </div>
 
-                  
+
                     {workerData?.about && (
                         <div className="bg-gray-50 p-3 rounded">
                             <h3 className="font-medium text-gray-800 mb-1">About</h3>
@@ -62,7 +69,7 @@ function WorkersDetailsSection({ handelChatModalOpenClose, workerData }) {
                         </div>
                     )}
 
-              
+
                     {workerData?.preferences && (
                         <div className="bg-blue-50 p-3 rounded">
                             <h3 className="font-medium text-blue-800 mb-1">Preferences</h3>
@@ -70,12 +77,12 @@ function WorkersDetailsSection({ handelChatModalOpenClose, workerData }) {
                         </div>
                     )}
 
-               
+
                     <div>
                         <h3 className="font-medium text-gray-800 mb-2">Services</h3>
                         <div className="space-y-2">
                             {workerData?.services?.map((service, index) => (
-                             <div key={index} className="flex justify-between items-center p-2 border-b border-gray-300">
+                                <div key={index} className="flex justify-between items-center p-2 border-b border-gray-300">
                                     <span className="text-gray-700">{service.name}</span>
                                     <span className="flex items-center text-green-600">
                                         <FiDollarSign className="mr-1" size={12} />
@@ -86,7 +93,7 @@ function WorkersDetailsSection({ handelChatModalOpenClose, workerData }) {
                         </div>
                     </div>
 
-                  
+
                     <div>
                         <h3 className="font-medium text-gray-800 mb-2">Availability</h3>
                         <div className="grid grid-cols-2 gap-2 text-sm">
@@ -102,10 +109,10 @@ function WorkersDetailsSection({ handelChatModalOpenClose, workerData }) {
                     </div>
                 </div>
 
-               
+
                 <div className="p-4 border-t border-gray-300">
                     <button
-                        onClick={() => console.log("Chat with:", workerData?.id)}
+                        onClick={handleStartChat}
                         className="w-full py-2 bg-green-600 hover:bg-green-700 text-white rounded flex items-center justify-center"
                     >
                         <FiMessageSquare className="mr-2" />

@@ -4,6 +4,7 @@ import { Link, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import Popupadd from './DashboardComponents/Client Routes Component/ClientDashboard Components/Popupadd';
 import MakePostModal from './DashboardComponents/Client Routes Component/ClientDashboard Components/MakePostModal';
+import ChatDrawer from './DashboardComponents/Client Routes Component/ClientDashboard Components/Chat Service/ChatDrawer';
 
 export default function ClientDashboard() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,8 +15,9 @@ export default function ClientDashboard() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const[countAvailability , setCountAvailability] = useState(0);
-
+  const [countAvailability, setCountAvailability] = useState(0);
+  const [isOpenChatDrawer, setIsOpenChatDrawer] = useState(false);
+  const [currentChatWorker, setCurrentChatWorker] = useState(null);
   const fetchProfile = async () => {
     try {
       setLoading(true);
@@ -23,7 +25,6 @@ export default function ClientDashboard() {
       if (!token) {
         throw new Error('No authentication token found');
       }
-
       const response = await axios.get('http://127.0.0.1:8000/api/profile', {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -41,15 +42,15 @@ export default function ClientDashboard() {
     }
   };
 
-const fetchWorkers = async () => {
-  try {
-    const response = await axios.get('http://127.0.0.1:8000/api/getAvailabilitytoClients');
-    const count = response.data?.data?.length || 0;
-    setCountAvailability(count);
-  } catch (error) {
-    console.error("Error fetching availability:", error);
-  }
-};
+  const fetchWorkers = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/api/getAvailabilitytoClients');
+      const count = response.data?.data?.length || 0;
+      setCountAvailability(count);
+    } catch (error) {
+      console.error("Error fetching availability:", error);
+    }
+  };
 
   useEffect(() => {
     fetchProfile();
@@ -101,6 +102,11 @@ const fetchWorkers = async () => {
     localStorage.removeItem('token');
     window.location.href = '/login';
   }
+  const handleChatDrawer = (workerData) => {
+    setCurrentChatWorker(workerData);
+    setIsOpenChatDrawer(true);
+   };
+
 
   return (
     <div>
@@ -143,6 +149,12 @@ const fetchWorkers = async () => {
                   <span className="sr-only">View notifications</span>
                   <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                </button>
+                <button onClick={""} className="ml-5 flex-shrink-0 bg-white rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <span className="sr-only">Chat</span>
+                  <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </button>
 
@@ -295,7 +307,7 @@ const fetchWorkers = async () => {
                   </svg>
                   Available Workers
                   <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
-                 {countAvailability }
+                    {countAvailability}
                   </span>
                 </Link>
 
@@ -326,6 +338,7 @@ const fetchWorkers = async () => {
                   isModalOpen,
                   handleOpenModal,
                   handleCloseModal,
+                  handleChatDrawer,
                 }} />
               </div>
             </div>
@@ -333,7 +346,13 @@ const fetchWorkers = async () => {
 
           {/* Right Sidebar */}
           <div className="border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
-            <div className="h-full pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0"></div>
+            <div className="h-full pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0">
+              {isOpenChatDrawer && (
+                <ChatDrawer
+                  worker={currentChatWorker}
+                  onClose={() => setIsOpenChatDrawer(false)} />
+                  )}
+            </div>
           </div>
         </div>
       </div>
