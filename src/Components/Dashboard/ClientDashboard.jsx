@@ -346,7 +346,7 @@ export default function ClientDashboard() {
           </div>
 
           {/* Right Sidebar */}
-          <div className="border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
+          <div className=" rounded-lg  border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
             <div className="h-full pl-4  sm:pl-6 lg:pl-8 xl:pl-0">
               <TopRatedServices/>
               {isOpenChatDrawer && (
