@@ -5,6 +5,7 @@ import axios from 'axios';
 import Popupadd from './DashboardComponents/Client Routes Component/ClientDashboard Components/Popupadd';
 import MakePostModal from './DashboardComponents/Client Routes Component/ClientDashboard Components/MakePostModal';
 import ChatDrawer from './DashboardComponents/Client Routes Component/ClientDashboard Components/Chat Service/ChatDrawer';
+import TopRatedServices from './DashboardComponents/Client Routes Component/ClientDashboard Components/TopRatedServices';
 
 export default function ClientDashboard() {
   const [isOpen, setIsOpen] = useState(false);
@@ -105,7 +106,7 @@ export default function ClientDashboard() {
   const handleChatDrawer = (workerData) => {
     setCurrentChatWorker(workerData);
     setIsOpenChatDrawer(true);
-   };
+  };
 
 
   return (
@@ -346,12 +347,14 @@ export default function ClientDashboard() {
 
           {/* Right Sidebar */}
           <div className="border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
-            <div className="h-full pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0">
+            <div className="h-full pl-4  sm:pl-6 lg:pl-8 xl:pl-0">
+              <TopRatedServices/>
               {isOpenChatDrawer && (
                 <ChatDrawer
                   worker={currentChatWorker}
-                  onClose={() => setIsOpenChatDrawer(false)} />
-                  )}
+                  onClose={() => setIsOpenChatDrawer(false)}
+                />
+              )}
             </div>
           </div>
         </div>

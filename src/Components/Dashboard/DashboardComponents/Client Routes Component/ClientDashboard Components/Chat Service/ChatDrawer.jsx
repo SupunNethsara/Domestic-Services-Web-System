@@ -4,7 +4,6 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 
 function ChatDrawer({ onClose, worker }) {
-   
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
@@ -14,11 +13,10 @@ function ChatDrawer({ onClose, worker }) {
     const [isTyping, setIsTyping] = useState(false);
     const [isSending, setIsSending] = useState(false);
 
-   const messagesEndRef = useRef(null);
+    const messagesEndRef = useRef(null);
     const typingTimeoutRef = useRef(null);
     const pusherRef = useRef(null);
     const channelRef = useRef(null);
-    const presenceChannelRef = useRef(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -37,13 +35,21 @@ function ChatDrawer({ onClose, worker }) {
 
     const loadMessages = async () => {
         try {
-            const response = await axios.get(`/api/messages/${worker.worker_id}`, {
+            const response = await axios.get(`http://127.0.0.1:8000/api/messages/${worker.worker_id}`, {
                 headers: {
                     Authorization: `Bearer ${currentUser.token}`
                 }
             });
 
-            const loadedMessages = Array.isArray(response?.data) ? response.data : [];
+            const loadedMessages = Array.isArray(response?.data) 
+                ? response.data.map(msg => ({
+                    id: msg.id,
+                    text: msg.message,
+                    sender: msg.sender_id.toString() === currentUser.id.toString() ? 'user' : 'worker',
+                    timestamp: msg.created_at
+                }))
+                : [];
+                
             setMessages(loadedMessages);
             return loadedMessages;
         } catch (error) {
@@ -54,7 +60,6 @@ function ChatDrawer({ onClose, worker }) {
         }
     };
 
-
     useEffect(() => {
         if (!currentUser || !worker?.worker_id) return;
 
@@ -63,11 +68,10 @@ function ChatDrawer({ onClose, worker }) {
                 setIsLoading(true);
                 await loadMessages();
 
-
                 pusherRef.current = new Pusher('3381d7d311e6c0a37731', {
                     cluster: 'ap2',
                     forceTLS: true,
-                    authEndpoint: '/broadcasting/auth',
+                    authEndpoint: 'http://127.0.0.1:8000/broadcasting/auth',
                     auth: {
                         headers: {
                             'Authorization': `Bearer ${currentUser.token}`,
@@ -77,46 +81,39 @@ function ChatDrawer({ onClose, worker }) {
                     }
                 });
 
+                const channelName = `private-chat.${Math.min(currentUser.id, worker.worker_id)}.${Math.max(currentUser.id, worker.worker_id)}`;
+                channelRef.current = pusherRef.current.subscribe(channelName);
 
-                channelRef.current = pusherRef.current.subscribe(`chat.${currentUser.id}`);
-
-
-                channelRef.current.bind('message', (data) => {
+                channelRef.current.bind('App\\Events\\Chat', (data) => {
                     if (!data || typeof data !== 'object') return;
 
                     const newMsg = {
                         id: data.id || `temp-${Date.now()}`,
-                        text: data.message || '',
-                        sender: data.sender_id?.toString() === currentUser.id.toString()
-                            ? 'user'
-                            : 'worker',
+                        text: data.message,
+                        sender: data.sender_id.toString() === currentUser.id.toString() ? 'user' : 'worker',
                         timestamp: data.timestamp || new Date().toISOString()
                     };
 
                     setMessages(prev => {
                         const currentMessages = Array.isArray(prev) ? prev : [];
-
                         if (!currentMessages.some(msg => msg.id === newMsg.id)) {
                             return [...currentMessages, newMsg];
                         }
                         return currentMessages;
                     });
-                   
                 });
 
-
-                presenceChannelRef.current = pusherRef.current.subscribe(`chat.${worker.worker_id}`);
-
-                presenceChannelRef.current.bind('pusher:subscription_succeeded', () => {
+                const presenceChannel = pusherRef.current.subscribe(`presence-chat.${worker.worker_id}`);
+                
+                presenceChannel.bind('pusher:subscription_succeeded', () => {
                     setIsOnline(true);
                 });
 
-                presenceChannelRef.current.bind('pusher:member_removed', () => {
+                presenceChannel.bind('pusher:member_removed', () => {
                     setIsOnline(false);
                 });
 
-
-                channelRef.current.bind('client-typing', (data) => {
+                 channelRef.current.bind('client-typing', (data) => {
                     if (data?.userId !== currentUser.id) {
                         setIsTyping(true);
                     }
@@ -138,20 +135,16 @@ function ChatDrawer({ onClose, worker }) {
 
         initializeChat();
 
-
         return () => {
             if (channelRef.current) {
                 channelRef.current.unbind_all();
-            }
-            if (presenceChannelRef.current) {
-                presenceChannelRef.current.unbind_all();
+                channelRef.current.unsubscribe();
             }
             if (pusherRef.current) {
                 pusherRef.current.disconnect();
             }
         };
     }, [currentUser, worker?.worker_id]);
-
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -160,14 +153,18 @@ function ChatDrawer({ onClose, worker }) {
     const handleInputChange = (e) => {
         setNewMessage(e.target.value);
 
-
         clearTimeout(typingTimeoutRef.current);
         if (e.target.value && channelRef.current) {
-            channelRef.current.trigger('client-typing', { userId: currentUser?.id });
+            channelRef.current.trigger('client-typing', { 
+                userId: currentUser?.id,
+                userName: currentUser?.name 
+            });
         }
         typingTimeoutRef.current = setTimeout(() => {
             if (channelRef.current) {
-                channelRef.current.trigger('client-stop-typing', { userId: currentUser?.id });
+                channelRef.current.trigger('client-stop-typing', { 
+                    userId: currentUser?.id 
+                });
             }
         }, 1000);
     };
@@ -181,6 +178,17 @@ function ChatDrawer({ onClose, worker }) {
 
         try {
             setIsSending(true);
+            const tempId = `temp-${Date.now()}`;
+            setMessages(prev => [
+                ...prev,
+                {
+                    id: tempId,
+                    text: newMessage,
+                    sender: 'user',
+                    timestamp: new Date().toISOString()
+                }
+            ]);
+
             const response = await axios.post('http://127.0.0.1:8000/api/send-message', {
                 message: newMessage,
                 sender_id: currentUser.id,
@@ -192,6 +200,12 @@ function ChatDrawer({ onClose, worker }) {
             });
 
             if (response.data?.id) {
+                setMessages(prev => prev.map(msg => 
+                    msg.id === tempId ? {
+                        ...msg,
+                        id: response.data.id
+                    } : msg
+                ));
                 setNewMessage('');
             } else {
                 throw new Error('Message not saved');
@@ -199,19 +213,19 @@ function ChatDrawer({ onClose, worker }) {
         } catch (error) {
             console.error('Error sending message:', error);
             setError(error.response?.data?.message || 'Failed to send message');
+            setMessages(prev => prev.filter(msg => msg.id !== tempId));
             setTimeout(() => setError(null), 3000);
         } finally {
             setIsSending(false);
         }
     };
 
-
     const renderMessages = () => {
         if (!Array.isArray(messages)) return null;
 
         return messages.map((message) => (
             <div
-                key={message.id || `msg-${message.timestamp}`}
+                key={message.id}
                 className={`mb-3 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}
             >
                 <div
@@ -277,7 +291,7 @@ function ChatDrawer({ onClose, worker }) {
 
                 {isLoading ? (
                     <div className="text-center text-gray-500 py-4">Loading messages...</div>
-                ) : (messages?.length === 0 || !Array.isArray(messages)) ? (
+                ) : messages.length === 0 ? (
                     <div className="text-center text-gray-500 py-4">
                         {worker?.name ? `Start your conversation with ${worker.name}` : 'Start a new conversation'}
                     </div>
