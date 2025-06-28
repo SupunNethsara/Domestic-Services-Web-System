@@ -285,23 +285,25 @@ export default function ClientDashboard() {
           </nav>
         </header>
 
-        <div className="block min-w-0  bg-[#F2F4F7] xl:flex m-2 h-full">
+        <div className="block min-w-0 bg-[#F2F4F7] xl:flex m-2 h-full">
           <Popupadd />
           <MakePostModal postmodal={postmodal} closemodal={closemodal} />
-          <div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full rounded-md">
+
+          {/* Left Sidebar  */}
+          <div className="hidden sm:block xl:flex-shrink-0 xl:w-90 xl:border-r xl:border-gray-200 m-2 bg-white h-full rounded-md">
             <div className="p-4">
               <Popupadd />
               <MakePostModal postmodal={postmodal} closemodal={closemodal} />
-              <RoutingLinksClients 
-              Dropdownpost={Dropdownpost}
-              handleScrollPost={handleScrollPost}
-              countAvailability={countAvailability}
+              <RoutingLinksClients
+                Dropdownpost={Dropdownpost}
+                handleScrollPost={handleScrollPost}
+                countAvailability={countAvailability}
               />
-             </div>
+            </div>
           </div>
 
           {/* Main Content */}
-          <div className="w-full m-2 h-screen overflow-y-scroll">
+          <div className="w-full m-2 h-screen overflow-y-scroll" style={{ flex: '1 1 50%' }}>
             <div className="h-full w-full">
               <div className="relative h-full w-full" style={{ minHeight: "36rem" }}>
                 <Outlet context={{
@@ -314,9 +316,9 @@ export default function ClientDashboard() {
             </div>
           </div>
 
-          {/* Right Sidebar */}
-          <div className=" rounded-lg  border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-['#f2f4f7'] h-full">
-            <div className="h-full pl-4  sm:pl-6 lg:pl-8 xl:pl-0">
+          {/* Right Sidebar  */}
+          <div className="rounded-lg border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-90 xl:border-r xl:border-gray-200 m-2 bg-[#f2f4f7] h-full">
+            <div className="h-full pl-4 sm:pl-6 lg:pl-8 xl:pl-0">
               <TopRatedServices />
               <UserOnlineStatus />
               {isOpenChatDrawer && (

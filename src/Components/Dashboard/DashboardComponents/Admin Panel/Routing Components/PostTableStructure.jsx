@@ -1,6 +1,10 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import PostDetailsModal from './PostDetailsModal'; 
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import PostDetailsModal from './PostDetailsModal';
+
+
+import ConfirmationModal from '../../../../../Toast/ConfirmationModal';
+import CommonToast from '../../../../../Toast/CommonToast';
 
 function PostTableStructure() {
     const [postdata, setPostadata] = useState([]);
@@ -8,6 +12,19 @@ function PostTableStructure() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [postToDelete, setPostToDelete] = useState(null);
+    const [toasts, setToasts] = useState([]);
+
+    const addToast = (message, type) => {
+        const id = Date.now();
+        setToasts([...toasts, { id, message, type }]);
+    };
+
+    const removeToast = (id) => {
+        setToasts(toasts.filter(toast => toast.id !== id));
+    };
 
     const handleOpenModal = (post) => {
         setSelectedPost(post);
@@ -16,15 +33,43 @@ function PostTableStructure() {
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setSelectedPost(null); 
+        setSelectedPost(null);
     };
 
     const getPostData = async () => {
-        const response = await axios.get('http://127.0.0.1:8000/api/allposts');
-        console.log(response.data);
-        setPostadata(response.data.posts);
-        setFilteredPosts(response.data.posts); // Initialize filtered posts with all posts
-    }
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/allposts');
+            setPostadata(response.data.posts);
+            setFilteredPosts(response.data.posts);
+        } catch (error) {
+            addToast('Failed to fetch posts', 'error');
+            console.error('Error fetching posts:', error);
+        }
+    };
+
+    const handleDeleteClick = (postId) => {
+        setPostToDelete(postId);
+        setIsConfirmOpen(true);
+    };
+     const handleDeletePost = async () => {
+        if (!postToDelete) return;
+        
+        setIsDeleting(true);
+        try {
+            await axios.delete(`http://127.0.0.1:8000/api/deletePost/${postToDelete}`);
+            setPostadata(prev => prev.filter(post => post.id !== postToDelete));
+            setFilteredPosts(prev => prev.filter(post => post.id !== postToDelete));
+            addToast('Post deleted successfully', 'success');
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || 'Failed to delete post';
+            addToast(errorMessage, 'error');
+            console.error('Error deleting post:', error);
+        } finally {
+            setIsDeleting(false);
+            setIsConfirmOpen(false);
+            setPostToDelete(null);
+        }
+    };
 
     useEffect(() => {
         getPostData();
@@ -44,7 +89,7 @@ function PostTableStructure() {
                 const username = (profile.username || '').toLowerCase();
 
                 return (
-                    fullName.includes(lowerSearchTerm) || 
+                    fullName.includes(lowerSearchTerm) ||
                     email.includes(lowerSearchTerm) ||
                     username.includes(lowerSearchTerm)
                 );
@@ -55,6 +100,21 @@ function PostTableStructure() {
 
     return (
         <div>
+            <CommonToast toasts={toasts} removeToast={removeToast} />
+
+           <ConfirmationModal
+                isOpen={isConfirmOpen}
+                onClose={() => {
+                    setIsConfirmOpen(false);
+                    setPostToDelete(null);
+                }}
+                onConfirm={handleDeletePost}
+                title="Confirm Deletion"
+                message="Are you sure you want to delete this post?"
+                confirmText={isDeleting ? 'Deleting...' : 'Delete'}
+                confirmColor="red"
+            />
+
             <div className="flex flex-col">
                 <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -81,25 +141,22 @@ function PostTableStructure() {
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th
-                                            scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        >
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Name
                                         </th>
-                                        <th
-                                            scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        >
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Email
                                         </th>
-                                        <th scope="col" className="relative px-6 py-3">
-                                            <span className="sr-only">Select post</span>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Actions
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Delete
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {filteredPosts && filteredPosts.map((post) => (
+                                    {filteredPosts.map((post) => (
                                         <tr key={post.id}>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
@@ -118,11 +175,23 @@ function PostTableStructure() {
                                                 <div className="text-sm text-gray-900">{post.user.email}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <div className="flex items-center justify-end space-x-4">
+                                                    <button
+                                                        onClick={() => handleOpenModal(post)}
+                                                        className="text-indigo-600 hover:text-indigo-900"
+                                                    >
+                                                        View
+                                                    </button>
+
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
                                                 <button
-                                                    onClick={() => handleOpenModal(post)}
-                                                    className="text-indigo-600 hover:text-indigo-900"
+                                                   onClick={() => handleDeleteClick(post.id)}
+                                                    disabled={isDeleting}
+                                                    className="text-red-600 hover:text-red-900 disabled:opacity-50"
                                                 >
-                                                    Select
+                                                    {isDeleting ? 'Deleting...' : 'Delete'}
                                                 </button>
                                             </td>
                                         </tr>
@@ -142,4 +211,4 @@ function PostTableStructure() {
     )
 }
 
-export default PostTableStructure
+export default PostTableStructure;

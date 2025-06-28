@@ -15,7 +15,7 @@ export default function WorkerDashboard() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-   useEffect(() => {
+  useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -212,8 +212,8 @@ export default function WorkerDashboard() {
           <Popupadd />
           <WorkerPostModal postmodal={postmodal} closemodal={closemodal} />
           <RouteLinksWorkers
-          handleScrollPost ={handleScrollPost}
-          Dropdownpost ={Dropdownpost}
+            handleScrollPost={handleScrollPost}
+            Dropdownpost={Dropdownpost}
           />
 
           {/* Main Content */}
@@ -231,11 +231,9 @@ export default function WorkerDashboard() {
 
 
           {/* Right Sidebar */}
-        <div className=" rounded-lg  border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-['#f2f4f7'] h-full">
+          <div className=" rounded-lg  border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-['#f2f4f7'] h-full">
             <div className="h-full pl-4  sm:pl-6 lg:pl-8 xl:pl-0">
-
               <UserOnlineStatus />
-
             </div>
           </div>
 

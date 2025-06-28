@@ -125,7 +125,7 @@ export default function WorkerPostModal({postmodal ,closemodal }) {
 
     if (!postmodal) return null;
     return (
-        <div style={{ backgroundColor: 'rgba(0,0,0,0.7)' }} className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+        <div style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
             <div className="relative w-full max-w-2xl bg-white rounded-lg shadow-lg">
 
                 <div className="flex items-center justify-between p-4 border-b border-gray-200">
