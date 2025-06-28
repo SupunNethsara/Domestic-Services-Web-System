@@ -62,7 +62,7 @@ const handleDeleteModal =()=>{
 
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
                     <div className="mb-4 md:mb-0">
-                        <h1 className="text-3xl font-bold text-gray-800 flex items-center">
+                        <h1 className="text-2xl font-bold text-gray-800 flex items-center">
                             <FiCalendar className="mr-3 text-indigo-600" />
                             Your Availability
                         </h1>
@@ -72,7 +72,7 @@ const handleDeleteModal =()=>{
                     </div>
                     <button
                         onClick={handleModal}
-                        className="flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all"
+                        className="flex items-center px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all"
                     >
                         <FiPlus className="mr-2" />
                         Add Availability

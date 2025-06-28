@@ -211,7 +211,6 @@ export default function WorkerDashboard() {
         <div className="block min-w-0 h-m  bg-[#F2F4F7] xl:flex m-2">
           <Popupadd />
           <WorkerPostModal postmodal={postmodal} closemodal={closemodal} />
-          
           <RouteLinksWorkers
           handleScrollPost ={handleScrollPost}
           Dropdownpost ={Dropdownpost}

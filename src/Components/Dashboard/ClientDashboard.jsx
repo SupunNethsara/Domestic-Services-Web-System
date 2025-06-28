@@ -285,7 +285,7 @@ export default function ClientDashboard() {
           </nav>
         </header>
 
-        <div className="block min-w-0 bg-[#F2F4F7] xl:flex m-2 h-full">
+        <div className="block min-w-0  bg-[#F2F4F7] xl:flex m-2 h-full">
           <Popupadd />
           <MakePostModal postmodal={postmodal} closemodal={closemodal} />
           <div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full rounded-md">
@@ -301,7 +301,7 @@ export default function ClientDashboard() {
           </div>
 
           {/* Main Content */}
-          <div className="w-full m-2 h-full relative">
+          <div className="w-full m-2 h-screen overflow-y-scroll">
             <div className="h-full w-full">
               <div className="relative h-full w-full" style={{ minHeight: "36rem" }}>
                 <Outlet context={{
