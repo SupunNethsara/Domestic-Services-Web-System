@@ -19,8 +19,9 @@ export default function Login() {
       const { role, token, id } = response.data;
 
       if (!role || !token) {
+          navigate('/'); 
         throw new Error("Invalid response from server");
-      }
+     }
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);

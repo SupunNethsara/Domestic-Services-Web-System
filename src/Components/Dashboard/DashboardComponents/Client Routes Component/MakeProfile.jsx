@@ -3,10 +3,8 @@ import axios from 'axios';
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { fill } from '@cloudinary/url-gen/actions/resize';
-import { refresh } from '@cloudinary/url-gen/qualifiers/artisticFilter';
 
 export default function ProfileForm() {
-
     const [formData, setFormData] = useState({
         username: '',
         about: '',
@@ -21,14 +19,13 @@ export default function ProfileForm() {
         cover_image: null
     });
 
-
     const [selectedProfileFile, setSelectedProfileFile] = useState(null);
     const [selectedCoverFile, setSelectedCoverFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
-
+    const [shouldReload, setShouldReload] = useState(false);
 
     const cld = new Cloudinary({
         cloud: { cloudName: 'dx7waof09' }
@@ -59,7 +56,6 @@ export default function ProfileForm() {
             throw error;
         }
     };
-
 
     const handleFileChange = (e, type) => {
         const file = e.target.files[0];
@@ -114,7 +110,6 @@ export default function ProfileForm() {
         fetchProfile();
     }, []);
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -122,9 +117,9 @@ export default function ProfileForm() {
         setSuccess(false);
 
         try {
-
             let profileImageUrl = formData.profile_image;
             let coverImageUrl = formData.cover_image;
+
 
             if (selectedProfileFile) {
                 profileImageUrl = await uploadImageToCloudinary(selectedProfileFile);
@@ -133,7 +128,6 @@ export default function ProfileForm() {
             if (selectedCoverFile) {
                 coverImageUrl = await uploadImageToCloudinary(selectedCoverFile);
             }
-
 
             const profileData = {
                 ...formData,
@@ -149,12 +143,14 @@ export default function ProfileForm() {
                 }
             };
 
+
             const response = isEditMode
                 ? await axios.put('http://127.0.0.1:8000/api/profile', profileData, config)
                 : await axios.post('http://127.0.0.1:8000/api/profile', profileData, config);
 
             setSuccess(true);
-           
+            setShouldReload(true);
+
             if (!isEditMode) {
                 setIsEditMode(true);
                 setSelectedProfileFile(null);
@@ -169,6 +165,17 @@ export default function ProfileForm() {
         }
     };
 
+
+    useEffect(() => {
+        if (success && shouldReload) {
+            const timer = setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [success, shouldReload]);
+
     const isCloudinaryUrl = (url) => {
         return url && typeof url === 'string' && url.includes('res.cloudinary.com');
     };
@@ -176,7 +183,6 @@ export default function ProfileForm() {
     return (
         <div className="bg-white border rounded-md border-gray-200 p-6">
             <form onSubmit={handleSubmit} className="space-y-8">
-
                 {error && (
                     <div className="bg-red-50 border-l-4 border-red-400 p-4">
                         <div className="flex">
@@ -202,13 +208,12 @@ export default function ProfileForm() {
                             </div>
                             <div className="ml-3">
                                 <p className="text-sm text-green-700">
-                                    {isEditMode ? 'Profile updated successfully!' : 'Profile created successfully!'}
+                                    {isEditMode ? 'Profile updated successfully! Page will refresh shortly...' : 'Profile created successfully! Page will refresh shortly...'}
                                 </p>
                             </div>
                         </div>
                     </div>
                 )}
-
                 <div>
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
                         {isEditMode ? 'Update Your Profile' : 'Complete Your Profile'}
@@ -219,7 +224,7 @@ export default function ProfileForm() {
                 </div>
 
                 <div className="space-y-6">
-                   <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
                         <div className="sm:col-span-3">
                             <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                                 Username
@@ -373,7 +378,6 @@ export default function ProfileForm() {
                             </div>
                         </div>
                     </div>
-
 
                     <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                         <div className="sm:col-span-3">

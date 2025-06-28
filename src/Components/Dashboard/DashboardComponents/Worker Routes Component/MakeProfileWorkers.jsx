@@ -5,7 +5,7 @@ import { Cloudinary } from '@cloudinary/url-gen';
 import { fill } from '@cloudinary/url-gen/actions/resize';
 
 export default function MakeProfileOwrkers() {
-   
+
     const [formData, setFormData] = useState({
         username: '',
         about: '',
@@ -20,20 +20,20 @@ export default function MakeProfileOwrkers() {
         cover_image: null
     });
 
-  
+
     const [selectedProfileFile, setSelectedProfileFile] = useState(null);
     const [selectedCoverFile, setSelectedCoverFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
-
+    const [shouldReload, setShouldReload] = useState(false);
 
     const cld = new Cloudinary({
         cloud: { cloudName: 'dx7waof09' }
     });
 
-   
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -52,7 +52,7 @@ export default function MakeProfileOwrkers() {
                 `https://api.cloudinary.com/v1_1/dx7waof09/image/upload`,
                 uploadData
             );
-            return response.data.secure_url; 
+            return response.data.secure_url;
         } catch (error) {
             console.error('Upload error:', error);
             throw error;
@@ -67,13 +67,13 @@ export default function MakeProfileOwrkers() {
                 setSelectedProfileFile(file);
                 setFormData(prev => ({
                     ...prev,
-                    profile_image: URL.createObjectURL(file) 
+                    profile_image: URL.createObjectURL(file)
                 }));
             } else {
                 setSelectedCoverFile(file);
                 setFormData(prev => ({
                     ...prev,
-                    cover_image: URL.createObjectURL(file) 
+                    cover_image: URL.createObjectURL(file)
                 }));
             }
         }
@@ -101,8 +101,8 @@ export default function MakeProfileOwrkers() {
                         address: profile.address || '',
                         city: profile.city || '',
                         province: profile.province || '',
-                        profile_image: profile.profile_image, 
-                        cover_image: profile.cover_image      
+                        profile_image: profile.profile_image,
+                        cover_image: profile.cover_image
                     });
                 }
             } catch (error) {
@@ -113,7 +113,7 @@ export default function MakeProfileOwrkers() {
         fetchProfile();
     }, []);
 
- 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -121,7 +121,7 @@ export default function MakeProfileOwrkers() {
         setSuccess(false);
 
         try {
-           
+
             let profileImageUrl = formData.profile_image;
             let coverImageUrl = formData.cover_image;
 
@@ -133,7 +133,7 @@ export default function MakeProfileOwrkers() {
                 coverImageUrl = await uploadImageToCloudinary(selectedCoverFile);
             }
 
-         
+
             const profileData = {
                 ...formData,
                 profile_image: profileImageUrl,
@@ -153,22 +153,30 @@ export default function MakeProfileOwrkers() {
                 : await axios.post('http://127.0.0.1:8000/api/profile', profileData, config);
 
             setSuccess(true);
-            
+            setShouldReload(true);
             if (!isEditMode) {
                 setIsEditMode(true);
                 setSelectedProfileFile(null);
                 setSelectedCoverFile(null);
             }
         } catch (err) {
-            setError(err.response?.data?.message || 
+            setError(err.response?.data?.message ||
                 (isEditMode ? "Profile update failed" : "Profile creation failed"));
             console.error("Error:", err.response?.data || err.message);
         } finally {
             setIsSubmitting(false);
         }
     };
+    useEffect(() => {
+        if (success && shouldReload) {
+            const timer = setTimeout(() => {
+                window.location.reload();
+            }, 2000);
 
-    // Helper to determine if image is a Cloudinary URL
+            return () => clearTimeout(timer);
+        }
+    }, [success, shouldReload]);
+ 
     const isCloudinaryUrl = (url) => {
         return url && typeof url === 'string' && url.includes('res.cloudinary.com');
     };
@@ -176,7 +184,7 @@ export default function MakeProfileOwrkers() {
     return (
         <div className="bg-white border rounded-md border-gray-200 p-6">
             <form onSubmit={handleSubmit} className="space-y-8">
-               
+
                 {error && (
                     <div className="bg-red-50 border-l-4 border-red-400 p-4">
                         <div className="flex">
@@ -202,7 +210,7 @@ export default function MakeProfileOwrkers() {
                             </div>
                             <div className="ml-3">
                                 <p className="text-sm text-green-700">
-                                    {isEditMode ? 'Profile updated successfully!' : 'Profile created successfully!'}
+                                    {isEditMode ? 'Profile updated successfully! Page will refresh shortly...' : 'Profile created successfully! Page will refresh shortly...'}
                                 </p>
                             </div>
                         </div>
@@ -273,7 +281,7 @@ export default function MakeProfileOwrkers() {
                                                 className="h-full w-full object-cover"
                                             />
                                         ) : (
-                                            <AdvancedImage 
+                                            <AdvancedImage
                                                 cldImg={cld.image(formData.profile_image).resize(fill().width(150).height(150))}
                                                 className="h-full w-full object-cover"
                                             />
@@ -322,8 +330,8 @@ export default function MakeProfileOwrkers() {
                                                 className="mx-auto max-h-64 w-full object-cover rounded-md"
                                             />
                                         ) : (
-                                            <AdvancedImage 
-                                                cldImg={cld.image(formData.cover_image).resize(fill().width(800).height(300))} 
+                                            <AdvancedImage
+                                                cldImg={cld.image(formData.cover_image).resize(fill().width(800).height(300))}
                                                 className="mx-auto max-h-64 w-full object-cover rounded-md"
                                             />
                                         )}

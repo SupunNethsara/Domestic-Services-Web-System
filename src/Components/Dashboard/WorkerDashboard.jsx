@@ -5,6 +5,7 @@ import BottomNav from './DashboardComponents/TooltipsWithTabs';
 import WorkerPostModal from './DashboardComponents/Worker Routes Component/WorkerDashboard Components/WorkerPostModal';
 import Popupadd from './DashboardComponents/Client Routes Component/ClientDashboard Components/Popupadd';
 import RouteLinksWorkers from './DashboardComponents/Worker Routes Component/WorkerDashboard Components/Routing Links/RouteLinksWorkers';
+import UserOnlineStatus from './DashboardComponents/Client Routes Component/ClientDashboard Components/UserOnlineStatus';
 export default function WorkerDashboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
@@ -14,8 +15,7 @@ export default function WorkerDashboard() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-
-  useEffect(() => {
+   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -232,8 +232,12 @@ export default function WorkerDashboard() {
 
 
           {/* Right Sidebar */}
-          <div className="border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
-            <div className="h-full pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0"></div>
+        <div className=" rounded-lg  border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-['#f2f4f7'] h-full">
+            <div className="h-full pl-4  sm:pl-6 lg:pl-8 xl:pl-0">
+
+              <UserOnlineStatus />
+
+            </div>
           </div>
 
         </div>
