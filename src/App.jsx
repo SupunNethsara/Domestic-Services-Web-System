@@ -26,45 +26,49 @@ import PostTable from './Components/Dashboard/DashboardComponents/Admin Panel/Ro
 import Availability from './Components/Dashboard/DashboardComponents/Worker Routes Component/Availability';
 import AvailabilityWorkers from './Components/Dashboard/DashboardComponents/Client Routes Component/AvailabilityWorkers';
 import ChatSection from './Components/Dashboard/DashboardComponents/Worker Routes Component/WorkerDashboard Components/Chat Services/ChatSection';
+import { AuthProvider } from './Context/Authcontext';
+import UserOnlineStatus from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/UserOnlineStatus';
 function App() {
   return (
-    <Routes>
-      <Route path='/' element={<UsersWeb />} />
-      <Route path="/Welcome" element={<Welcome />} />
-      <Route path="/user-select" element={<UserSelection />} />
-      <Route path="/select-role" element={<RoleSelection />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/Client-Register" element={<ClientRegister />} />
-      <Route path="/Worker-Register" element={<WorkersRegister />} />
+    <AuthProvider>
+      <Routes>
+        <Route path='/' element={<UsersWeb />} />
+        <Route path="/Welcome" element={<Welcome />} />
+        <Route path="/user-select" element={<UserSelection />} />
+        <Route path="/select-role" element={<RoleSelection />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/Client-Register" element={<ClientRegister />} />
+        <Route path="/Worker-Register" element={<WorkersRegister />} />
 
-      <Route path="/adminpanel" element={<AdminDashbaord />}>
-        <Route index element={<Statics_dashboard />} />
-        <Route path="statics" element={<Statics_dashboard />} />
-        <Route path="user_manage" element={<UserTable />} />
-        <Route path="post_manage" element={<PostTable />} />
-      </Route>
-      <Route path="/client-dashboard" element={<ClientDashboard />} >
-        <Route index element={<ClientHome />} />
-        <Route path='worker_availability' element={<AvailabilityWorkers />} />
-        <Route path="clienthome" element={<ClientHome />} />
-        <Route path="makeprofile" element={<MakeProfile />} />
-        <Route path="makepost" element={<MakePost />} />
-        <Route path="profilepage" element={<ProfilePage />} />
+        <Route path="/adminpanel" element={<AdminDashbaord />}>
+          <Route index element={<Statics_dashboard />} />
+          <Route path="statics" element={<Statics_dashboard />} />
+          <Route path="user_manage" element={<UserTable />} />
+          <Route path="post_manage" element={<PostTable />} />
+        </Route>
+        <Route path="/client-dashboard" element={<ClientDashboard />} >
+          <Route index element={<ClientHome />} />
+          <Route path='worker_availability' element={<AvailabilityWorkers />} />
+          <Route path="clienthome" element={<ClientHome />} />
+          <Route path="makeprofile" element={<MakeProfile />} />
+          <Route path="makepost" element={<MakePost />} />
+          <Route path="profilepage" element={<ProfilePage />} />
+          <Route path="online-users" element={<UserOnlineStatus />} />
+        </Route>
+        <Route path="/worker-dashboard" element={<WorkerDashboard />} >
+          <Route index element={<WorkerHome />} />
+          <Route path="workerhome" element={<WorkerHome />} />
+          <Route path="makeworkerprofile" element={<MakeProfileOwrkers />} />
+          <Route path="makerequest" element={<MakeRequest />} />
+          <Route path="makeprofile" element={<MakeProfile />} />
+          <Route path="workerprofile" element={<WorkerProfile />} />
+          <Route path="workeravailability" element={<Availability />} />
+          <Route path="chat" element={<ChatSection />} />
+        </Route>
 
-      </Route>
-      <Route path="/worker-dashboard" element={<WorkerDashboard />} >
-        <Route index element={<WorkerHome />} />
-        <Route path="workerhome" element={<WorkerHome />} />
-        <Route path="makeworkerprofile" element={<MakeProfileOwrkers />} />
-        <Route path="makerequest" element={<MakeRequest />} />
-        <Route path="makeprofile" element={<MakeProfile />} />
-        <Route path="workerprofile" element={<WorkerProfile />} />
-        <Route path="workeravailability" element={<Availability />} />
-        <Route path="chat" element={<ChatSection />} />
-      </Route>
 
-
-    </Routes>
+      </Routes>
+    </AuthProvider>
   );
 }
 

@@ -6,6 +6,9 @@ import Popupadd from './DashboardComponents/Client Routes Component/ClientDashbo
 import MakePostModal from './DashboardComponents/Client Routes Component/ClientDashboard Components/MakePostModal';
 import ChatDrawer from './DashboardComponents/Client Routes Component/ClientDashboard Components/Chat Service/ChatDrawer';
 import TopRatedServices from './DashboardComponents/Client Routes Component/ClientDashboard Components/TopRatedServices';
+import UserOnlineStatus from './DashboardComponents/Client Routes Component/ClientDashboard Components/UserOnlineStatus';
+
+
 
 export default function ClientDashboard() {
   const [isOpen, setIsOpen] = useState(false);
@@ -346,9 +349,10 @@ export default function ClientDashboard() {
           </div>
 
           {/* Right Sidebar */}
-          <div className=" rounded-lg  border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
+          <div className=" rounded-lg  border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-['#f2f4f7'] h-full">
             <div className="h-full pl-4  sm:pl-6 lg:pl-8 xl:pl-0">
               <TopRatedServices/>
+               <UserOnlineStatus/>
               {isOpenChatDrawer && (
                 <ChatDrawer
                   worker={currentChatWorker}

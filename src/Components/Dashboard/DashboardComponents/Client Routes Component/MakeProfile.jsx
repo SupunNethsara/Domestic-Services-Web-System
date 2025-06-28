@@ -3,6 +3,7 @@ import axios from 'axios';
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { fill } from '@cloudinary/url-gen/actions/resize';
+import { refresh } from '@cloudinary/url-gen/qualifiers/artisticFilter';
 
 export default function ProfileForm() {
 
@@ -153,7 +154,7 @@ export default function ProfileForm() {
                 : await axios.post('http://127.0.0.1:8000/api/profile', profileData, config);
 
             setSuccess(true);
-
+           
             if (!isEditMode) {
                 setIsEditMode(true);
                 setSelectedProfileFile(null);
