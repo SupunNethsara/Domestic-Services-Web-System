@@ -6,20 +6,20 @@ import ClientRequestPosts from './WorkerDashboard Components/ClientRequestPosts'
 
 
 export default function WorkerHome() {
-  const { isModalOpen, handleOpenModal, handleCloseModal } = useOutletContext();
+  const { isModalOpen, handleOpenModal, handleCloseModal, profile } = useOutletContext();
   return (
     <div>
 
       <div>
-        <div className="relative w-full rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 ">
-          <Searchbar onInputClick={handleOpenModal} />
+        <div className="mr-3">
+          <Searchbar profile={profile} onInputClick={handleOpenModal} />
         </div>
 
         {isModalOpen && <MindDetailsModal onClose={handleCloseModal} />}
 
-        <ClientRequestPosts/>
+        <ClientRequestPosts />
       </div>
-   
+
     </div>
   )
 }

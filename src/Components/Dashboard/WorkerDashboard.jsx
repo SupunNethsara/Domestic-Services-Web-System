@@ -221,6 +221,7 @@ export default function WorkerDashboard() {
             <div className="h-full w-full">
               <div className="relative h-full w-full" style={{ minHeight: "36rem" }}>
                 <Outlet context={{
+                  profile,
                   isModalOpen,
                   handleOpenModal,
                   handleCloseModal,

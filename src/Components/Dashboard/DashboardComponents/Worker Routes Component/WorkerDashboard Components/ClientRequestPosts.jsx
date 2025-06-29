@@ -31,7 +31,7 @@ export default function ClientRequestPosts() {
         <div>
             {postData && postData.length > 0 ? (
                 postData.map(post => (
-                <div key={post.id} className="w-full bg-white rounded-lg overflow-hidden shadow-md mt-5">
+                <div key={post.id} className="w-full bg-white rounded-lg overflow-hidden shadow-md mt-5 mr-3">
                     <div className="p-4 flex items-center justify-between border-b">
                         <div className="flex items-center space-x-2">
                             <img
@@ -102,7 +102,7 @@ export default function ClientRequestPosts() {
                     </div>
                 </div>
             ))):(
-                    <div className="max-w-full mx-auto p-6 bg-white rounded-xl shadow-sm border border-gray-100 text-center mt-4">
+                    <div className="max-w-full mx-auto p-6 bg-white rounded-xl shadow-sm border border-gray-100 text-center mt-4 mr-3">
                     <div className="flex justify-center mb-4">
                         <svg
                             className="w-12 h-12 text-indigo-100"

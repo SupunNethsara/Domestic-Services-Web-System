@@ -8,43 +8,38 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handlelogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("http://127.0.0.1:8000/api/login", {
-        email,
-        password,
-      });
+const handlelogin = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post("http://127.0.0.1:8000/api/login", {
+      email,
+      password,
+    });
 
-      const { role, token, id } = response.data;
+    const { role, token, id } = response.data;
 
-      if (!role || !token) {
-          navigate('/'); 
-        throw new Error("Invalid response from server");
-     }
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", role);
-      localStorage.setItem("user_id", id);
-
-      if (role === "client") {
-        navigate("/client-dashboard");
-        console.log('Login Successfull');
-      }
-      else if (role == "admin") {
-        navigate("/adminpanel")
-        console.log("navigate to Admin panel")
-      }
-      else if (role === "worker") {
-        navigate("/worker-dashboard");
-        console.log('Login Successfull');
-      } else {
-        navigate("/");
-      }
-    } catch (error) {
-      console.log("Login Failed", error.response ? error.response.data : error);
+    if (!role || !token) {
+      navigate('/'); 
+      throw new Error("Invalid response from server");
     }
-  };
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("role", role);
+    localStorage.setItem("user_id", id);
+
+    if (role === "client") {
+      navigate("/client-dashboard", { state: { shouldRefresh: true } });
+    } else if (role == "admin") {
+      navigate("/adminpanel", { state: { shouldRefresh: true } });
+    } else if (role === "worker") {
+      navigate("/worker-dashboard", { state: { shouldRefresh: true } });
+    } else {
+      navigate("/");
+    }
+  } catch (error) {
+    console.log("Login Failed", error.response ? error.response.data : error);
+  }
+};
 
   return (
     <section className="bg-white">
