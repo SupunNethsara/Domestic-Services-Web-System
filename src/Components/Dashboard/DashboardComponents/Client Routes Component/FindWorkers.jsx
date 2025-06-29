@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FiFilter, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import ClientRequestModal from './ClientDashboard Components/Client Request Components/ClientRequestModal';
+
 
 function FindWorkers() {
     const [workers, setWorkers] = useState([]);
@@ -9,12 +11,24 @@ function FindWorkers() {
     const [currentPage, setCurrentPage] = useState(1);
     const workersPerPage = 8;
     const [showFilters, setShowFilters] = useState(false);
+    const [isShowRequestModal, setIsShowRequestModal] = useState(true);
+        const [selectedWorker, setSelectedWorker] = useState(null);
     const [filters, setFilters] = useState({
         name: '',
         minPrice: '',
         maxPrice: '',
-        sortBy: 'none' 
+        sortBy: 'none'
     });
+ const handleShowRequestModal = (worker) => {
+    console.log('worker' , worker.worker_id)
+        setSelectedWorker(worker);
+        setIsShowRequestModal(true);
+    };
+
+    const handleCloseRequest = () => {
+        setIsShowRequestModal(false);
+        setSelectedWorker(null);
+    };
 
     useEffect(() => {
         const fetchWorkers = async () => {
@@ -37,15 +51,15 @@ function FindWorkers() {
     }, []);
 
     useEffect(() => {
-      let result = [...workers];
+        let result = [...workers];
 
-     if (filters.name) {
+        if (filters.name) {
             result = result.filter(worker =>
                 worker.full_name?.toLowerCase().includes(filters.name.toLowerCase())
             );
         }
 
-       if (filters.minPrice) {
+        if (filters.minPrice) {
             result = result.filter(worker =>
                 worker.expected_rate?.max_rate >= parseFloat(filters.minPrice)
             );
@@ -57,7 +71,7 @@ function FindWorkers() {
             );
         }
 
-       if (filters.sortBy === 'price_asc') {
+        if (filters.sortBy === 'price_asc') {
             result.sort((a, b) =>
                 (a.expected_rate?.max_rate || 0) - (b.expected_rate?.max_rate || 0)
             );
@@ -94,7 +108,7 @@ function FindWorkers() {
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-     if (loading) {
+    if (loading) {
         return (
             <div className="min-h-screen bg-white flex flex-col items-center justify-center space-y-4">
                 <svg className="animate-spin h-12 w-12 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -296,7 +310,7 @@ function FindWorkers() {
                                     </div>
 
                                     <div className="ml-3 flex-shrink-0">
-                                        <button
+                                        <button onClick={() => handleShowRequestModal(worker)}
                                             type="button"
                                             className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
                                         >
@@ -326,6 +340,11 @@ function FindWorkers() {
                         </div>
                     )}
                 </div>
+                {isShowRequestModal && (
+                    <ClientRequestModal
+                        workers={selectedWorker}
+                        onClose={handleCloseRequest}
+                    />)}
 
                 {filteredWorkers.length > workersPerPage && (
                     <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6">
@@ -352,7 +371,7 @@ function FindWorkers() {
                                         </svg>
                                     </button>
 
-                               `` {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                                    `` {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
                                         <button
                                             key={number}
                                             onClick={() => paginate(number)}
