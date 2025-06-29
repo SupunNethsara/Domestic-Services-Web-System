@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { FiX, FiCalendar, FiMessageSquare, FiUser, FiTool } from 'react-icons/fi';
+import { FiX, FiCalendar, FiMessageSquare, FiTool } from 'react-icons/fi';
+import axios from 'axios';
 
-function ClientRequestModal({ worker, onClose }) {
+function ClientRequestModal({ workers, onClose }) {
+    console.log('worker' , workers)
     const [requestData, setRequestData] = useState({
         message: '',
         requestedDate: '',
@@ -9,6 +11,7 @@ function ClientRequestModal({ worker, onClose }) {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,14 +24,40 @@ function ClientRequestModal({ worker, onClose }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setError(null);
+        setSuccess(false);
+
         try {
-           
-            console.log('Submitting request:', { worker, requestData });
-          
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            onClose();
+            const token = localStorage.getItem('token');
+            
+            const response = await axios.post(
+                'http://127.0.0.1:8000/api/service-requests',
+                {
+                    worker_id: workers.worker_id,
+                    message: requestData.message,
+                    requested_date: requestData.requestedDate,
+                    special_requirements: requestData.specialRequirements
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            console.log('Request successful:', response.data);
+            setSuccess(true);
+            
+          setTimeout(() => {
+                onClose();
+            }, 1500);
+            
         } catch (err) {
-            setError(err.message);
+            const errorMessage = err.response?.data?.message || 
+                              err.message || 
+                              'Failed to send request';
+            setError(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -40,11 +69,12 @@ function ClientRequestModal({ worker, onClose }) {
                 <div className="flex justify-between items-center border-b border-indigo-200 p-5 bg-white">
                     <div>
                         <h3 className="text-xl font-bold text-indigo-800">Request Service</h3>
-                        <p className="text-sm text-indigo-600">Request {worker?.full_name}'s service</p>
+                        <p className="text-sm text-indigo-600">Request {workers?.full_name}'s service</p>
                     </div>
                     <button 
                         onClick={onClose}
                         className="text-indigo-500 hover:text-indigo-700 transition-colors p-1 rounded-full hover:bg-indigo-100"
+                        disabled={isSubmitting}
                     >
                         <FiX size={24} />
                     </button>
@@ -55,6 +85,15 @@ function ClientRequestModal({ worker, onClose }) {
                         <div className="p-3 bg-red-100 text-red-700 rounded-lg text-sm flex items-center">
                             <FiX className="mr-2" size={16} />
                             {error}
+                        </div>
+                    )}
+
+                    {success && (
+                        <div className="p-3 bg-green-100 text-green-700 rounded-lg text-sm flex items-center">
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Request sent successfully!
                         </div>
                     )}
 
