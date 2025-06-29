@@ -13,8 +13,6 @@ function UserOnlineStatus() {
 
     useEffect(() => {
         if (echoRef.current) return;
-
-        console.log('Initializing Echo connection...');
         const echo = new Echo({
             broadcaster: 'pusher',
             key: '3381d7d311e6c0a37731',
@@ -32,22 +30,18 @@ function UserOnlineStatus() {
         const pusher = echo.connector.pusher;
 
         pusher.connection.bind('connecting', () => {
-            console.log('Pusher connecting...');
             setConnectionState('connecting');
         });
 
         pusher.connection.bind('connected', () => {
-            console.log('Pusher connected successfully');
             setConnectionState('connected');
         });
 
         pusher.connection.bind('disconnected', () => {
-            console.log('Pusher disconnected');
             setConnectionState('disconnected');
         });
 
         pusher.connection.bind('failed', () => {
-            console.log('Pusher connection failed');
             setConnectionState('failed');
         });
 
@@ -59,7 +53,6 @@ function UserOnlineStatus() {
         echoRef.current = echo;
 
         return () => {
-            console.log('Component unmounting - cleaning up Echo');
             if (echoRef.current) {
                 try {
                     if (echoRef.current.connector.pusher.connection.state === 'connected') {
@@ -88,8 +81,6 @@ function UserOnlineStatus() {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 });
-
-                console.log('Fetched online users:', response.data);
                 setOnlineUsers(response.data);
                 setLoading(false);
             } catch (err) {
@@ -106,7 +97,6 @@ function UserOnlineStatus() {
         const channel = echoRef.current.channel('user-status');
 
         channel.listen('.user.status.updated', (data) => {
-            console.log('Received status update event:', data);
             setOnlineUsers(prevUsers => {
 
                 const updatedUser = {
@@ -120,11 +110,11 @@ function UserOnlineStatus() {
                 const existingIndex = prevUsers.findIndex(u => u.id === data.user.id);
 
                 if (existingIndex >= 0) {
-               const newUsers = [...prevUsers];
+                    const newUsers = [...prevUsers];
                     newUsers[existingIndex] = updatedUser;
                     return newUsers;
                 } else {
-                     return [...prevUsers, updatedUser];
+                    return [...prevUsers, updatedUser];
                 }
             });
         });
@@ -134,13 +124,13 @@ function UserOnlineStatus() {
                 try {
                     echoRef.current.leave('user-status');
                 } catch (e) {
-                    console.log('Error leaving channel:', e);
+                    console.error('Error leaving channel:', e);
                 }
             }
         };
     }, [user]);
 
-  
+
     const getConnectionStatusColor = () => {
         switch (connectionState) {
             case 'connected': return 'bg-green-500';

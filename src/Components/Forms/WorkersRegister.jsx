@@ -23,18 +23,18 @@ export default function WorkerRegister() {
       const response = await axios.post('http://127.0.0.1:8000/api/WorkerRegister', {
         fname, lname, mobile, email, password, password_confirmation: confirmPassword
       });
-      console.log("response data:" , response.data);
       alert("Registration Successful!");
       navigate('/login');
-    } catch {
-
+    } catch (error) {
+      console.error("Error:", error.response ? error.response.data : error.message);
+      alert("Registration failed!");
     }
   }
 
   return (
     <section class="bg-white ">
       <div class="flex justify-center min-h-screen ">
-      <motion.div
+        <motion.div
           initial={{ x: -100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1 }}
@@ -73,7 +73,7 @@ export default function WorkerRegister() {
               </svg>
             </div>
           </div>
-        
+
         </motion.div>
         <div class="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5">
 
@@ -155,7 +155,7 @@ export default function WorkerRegister() {
                     clip-rule="evenodd" />
                 </svg>
               </button>
-              
+
             </form>
             <p className="mt-6 text-sm text-left text-gray-500">
               Do you have an account?{" "}

@@ -22,9 +22,9 @@ export default function Availability() {
     const handleModal = () => {
         setIsModalOpen(!isModalOpen);
     }
-const handleDeleteModal =()=>{
-    setIsDeleteModalOpen(!isDeleteModalOpen);
-}
+    const handleDeleteModal = () => {
+        setIsDeleteModalOpen(!isDeleteModalOpen);
+    }
     const fetchAvailabilityData = async () => {
         try {
             setLoading(true);
@@ -48,8 +48,6 @@ const handleDeleteModal =()=>{
     const handledeleteAvilability = async (user_id) => {
         try {
             const response = await axios.delete(`http://127.0.0.1:8000/api/deleteAvailability/${user_id}`);
-            console.log(response.data);
-
             fetchAvailabilityData();
         } catch (err) {
             console.error('Delete error:', err);
@@ -121,8 +119,8 @@ const handleDeleteModal =()=>{
                                         </div>
                                         {isDeleteModalOpen && (
                                             <DeleteModal
-                                               item={item}
-                                               handleDeleteModal={handleDeleteModal}
+                                                item={item}
+                                                handleDeleteModal={handleDeleteModal}
                                                 handledeleteAvilability={handledeleteAvilability}
                                             />
                                         )}

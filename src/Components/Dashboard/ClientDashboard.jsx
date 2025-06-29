@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TooltipsWithTabs from './DashboardComponents/TooltipsWithTabs';
-import { Link, Outlet ,useLocation ,useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Popupadd from './DashboardComponents/Client Routes Component/ClientDashboard Components/Popupadd';
 import MakePostModal from './DashboardComponents/Client Routes Component/ClientDashboard Components/MakePostModal';
@@ -60,11 +60,8 @@ export default function ClientDashboard() {
   };
 
   useEffect(() => {
-    // Check for refresh flag in navigation state
     if (location.state?.shouldRefresh) {
-      // Remove the refresh flag to prevent infinite refreshes
       navigate(location.pathname, { replace: true, state: {} });
-      // Force a refresh
       window.location.reload();
     }
 
@@ -121,7 +118,7 @@ export default function ClientDashboard() {
     setCurrentChatWorker(workerData);
     setIsOpenChatDrawer(true);
   };
- return (
+  return (
     <div>
       <div className="  min-h-screen bg-gray-100">
         <header className="bg-white shadow-sm lg:static lg:overflow-y-visible">

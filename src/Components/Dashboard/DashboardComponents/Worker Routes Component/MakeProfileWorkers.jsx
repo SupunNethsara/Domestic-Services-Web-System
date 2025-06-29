@@ -106,7 +106,7 @@ export default function MakeProfileOwrkers() {
                     });
                 }
             } catch (error) {
-                console.log("No existing profile found or error:", error);
+                console.error("No existing profile found or error:", error);
             }
         };
 

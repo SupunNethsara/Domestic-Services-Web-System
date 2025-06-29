@@ -25,8 +25,7 @@ export default function ClientRegister() {
       const response = await axios.post('http://127.0.0.1:8000/api/ClientRegister', {
         fname, lname, mobile, email, password, password_confirmation: confirmPassword
       });
-      console.log("Response:", response.data);
-      alert("Registration Successful!");
+     alert("Registration Successful!");
       navigate('/login');
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);

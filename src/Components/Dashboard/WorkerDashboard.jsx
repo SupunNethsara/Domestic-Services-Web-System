@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from 'react'
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import BottomNav from './DashboardComponents/TooltipsWithTabs';
 import WorkerPostModal from './DashboardComponents/Worker Routes Component/WorkerDashboard Components/WorkerPostModal';
@@ -14,6 +14,17 @@ export default function WorkerDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.shouldRefresh) {
+      navigate(location.pathname, { replace: true, state: {} });
+      window.location.reload();
+    }
+  }, [location, navigate]);
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -55,7 +66,6 @@ export default function WorkerDashboard() {
           Authorization: `Bearer ${token}`
         }
       });
-      console.log(response.data);
       localStorage.removeItem("token");
       window.location.href = "/login";
     } catch (error) {
