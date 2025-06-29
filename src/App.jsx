@@ -28,6 +28,7 @@ import AvailabilityWorkers from './Components/Dashboard/DashboardComponents/Clie
 import ChatSection from './Components/Dashboard/DashboardComponents/Worker Routes Component/WorkerDashboard Components/Chat Services/ChatSection';
 import { AuthProvider } from './Context/Authcontext';
 import UserOnlineStatus from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/UserOnlineStatus';
+import FindWorkers from './Components/Dashboard/DashboardComponents/Client Routes Component/FindWorkers';
 function App() {
   return (
     <AuthProvider>
@@ -53,6 +54,7 @@ function App() {
           <Route path="makeprofile" element={<MakeProfile />} />
           <Route path="makepost" element={<MakePost />} />
           <Route path="profilepage" element={<ProfilePage />} />
+          <Route path="findworkers" element={<FindWorkers/>} /> 
           <Route path="online-users" element={<UserOnlineStatus />} />
         </Route>
         <Route path="/worker-dashboard" element={<WorkerDashboard />} >

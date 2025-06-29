@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 function RoutingLinksClients({ Dropdownpost, handleScrollPost, countAvailability }) {
   return (
-    <div style={{height:'100vh'}} className="h-full">
+    <div style={{ height: '100vh' }} className="h-full">
       <div className="space-y-1 h-full flex flex-col">
         <div className="flex-grow">
           <Link to="clienthome" className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-900 bg-gray-100">
@@ -19,12 +19,20 @@ function RoutingLinksClients({ Dropdownpost, handleScrollPost, countAvailability
             </svg>
             Make Your Profile
           </Link>
-
           <Link to="worker_availability" className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 relative">
+            <svg className="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+            Request to workers
+            <span className="ml-auto inline-flex items-center px-2 py-0.5 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+              {countAvailability}
+            </span>
+          </Link>
+          <Link to="findworkers" className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 relative">
             <svg className="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a4 4 0 00-5-4M9 20H4v-2a4 4 0 015-4m6 0a4 4 0 100-8 4 4 0 000 8zm-6 0a4 4 0 100-8 4 4 0 000 8z" />
             </svg>
-            Available Workers
+            Find Workers
             <span className="ml-auto inline-flex items-center px-2 py-0.5 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
               {countAvailability}
             </span>
