@@ -89,7 +89,6 @@ export default function ClientDashboard() {
           'Authorization': `Bearer ${token}`
         }
       });
-
       localStorage.removeItem('token');
       window.location.href = '/';
 
