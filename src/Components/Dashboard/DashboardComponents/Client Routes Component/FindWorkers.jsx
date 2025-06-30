@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { FiFilter, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import ClientRequestModal from './ClientDashboard Components/Client Request Components/ClientRequestModal';
-
+import axios from 'axios';
 
 function FindWorkers() {
     const [workers, setWorkers] = useState([]);
     const [filteredWorkers, setFilteredWorkers] = useState([]);
+    const [workerStatuses, setWorkerStatuses] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const workersPerPage = 8;
     const [showFilters, setShowFilters] = useState(false);
-    const [isShowRequestModal, setIsShowRequestModal] = useState(true);
-        const [selectedWorker, setSelectedWorker] = useState(null);
+    const [isShowRequestModal, setIsShowRequestModal] = useState(false);
+    const [selectedWorker, setSelectedWorker] = useState(null);
     const [filters, setFilters] = useState({
         name: '',
         minPrice: '',
         maxPrice: '',
         sortBy: 'none'
     });
- const handleShowRequestModal = (worker) => {
-    console.log('worker' , worker.worker_id)
+
+    const handleShowRequestModal = (worker) => {
         setSelectedWorker(worker);
         setIsShowRequestModal(true);
     };
@@ -28,6 +29,35 @@ function FindWorkers() {
     const handleCloseRequest = () => {
         setIsShowRequestModal(false);
         setSelectedWorker(null);
+    
+        if (workers.length > 0) {
+            getStatusesForAllWorkers();
+        }
+    };
+
+    const getStatusesForAllWorkers = async () => {
+        const token = localStorage.getItem("token");
+        const statusMap = {};
+        
+        for (const worker of workers) {
+            try {
+                const response = await axios.post(
+                    'http://127.0.0.1:8000/api/getClientRequestStatus',
+                    { worker_id: worker.worker_id },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+                statusMap[worker.worker_id] = response.data[0] || null;
+            } catch (error) {
+                console.error(`Error fetching status for worker ${worker.worker_id}`, error);
+                statusMap[worker.worker_id] = null;
+            }
+        }
+        
+        setWorkerStatuses(statusMap);
     };
 
     useEffect(() => {
@@ -49,6 +79,12 @@ function FindWorkers() {
 
         fetchWorkers();
     }, []);
+
+    useEffect(() => {
+        if (workers.length > 0) {
+            getStatusesForAllWorkers();
+        }
+    }, [workers]);
 
     useEffect(() => {
         let result = [...workers];
@@ -84,6 +120,7 @@ function FindWorkers() {
         setFilteredWorkers(result);
         setCurrentPage(1);
     }, [filters, workers]);
+
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
         setFilters(prev => ({
@@ -99,6 +136,52 @@ function FindWorkers() {
             maxPrice: '',
             sortBy: 'none'
         });
+    };
+
+    const renderRequestButton = (worker) => {
+        const status = workerStatuses[worker.worker_id];
+        
+        if (status === 'pending') {
+            return (
+                <button
+                    type="button"
+                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-yellow-500 cursor-not-allowed"
+                    disabled
+                >
+                    Pending
+                </button>
+            );
+        } else if (status === 'accepted') {
+            return (
+                <button
+                    type="button"
+                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-500 cursor-not-allowed"
+                    disabled
+                >
+                    Accepted
+                </button>
+            );
+        } else if (status === 'rejected') {
+            return (
+                <button
+                    type="button"
+                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-red-500 cursor-not-allowed"
+                    disabled
+                >
+                    Rejected
+                </button>
+            );
+        } else {
+            return (
+                <button 
+                    onClick={() => handleShowRequestModal(worker)}
+                    type="button"
+                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+                >
+                    Request
+                </button>
+            );
+        }
     };
 
     const indexOfLastWorker = currentPage * workersPerPage;
@@ -310,12 +393,7 @@ function FindWorkers() {
                                     </div>
 
                                     <div className="ml-3 flex-shrink-0">
-                                        <button onClick={() => handleShowRequestModal(worker)}
-                                            type="button"
-                                            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
-                                        >
-                                            Request
-                                        </button>
+                                        {renderRequestButton(worker)}
                                     </div>
                                 </div>
                             </div>
@@ -340,11 +418,13 @@ function FindWorkers() {
                         </div>
                     )}
                 </div>
+
                 {isShowRequestModal && (
                     <ClientRequestModal
-                        workers={selectedWorker}
+                        worker={selectedWorker}
                         onClose={handleCloseRequest}
-                    />)}
+                    />
+                )}
 
                 {filteredWorkers.length > workersPerPage && (
                     <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6">
@@ -371,7 +451,7 @@ function FindWorkers() {
                                         </svg>
                                     </button>
 
-                                    `` {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
                                         <button
                                             key={number}
                                             onClick={() => paginate(number)}

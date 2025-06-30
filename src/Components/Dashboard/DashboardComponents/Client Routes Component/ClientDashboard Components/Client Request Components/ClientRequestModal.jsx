@@ -3,7 +3,7 @@ import { FiX, FiCalendar, FiMessageSquare, FiTool } from 'react-icons/fi';
 import axios from 'axios';
 
 function ClientRequestModal({ workers, onClose }) {
-    console.log('worker' , workers)
+    console.log('worker', workers)
     const [requestData, setRequestData] = useState({
         message: '',
         requestedDate: '',
@@ -29,7 +29,7 @@ function ClientRequestModal({ workers, onClose }) {
 
         try {
             const token = localStorage.getItem('token');
-            
+
             const response = await axios.post(
                 'http://127.0.0.1:8000/api/service-requests',
                 {
@@ -48,15 +48,15 @@ function ClientRequestModal({ workers, onClose }) {
 
             console.log('Request successful:', response.data);
             setSuccess(true);
-            
-          setTimeout(() => {
+
+            setTimeout(() => {
                 onClose();
             }, 1500);
-            
+
         } catch (err) {
-            const errorMessage = err.response?.data?.message || 
-                              err.message || 
-                              'Failed to send request';
+            const errorMessage = err.response?.data?.message ||
+                err.message ||
+                'Failed to send request';
             setError(errorMessage);
         } finally {
             setIsSubmitting(false);
@@ -71,7 +71,7 @@ function ClientRequestModal({ workers, onClose }) {
                         <h3 className="text-xl font-bold text-indigo-800">Request Service</h3>
                         <p className="text-sm text-indigo-600">Request {workers?.full_name}'s service</p>
                     </div>
-                    <button 
+                    <button
                         onClick={onClose}
                         className="text-indigo-500 hover:text-indigo-700 transition-colors p-1 rounded-full hover:bg-indigo-100"
                         disabled={isSubmitting}
