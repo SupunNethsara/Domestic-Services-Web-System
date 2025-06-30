@@ -6,6 +6,7 @@ import WorkerPostModal from './DashboardComponents/Worker Routes Component/Worke
 import Popupadd from './DashboardComponents/Client Routes Component/ClientDashboard Components/Popupadd';
 import RouteLinksWorkers from './DashboardComponents/Worker Routes Component/WorkerDashboard Components/Routing Links/RouteLinksWorkers';
 import UserOnlineStatus from './DashboardComponents/Client Routes Component/ClientDashboard Components/UserOnlineStatus';
+import TopRatedServices from './DashboardComponents/Client Routes Component/ClientDashboard Components/TopRatedServices';
 export default function WorkerDashboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
@@ -244,6 +245,7 @@ export default function WorkerDashboard() {
           {/* Right Sidebar */}
           <div className=" rounded-lg  border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-['#f2f4f7'] h-full">
             <div className="h-full pl-4  sm:pl-6 lg:pl-8 xl:pl-0">
+              <TopRatedServices/>
               <UserOnlineStatus />
             </div>
           </div>
