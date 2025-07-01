@@ -17,7 +17,7 @@ function ChatSection() {
         echo.current = new Echo({
             broadcaster: 'pusher',
             key: '3381d7d311e6c0a37731',
-            cluster: ' ap2',
+            cluster: 'ap2',
             forceTLS: true,
             authEndpoint: 'http://127.0.0.1:8000/broadcasting/auth',
             auth: {
@@ -32,7 +32,7 @@ function ChatSection() {
         };
     }, []);
 
-    
+
     useEffect(() => {
         const fetchClients = async () => {
             try {
@@ -63,14 +63,13 @@ function ChatSection() {
         fetchClients();
     }, []);
 
-   useEffect(() => {
-        if (selectedClient) {
-            fetchMessages(selectedClient.id);
-            setupMessageListener(selectedClient.id);
-        }
+    useEffect(() => {
+        if (!selectedClient) return;
+        fetchMessages(selectedClient.id);
+        return setupMessageListener(selectedClient.id);
     }, [selectedClient]);
 
-    
+
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
@@ -93,10 +92,10 @@ function ChatSection() {
     };
 
     const setupMessageListener = (workerId) => {
-     
+
         echo.current.leave(`chat.user.${workerId}`);
 
-     
+
         echo.current.private(`chat.user.${workerId}`)
             .listen('.message', (data) => {
                 setMessages(prev => [...prev, {
@@ -162,7 +161,7 @@ function ChatSection() {
 
     return (
         <div className="h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex overflow-hidden">
-         
+
             <div className="w-80 border-r border-gray-200 bg-white/80 backdrop-blur-sm flex flex-col">
                 <div className="p-4 border-b border-gray-200">
                     <h2 className="text-xl font-semibold text-gray-800 flex items-center">
@@ -187,8 +186,8 @@ function ChatSection() {
                             key={client.id}
                             onClick={() => setSelectedClient(client)}
                             className={`flex items-center p-4 border-b border-gray-100 cursor-pointer transition-all ${selectedClient?.id === client.id
-                                    ? 'bg-indigo-50 border-l-4 border-l-indigo-500'
-                                    : 'hover:bg-gray-50'
+                                ? 'bg-indigo-50 border-l-4 border-l-indigo-500'
+                                : 'hover:bg-gray-50'
                                 }`}
                         >
                             <div className="relative">
@@ -227,7 +226,7 @@ function ChatSection() {
                 </div>
             </div>
 
-            
+
             {selectedClient ? (
                 <div className="flex-1 flex flex-col bg-white/80 backdrop-blur-sm">
                     <div className="p-4 border-b border-gray-200 bg-white flex items-center">
@@ -268,20 +267,20 @@ function ChatSection() {
                                 <div
                                     key={msg.id}
                                     className={`flex ${msg.sender_id === selectedClient.id
-                                            ? 'justify-start'
-                                            : 'justify-end'
+                                        ? 'justify-start'
+                                        : 'justify-end'
                                         }`}
                                 >
                                     <div
                                         className={`max-w-xs lg:max-w-md px-4 py-3 rounded-xl ${msg.sender_id === selectedClient.id
-                                                ? 'rounded-tl-none bg-white'
-                                                : 'rounded-tr-none bg-indigo-500 text-white'
+                                            ? 'rounded-tl-none bg-white'
+                                            : 'rounded-tr-none bg-indigo-500 text-white'
                                             } shadow-sm border border-gray-100`}
                                     >
                                         <p>{msg.message}</p>
                                         <p className={`text-xs mt-1 text-right ${msg.sender_id === selectedClient.id
-                                                ? 'text-gray-400'
-                                                : 'text-indigo-100'
+                                            ? 'text-gray-400'
+                                            : 'text-indigo-100'
                                             }`}>
                                             {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </p>
@@ -309,8 +308,8 @@ function ChatSection() {
                                 onClick={sendMessage}
                                 disabled={!message.trim()}
                                 className={`p-2 rounded-full transition ${message.trim()
-                                        ? 'text-indigo-600 hover:text-indigo-700'
-                                        : 'text-gray-400 cursor-not-allowed'
+                                    ? 'text-indigo-600 hover:text-indigo-700'
+                                    : 'text-gray-400 cursor-not-allowed'
                                     }`}
                             >
                                 <FiSend />

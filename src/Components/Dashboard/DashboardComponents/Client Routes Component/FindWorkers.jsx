@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FiFilter, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import ClientRequestModal from './ClientDashboard Components/Client Request Components/ClientRequestModal';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
+
 
 function FindWorkers() {
     const [workers, setWorkers] = useState([]);
@@ -20,7 +22,11 @@ function FindWorkers() {
         maxPrice: '',
         sortBy: 'none'
     });
-
+    const navigate = useNavigate();
+  const navigateToClientProfile = () => {
+        navigate('/client-dashboard/ClientWorkersProfile');
+     }
+    
     const handleShowRequestModal = (worker) => {
         setSelectedWorker(worker);
         setIsShowRequestModal(true);
@@ -154,11 +160,32 @@ function FindWorkers() {
         } else if (status === 'accepted') {
             return (
                 <button
+                    onClick={navigateToClientProfile}
                     type="button"
-                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-500 "
-                    disabled
+                    className="cursor-pointer inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-500 hover:bg-green-700  relative overflow-hidden"
+                    style={{
+                        animation: 'pulse 2s infinite, colorShift 8s infinite',
+                    }}
                 >
-                    Accepted
+
+                    <span className="absolute top-0 left-0 w-2 h-2 bg-white rounded-full opacity-70"
+                        style={{
+                            animation: 'orbit 4s linear infinite',
+                            boxShadow: '0 0 8px 2px rgba(255,255,255,0.8)'
+                        }}
+                    ></span>
+
+                    <span className="relative z-10" >
+                        Accepted
+                    </span>
+
+                    <style jsx>{`
+      @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+        50% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(74, 222, 128, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+      }
+      `}</style>
                 </button>
             );
         } else if (status === 'rejected') {

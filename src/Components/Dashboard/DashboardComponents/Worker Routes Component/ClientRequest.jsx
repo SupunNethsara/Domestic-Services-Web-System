@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import {
     FaCheck,
     FaTimes,
@@ -7,12 +7,15 @@ import {
     FaMapMarkerAlt,
     FaClock,
     FaPhone,
-
+    FaInfoCircle,
+    FaSpinner
 } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
 import { GiPoliceBadge } from 'react-icons/gi';
 import { toast } from 'react-toastify';
+import { Dialog, Transition } from '@headlessui/react';
 import MessageInput from './WorkerDashboard Components/MessageInput';
+import ClientDetailsToWorkers from './WorkerDashboard Components/ClientDetailsToWorkers';
 
 function FindWorkers() {
     const [requests, setRequests] = useState([]);
@@ -22,6 +25,8 @@ function FindWorkers() {
     const [messageText, setMessageText] = useState('');
     const [isSendingMessage, setIsSendingMessage] = useState(false);
     const [filter, setFilter] = useState('all');
+    const [isClientDetailsOpen, setIsClientDetailsOpen] = useState(false);
+    const [selectedClient, setSelectedClient] = useState(null);
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -33,6 +38,7 @@ function FindWorkers() {
                     params: { user_id: user_id },
                     headers: { Authorization: `Bearer ${token}` }
                 });
+                console.log(response);
                 if (response.data.success) {
                     setRequests(response.data.data);
                 } else {
@@ -122,6 +128,11 @@ function FindWorkers() {
         if (filter === 'all') return true;
         return request.status === filter;
     });
+
+    const showClientDetails = (client) => {
+        setSelectedClient(client);
+        setIsClientDetailsOpen(true);
+    };
 
     if (loading) {
         return (
@@ -244,6 +255,13 @@ function FindWorkers() {
                                             </div>
                                         </div>
                                         <div className="flex items-center space-x-3">
+                                            <button
+                                                onClick={() => showClientDetails(request.client)}
+                                                className="text-gray-400 hover:text-blue-500 transition-colors"
+                                                title="View client details"
+                                            >
+                                                <FaInfoCircle className="h-5 w-5" />
+                                            </button>
                                             <span className={`px-2 py-1 text-xs font-medium rounded-full ${request.status === 'accepted' ? 'bg-green-100 text-green-800' :
                                                 request.status === 'rejected' ? 'bg-red-100 text-red-800' :
                                                     'bg-yellow-100 text-yellow-800'
@@ -320,7 +338,7 @@ function FindWorkers() {
                                         </button>
                                     </>
                                 ) : request.status === 'accepted' ? (
-                                    <span className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-purple-500 to-indigo-600">
+                                    <span className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-green-500 to-green-600">
                                         <FaCheck className="mr-2" />
                                         Accepted
                                     </span>
@@ -335,6 +353,11 @@ function FindWorkers() {
                     ))}
                 </ul>
             </div>
+            <ClientDetailsToWorkers
+                isOpen={isClientDetailsOpen}
+                onClose={() => setIsClientDetailsOpen(false)}
+                client={selectedClient}
+            />
 
             {activeMessageRequest && (
                 <MessageInput

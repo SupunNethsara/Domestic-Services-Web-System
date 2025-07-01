@@ -1,53 +1,91 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaTimes, FaPaperPlane, FaSpinner } from 'react-icons/fa';
 
 const MessageInput = ({
   initialMessage = '',
-  recipientName,
+  recipientName = '',
   onSend,
   onClose,
-  isSending = false
+  isSending = false,
+  autoFocus = true
 }) => {
   const [messageText, setMessageText] = useState(initialMessage);
+  const inputRef = React.useRef(null);
+
+useEffect(() => {
+    if (autoFocus && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [autoFocus]);
+
+  useEffect(() => {
+    setMessageText(initialMessage);
+  }, [initialMessage]);
 
   const handleSend = () => {
-    onSend(messageText);
+    if (messageText.trim() && !isSending) {
+      onSend(messageText.trim());
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg p-4">
+    <div className="fixed bottom-0 left-0 right-0 bg-[#4f47e6] border-t border-gray-200 shadow-xl p-4 z-50">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-medium text-gray-700">
-            {initialMessage ? 'Edit your response to' : 'Respond to'} {recipientName}
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-white">
+            {initialMessage ? 'Edit response to' : 'Message to'} {recipientName}
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-500"
+            className="text-white hover:text-gray-200 transition-colors"
+            aria-label="Close message input"
           >
-            <FaTimes />
+            <FaTimes className="h-4 w-4" />
           </button>
         </div>
-        <div className="flex space-x-2">
+        
+        <div className="flex gap-2">
           <input
+            ref={inputRef}
             type="text"
             value={messageText}
             onChange={(e) => setMessageText(e.target.value)}
-            placeholder={initialMessage || "Type your response here..."}
-            className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+            onKeyDown={handleKeyDown}
+            placeholder={initialMessage || "Type your message here..."}
+            className="flex-1 bg-white bg-opacity-90 border border-gray-300 rounded-lg px-4 py-2.5 
+                      focus:outline-none focus:ring-2 focus:ring-white focus:border-white
+                      placeholder-gray-500 text-gray-800"
+            disabled={isSending}
           />
+          
           <button
             onClick={handleSend}
             disabled={isSending || !messageText.trim()}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center disabled:opacity-50 min-w-[100px] justify-center"
+            className={`flex items-center justify-center min-w-[100px] px-4 py-2.5 rounded-lg
+                      border-2 border-white text-white font-medium
+                      ${isSending || !messageText.trim() 
+                        ? 'opacity-50 cursor-not-allowed' 
+                        : 'hover:bg-white hover:text-purple-700 hover:bg-opacity-20 active:bg-opacity-30 transition-colors'}`}
+            aria-label={isSending ? 'Sending message' : 'Send message'}
           >
             {isSending ? (
-              <FaSpinner className="animate-spin mr-2" />
+              <>
+                <FaSpinner className="animate-spin mr-2" />
+                Sending
+              </>
             ) : (
-              <FaPaperPlane className="mr-2" />
+              <>
+                <FaPaperPlane className="mr-2" />
+                Send
+              </>
             )}
-            {isSending ? 'Sending' : 'Send'}
           </button>
         </div>
       </div>
