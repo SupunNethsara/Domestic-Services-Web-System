@@ -33,7 +33,20 @@ function RoutingLinksClients({ Dropdownpost, handleScrollPost, countAvailability
           </div>
           <span>My Profile</span>
         </Link>
-
+        <Link
+          to="create-job-request"
+          className="flex items-center px-3 py-3 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 transition-colors duration-200 group"
+        >
+          <div className="p-1.5 rounded-lg bg-gray-100 group-hover:bg-indigo-100 mr-3">
+            <svg className="h-5 w-5 text-gray-500 group-hover:text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          </div>
+          <span>Create Job Request</span>
+          <span className="ml-auto inline-flex items-center justify-center h-5 w-5 text-xs font-bold text-white bg-green-500 rounded-full transform group-hover:scale-110 transition-transform">
+            New
+          </span>
+        </Link>
         <Link
           to="worker_availability"
           className="flex items-center px-3 py-3 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 transition-colors duration-200 group relative"

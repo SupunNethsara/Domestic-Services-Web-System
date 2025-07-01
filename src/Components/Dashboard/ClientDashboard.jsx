@@ -195,7 +195,7 @@ export default function ClientDashboard() {
                   </div>
 
                   {isOpen && (
-                    <div className="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabIndex="-1">
+                    <div className="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 " role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabIndex="-1">
                       <Link to="profilepage" className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabIndex="-1">
                         Your Profile
                       </Link>

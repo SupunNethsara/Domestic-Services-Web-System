@@ -31,6 +31,7 @@ import UserOnlineStatus from './Components/Dashboard/DashboardComponents/Client 
 import FindWorkers from './Components/Dashboard/DashboardComponents/Client Routes Component/FindWorkers';
 import ClientRequest from './Components/Dashboard/DashboardComponents/Worker Routes Component/ClientRequest';
 import MainProfilesForClient from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/Client Request Components/MainProfilesForClient';
+import CreateJobRequest from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/Complete job possition component/CreateJobRequest';
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
           <Route path='worker_availability' element={<AvailabilityWorkers />} />
           <Route path="clienthome" element={<ClientHome />} />
           <Route path="makeprofile" element={<MakeProfile />} />
+          <Route path="create-job-request" element={<CreateJobRequest/>}/>
           <Route path="makepost" element={<MakePost />} />
           <Route path="profilepage" element={<ProfilePage />} />
           <Route path="findworkers" element={<FindWorkers />} />
