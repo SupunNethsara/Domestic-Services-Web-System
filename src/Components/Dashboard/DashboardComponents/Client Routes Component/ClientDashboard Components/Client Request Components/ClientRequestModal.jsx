@@ -3,8 +3,7 @@ import { FiX, FiCalendar, FiMessageSquare, FiTool } from 'react-icons/fi';
 import axios from 'axios';
 
 function ClientRequestModal({ workers, onClose }) {
-    console.log('worker', workers)
-    const [requestData, setRequestData] = useState({
+ const [requestData, setRequestData] = useState({
         message: '',
         requestedDate: '',
         specialRequirements: ''

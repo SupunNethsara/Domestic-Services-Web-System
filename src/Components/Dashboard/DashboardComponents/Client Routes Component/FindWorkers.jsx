@@ -29,7 +29,7 @@ function FindWorkers() {
     const handleCloseRequest = () => {
         setIsShowRequestModal(false);
         setSelectedWorker(null);
-    
+
         if (workers.length > 0) {
             getStatusesForAllWorkers();
         }
@@ -38,7 +38,7 @@ function FindWorkers() {
     const getStatusesForAllWorkers = async () => {
         const token = localStorage.getItem("token");
         const statusMap = {};
-        
+
         for (const worker of workers) {
             try {
                 const response = await axios.post(
@@ -56,7 +56,7 @@ function FindWorkers() {
                 statusMap[worker.worker_id] = null;
             }
         }
-        
+
         setWorkerStatuses(statusMap);
     };
 
@@ -140,7 +140,7 @@ function FindWorkers() {
 
     const renderRequestButton = (worker) => {
         const status = workerStatuses[worker.worker_id];
-        
+
         if (status === 'pending') {
             return (
                 <button
@@ -155,7 +155,7 @@ function FindWorkers() {
             return (
                 <button
                     type="button"
-                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-500 cursor-not-allowed"
+                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-500 "
                     disabled
                 >
                     Accepted
@@ -173,7 +173,7 @@ function FindWorkers() {
             );
         } else {
             return (
-                <button 
+                <button
                     onClick={() => handleShowRequestModal(worker)}
                     type="button"
                     className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
@@ -421,7 +421,7 @@ function FindWorkers() {
 
                 {isShowRequestModal && (
                     <ClientRequestModal
-                        worker={selectedWorker}
+                        workers={selectedWorker}
                         onClose={handleCloseRequest}
                     />
                 )}

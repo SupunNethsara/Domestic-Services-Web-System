@@ -1,22 +1,27 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { 
-  FaCheck, 
-  FaTimes, 
-  FaUserCircle, 
-  FaMapMarkerAlt, 
-  FaClock,
-  FaEllipsisV,
-  FaPhone,
-  FaEnvelope
+import {
+    FaCheck,
+    FaTimes,
+    FaUserCircle,
+    FaMapMarkerAlt,
+    FaClock,
+    FaPhone,
+
 } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
 import { GiPoliceBadge } from 'react-icons/gi';
+import { toast } from 'react-toastify';
+import MessageInput from './WorkerDashboard Components/MessageInput';
 
 function FindWorkers() {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [activeMessageRequest, setActiveMessageRequest] = useState(null);
+    const [messageText, setMessageText] = useState('');
+    const [isSendingMessage, setIsSendingMessage] = useState(false);
+    const [filter, setFilter] = useState('all');
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -28,7 +33,6 @@ function FindWorkers() {
                     params: { user_id: user_id },
                     headers: { Authorization: `Bearer ${token}` }
                 });
-
                 if (response.data.success) {
                     setRequests(response.data.data);
                 } else {
@@ -45,17 +49,79 @@ function FindWorkers() {
         fetchRequests();
     }, []);
 
-    const handleRequest = async (id, action) => {
+    const handleRequest = async (id, action, workerMessage = '') => {
         try {
-          
-            setRequests(requests.map(request => 
+            const token = localStorage.getItem('token');
+
+            setRequests(requests.map(request =>
                 request.id === id ? { ...request, status: action } : request
             ));
-         
+
+            const response = await axios.post(
+                'http://127.0.0.1:8000/api/update-send-request-to-workers',
+                {
+                    request_id: id,
+                    status: action,
+                    worker_message: workerMessage
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (!response.data.success) {
+                setRequests(requests.map(request =>
+                    request.id === id ? { ...request, status: 'pending' } : request
+                ));
+                throw new Error('Failed to update request status');
+            }
+
+            toast.success(`Request ${action} successfully`);
+            return response.data.request;
+
         } catch (error) {
             console.error('Error updating request:', error);
+            setError('Failed to update request status. Please try again.');
+            toast.error(error.response?.data?.message || 'Failed to update request status');
+            throw error;
         }
     };
+
+    const handleSendMessage = async () => {
+        if (!messageText.trim() || !activeMessageRequest) return;
+
+        setIsSendingMessage(true);
+        try {
+            const updatedRequest = await handleRequest(
+                activeMessageRequest.id,
+                activeMessageRequest.status,
+                messageText
+            );
+            setRequests(requests.map(request =>
+                request.id === activeMessageRequest.id
+                    ? { ...request, worker_message: messageText }
+                    : request
+            ));
+
+            toast.success('Message sent successfully');
+            setMessageText('');
+            setActiveMessageRequest(null);
+            return updatedRequest;
+        } catch (error) {
+            console.error('Error sending message:', error);
+            toast.error(error.message || 'Failed to send message');
+        } finally {
+            setIsSendingMessage(false);
+        }
+    };
+
+    const filteredRequests = requests.filter(request => {
+        if (filter === 'all') return true;
+        return request.status === filter;
+    });
 
     if (loading) {
         return (
@@ -82,28 +148,59 @@ function FindWorkers() {
         );
     }
 
-    if (requests.length === 0) {
+    if (filteredRequests.length === 0) {
         return (
-            <div className="text-center py-12">
-                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h3 className="mt-2 text-lg font-medium text-gray-900">No requests found</h3>
-                <p className="mt-1 text-sm text-gray-500">You don't have any client requests at this time.</p>
+            <div className="bg-white rounded-lg shadow-sm p-8 mr-3">
+                <div className="text-center py-12">
+                    <svg
+                        className="mx-auto h-12 w-12 text-yellow-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                    </svg>
+                    <h3 className="mt-2 text-lg font-medium text-gray-900">
+                        {filter === 'all' ? 'No requests found' : `No ${filter} requests`}
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-500 mb-6">
+                        {filter === 'all'
+                            ? "You don't have any client requests at this time."
+                            : `You don't have any ${filter} requests.`}
+                    </p>
+
+                    {filter !== 'all' && (
+                        <button
+                            onClick={() => setFilter('all')}
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                        >
+                            View All Requests
+                        </button>
+                    )}
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
             <div className="flex items-center justify-between mb-8">
                 <h1 className="text-2xl font-bold text-gray-900">Client Requests</h1>
                 <div className="relative">
-                    <select className="appearance-none bg-white border border-gray-300 rounded-md pl-3 pr-8 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <option>All Requests</option>
-                        <option>Pending</option>
-                        <option>Accepted</option>
-                        <option>Rejected</option>
+                    <select
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                        className="appearance-none bg-white border border-gray-300 rounded-md pl-3 pr-8 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    >
+                        <option value="all">All Requests</option>
+                        <option value="pending">Pending</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="rejected">Rejected</option>
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                         <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
@@ -113,9 +210,9 @@ function FindWorkers() {
                 </div>
             </div>
 
-            <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div className="bg-white shadow-xl overflow-hidden sm:rounded-lg">
                 <ul className="divide-y divide-gray-200">
-                    {requests.map((request) => (
+                    {filteredRequests.map((request) => (
                         <li key={request.id} className="px-6 py-4 hover:bg-gray-50 transition-colors duration-150">
                             <div className="flex items-start space-x-4">
                                 <div className="flex-shrink-0 relative">
@@ -130,7 +227,9 @@ function FindWorkers() {
                                             <FaUserCircle className="h-10 w-10" />
                                         </div>
                                     )}
-                                    <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full ring-2 ring-white bg-green-400"></span>
+                                    <span className={`absolute bottom-0 right-0 block h-3 w-3 rounded-full ring-2 ring-white ${request.status === 'accepted' ? 'bg-green-400' :
+                                        request.status === 'rejected' ? 'bg-red-400' : 'bg-yellow-400'
+                                        }`}></span>
                                 </div>
 
                                 <div className="flex-1 min-w-0">
@@ -145,9 +244,12 @@ function FindWorkers() {
                                             </div>
                                         </div>
                                         <div className="flex items-center space-x-3">
-                                            <button className="text-gray-400 hover:text-gray-500">
-                                                <FaEllipsisV />
-                                            </button>
+                                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${request.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                                                request.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                                                    'bg-yellow-100 text-yellow-800'
+                                                }`}>
+                                                {request.status}
+                                            </span>
                                         </div>
                                     </div>
 
@@ -156,6 +258,13 @@ function FindWorkers() {
                                             {request.message}
                                         </p>
                                     </div>
+
+                                    {request.worker_message && (
+                                        <div className="mt-3 bg-purple-50 p-3 rounded-lg">
+                                            <p className="text-xs font-medium text-purple-800">Your response:</p>
+                                            <p className="text-sm text-gray-700">{request.worker_message}</p>
+                                        </div>
+                                    )}
 
                                     {request.special_requirements && (
                                         <div className="mt-3 flex items-start">
@@ -177,9 +286,12 @@ function FindWorkers() {
                                     </div>
 
                                     <div className="mt-4 flex items-center space-x-4">
-                                        <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                        <button
+                                            onClick={() => setActiveMessageRequest(request)}
+                                            className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                                        >
                                             <RiMessage2Fill className="mr-2" />
-                                            Message
+                                            {request.worker_message ? 'Edit Response' : 'Respond'}
                                         </button>
                                         <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                                             <FaPhone className="mr-2" />
@@ -223,6 +335,38 @@ function FindWorkers() {
                     ))}
                 </ul>
             </div>
+
+            {activeMessageRequest && (
+                <MessageInput
+                    initialMessage={activeMessageRequest.worker_message || ''}
+                    recipientName={activeMessageRequest.client?.profile?.first_name}
+                    onSend={async (message) => {
+                        setIsSendingMessage(true);
+                        try {
+                            const updatedRequest = await handleRequest(
+                                activeMessageRequest.id,
+                                activeMessageRequest.status,
+                                message
+                            );
+                            setRequests(requests.map(request =>
+                                request.id === activeMessageRequest.id
+                                    ? { ...request, worker_message: message }
+                                    : request
+                            ));
+                            toast.success('Message sent successfully');
+                            setMessageText('');
+                            setActiveMessageRequest(null);
+                        } catch (error) {
+                            console.error('Error sending message:', error);
+                            toast.error(error.message || 'Failed to send message');
+                        } finally {
+                            setIsSendingMessage(false);
+                        }
+                    }}
+                    onClose={() => setActiveMessageRequest(null)}
+                    isSending={isSendingMessage}
+                />
+            )}
         </div>
     );
 }
