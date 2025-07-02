@@ -1,20 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-    FaUserCircle,
-    FaStar,
-    FaRegStar,
-    FaPhone,
-    FaMapMarkerAlt,
-    FaCalendarAlt,
-    FaMoneyBillWave,
-    FaCreditCard,
-    FaCashRegister,
-    FaCheckCircle,
-    FaExclamationTriangle
+    FaUserCircle, FaStar, FaRegStar, FaPhone, FaMapMarkerAlt,
+    FaCalendarAlt, FaMoneyBillWave, FaCreditCard, FaCashRegister,
+    FaCheckCircle, FaExclamationTriangle
 } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
 import { GiSkills } from 'react-icons/gi';
 import { IoMdTime } from 'react-icons/io';
+import { useLocation, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 function MainProfilesForClient() {
     const [rating, setRating] = useState(0);
@@ -26,35 +20,76 @@ function MainProfilesForClient() {
     const [showRatingModal, setShowRatingModal] = useState(false);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const worker = {
-        id: 1,
-        name: 'Saman Perera',
-        profileImage: '',
-        rating: 4.5,
-        skills: ['Cleaning', 'Child Care', 'Cooking'],
-        location: 'Colombo, Sri Lanka',
-        rate: 'LKR 1,500/hour',
-        availability: 'Monday to Friday, 8AM - 5PM',
-        contact: '0712345678',
-        bio: 'Experienced domestic worker with 5+ years of experience in household management and childcare.'
+    // Get worker data from location state or params
+    const location = useLocation();
+    const { workerId } = useParams();
+    const { workerData: locationWorkerData } = location.state || {};
+
+    const [worker, setWorker] = useState(null);
+    const [clientJob, setClientJob] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                if (locationWorkerData) {
+                    setWorker(transformWorkerData(locationWorkerData));
+                }
+
+                const token = localStorage.getItem('token');
+
+                const jobResponse = await axios.get('http://127.0.0.1:8000/api/getActiveJobs',
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+                if (jobResponse.data && jobResponse.data.length > 0) {
+                    setClientJob(jobResponse.data[0]);
+                }
+
+            } catch (err) {
+                setError(err.message);
+                console.error('Error fetching data:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [workerId, locationWorkerData]);
+
+ const transformWorkerData = (apiData) => {
+        return {
+            id: apiData.worker_id,
+            name: apiData.full_name || `${apiData.first_name} ${apiData.last_name}`,
+            profileImage: apiData.profile_image,
+            rating: 4.5,
+            skills: apiData.services?.map(service => service.name) || [],
+            location: `${apiData.city}, ${apiData.country}`,
+            rate: apiData.expected_rate
+                ? `${apiData.expected_rate.currency} ${apiData.expected_rate.max_rate}/${apiData.expected_rate.rate_type}`
+                : 'Rate not specified',
+            availability: apiData.availability_type === 'weekly'
+                ? formatWeeklyAvailability(apiData.weekly_availability)
+                : 'Flexible',
+            contact: apiData.mobile || 'Contact not provided',
+            bio: apiData.about || 'No bio provided',
+            rawData: apiData
+        };
     };
 
-    const client = {
-        id: 1,
-        name: 'Nimal Fernando',
-        profileImage: '',
-        location: 'Kandy, Sri Lanka',
-        contact: '0776543210'
-    };
+    const formatWeeklyAvailability = (weeklyAvailability) => {
+        if (!weeklyAvailability) return 'Not specified';
 
-    const requestDetails = {
-        id: 101,
-        date: '2023-06-15',
-        specialRequirements: 'Child care needed for 2 children (ages 3 and 5)',
-        status: 'accepted',
-        totalHours: 40,
-        totalAmount: 'LKR 60,000'
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        return days
+            .filter(day => weeklyAvailability[day.toLowerCase()])
+            .join(', ');
     };
 
     const handleSendMessage = () => {
@@ -84,21 +119,57 @@ function MainProfilesForClient() {
         setReview('');
     };
 
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-700">Loading worker profile...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center text-red-600">
+                    <FaExclamationTriangle className="text-4xl mx-auto mb-4" />
+                    <p>Error loading profile: {error}</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!worker) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center text-gray-600">
+                    <p>Worker not found</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 p-4 md:p-8">
             <div className="max-w-6xl mx-auto">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Service Request #{requestDetails.id}</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
+                    {clientJob ? `Service Request #${clientJob.id}` : 'Worker Profile'}
+                </h1>
 
                 <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-                    <div className="bg-green-100 px-6 py-3 flex items-center justify-between">
-                        <div className="flex items-center">
-                            <FaCheckCircle className="text-green-600 mr-2" />
-                            <span className="font-medium text-green-800">Request Accepted</span>
+                    {clientJob && (
+                        <div className="bg-green-100 px-6 py-3 flex items-center justify-between">
+                            <div className="flex items-center">
+                                <FaCheckCircle className="text-green-600 mr-2" />
+                                <span className="font-medium text-green-800">Request Accepted</span>
+                            </div>
+                            <div className="text-sm text-green-700">
+                                {clientJob.start_date && `Started on ${new Date(clientJob.start_date).toLocaleDateString()}`}
+                            </div>
                         </div>
-                        <div className="text-sm text-green-700">
-                            Started on {new Date(requestDetails.date).toLocaleDateString()}
-                        </div>
-                    </div>
+                    )}
 
                     <div className="border-b border-gray-200">
                         <nav className="flex -mb-px">
@@ -114,15 +185,16 @@ function MainProfilesForClient() {
                             >
                                 Messages
                             </button>
-                            <button
-                                onClick={() => setActiveTab('payments')}
-                                className={`mr-8 py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'payments' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-                            >
-                                Payments
-                            </button>
+                            {clientJob && (
+                                <button
+                                    onClick={() => setActiveTab('payments')}
+                                    className={`mr-8 py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'payments' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+                                >
+                                    Payments
+                                </button>
+                            )}
                         </nav>
                     </div>
-
 
                     <div className="p-6">
                         {activeTab === 'details' && (
@@ -135,7 +207,15 @@ function MainProfilesForClient() {
                                     <div className="flex items-start mb-4">
                                         <div className="mr-4">
                                             {worker.profileImage ? (
-                                                <img src={worker.profileImage} alt={worker.name} className="w-16 h-16 rounded-full object-cover" />
+                                                <img
+                                                    src={worker.profileImage}
+                                                    alt={worker.name}
+                                                    className="w-16 h-16 rounded-full object-cover"
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
+                                                        e.target.src = 'https://via.placeholder.com/150';
+                                                    }}
+                                                />
                                             ) : (
                                                 <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
                                                     <FaUserCircle className="text-3xl" />
@@ -202,71 +282,55 @@ function MainProfilesForClient() {
                                         >
                                             Rate Worker
                                         </button>
-                                        <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
-                                            View Full Profile
-                                        </button>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                                        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                                            <FaUserCircle className="mr-2 text-indigo-600" />
-                                            Your Details
-                                        </h2>
-                                        <div className="flex items-start mb-4">
-                                            <div className="mr-4">
-                                                {client.profileImage ? (
-                                                    <img src={client.profileImage} alt={client.name} className="w-16 h-16 rounded-full object-cover" />
-                                                ) : (
-                                                    <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                                                        <FaUserCircle className="text-3xl" />
-                                                    </div>
-                                                )}
+                                {clientJob && (
+                                    <div>
+                                        <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                                            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                                                <FaCalendarAlt className="mr-2 text-indigo-600" />
+                                                Job Details
+                                            </h2>
+                                            <div className="space-y-3">
+                                                <div>
+                                                    <strong className="text-gray-700">Job Titles:</strong>
+                                                    <p className="text-gray-600 mt-1">
+                                                        {clientJob.job_titles?.join(', ')}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <strong className="text-gray-700">Location:</strong>
+                                                    <p className="text-gray-600">{clientJob.location}</p>
+                                                </div>
+                                                <div>
+                                                    <strong className="text-gray-700">Salary Range:</strong>
+                                                    <p className="text-gray-600">{clientJob.salary_range}</p>
+                                                </div>
+                                                <div>
+                                                    <strong className="text-gray-700">Description:</strong>
+                                                    <p className="text-gray-600">{clientJob.description}</p>
+                                                </div>
+                                                <div>
+                                                    <strong className="text-gray-700">Duration:</strong>
+                                                    <p className="text-gray-600">
+                                                        {new Date(clientJob.start_date).toLocaleDateString()} to{' '}
+                                                        {new Date(clientJob.end_date).toLocaleDateString()}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h3 className="text-lg font-medium text-gray-900">{client.name}</h3>
-                                                <div className="mt-1 text-sm text-gray-600">{client.location}</div>
+
+                                            <div className="mt-6">
+                                                <button
+                                                    onClick={() => setShowPaymentModal(true)}
+                                                    className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                                                >
+                                                    Make Payment
+                                                </button>
                                             </div>
-                                        </div>
-                                        <div className="flex items-center">
-                                            <FaPhone className="text-gray-500 mr-2" />
-                                            <span className="text-gray-700">
-                                                <strong>Contact:</strong> {client.contact}
-                                            </span>
                                         </div>
                                     </div>
-
-                                    <div className="bg-gray-50 p-4 rounded-lg">
-                                        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                                            <FaCalendarAlt className="mr-2 text-indigo-600" />
-                                            Service Details
-                                        </h2>
-                                        <div className="space-y-3">
-                                            <div>
-                                                <strong className="text-gray-700">Special Requirements:</strong>
-                                                <p className="text-gray-600 mt-1">{requestDetails.specialRequirements}</p>
-                                            </div>
-                                            <div>
-                                                <strong className="text-gray-700">Total Hours:</strong>
-                                                <p className="text-gray-600">{requestDetails.totalHours} hours</p>
-                                            </div>
-                                            <div>
-                                                <strong className="text-gray-700">Total Amount:</strong>
-                                                <p className="text-gray-600">{requestDetails.totalAmount}</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="mt-6">
-                                            <button
-                                                onClick={() => setShowPaymentModal(true)}
-                                                className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-                                            >
-                                                Make Payment
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                                )}
                             </div>
                         )}
 
@@ -313,7 +377,7 @@ function MainProfilesForClient() {
                             </div>
                         )}
 
-                        {activeTab === 'payments' && (
+                        {activeTab === 'payments' && clientJob && (
                             <div className="bg-gray-50 rounded-lg p-4">
                                 <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                                     <FaMoneyBillWave className="mr-2 text-indigo-600" />
@@ -332,22 +396,18 @@ function MainProfilesForClient() {
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             <tr>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-20</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">LKR 30,000</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Credit Card</td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                        Completed
-                                                    </span>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {new Date().toLocaleDateString()}
                                                 </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-10</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">LKR 30,000</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Bank Transfer</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {clientJob.salary_range}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    Credit Card
+                                                </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                        Completed
+                                                        Pending
                                                     </span>
                                                 </td>
                                             </tr>

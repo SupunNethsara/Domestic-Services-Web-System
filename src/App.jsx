@@ -60,7 +60,7 @@ function App() {
           <Route path="makepost" element={<MakePost />} />
           <Route path="profilepage" element={<ProfilePage />} />
           <Route path="findworkers" element={<FindWorkers />} />
-          <Route path="ClientWorkersProfile" element={<MainProfilesForClient />} />
+      <Route path="ClientWorkersProfile/:workerId" element={<MainProfilesForClient />} />
           <Route path="online-users" element={<UserOnlineStatus />} />
         </Route>
         <Route path="/worker-dashboard" element={<WorkerDashboard />} >

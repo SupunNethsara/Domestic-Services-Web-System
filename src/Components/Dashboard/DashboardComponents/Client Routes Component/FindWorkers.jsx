@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FiFilter, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import ClientRequestModal from './ClientDashboard Components/Client Request Components/ClientRequestModal';
 import axios from 'axios';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 
 function FindWorkers() {
@@ -22,11 +22,17 @@ function FindWorkers() {
         maxPrice: '',
         sortBy: 'none'
     });
+    const {workerId } = useParams();
     const navigate = useNavigate();
-  const navigateToClientProfile = () => {
-        navigate('/client-dashboard/ClientWorkersProfile');
-     }
-    
+   const navigateToClientProfile = (workerId) => {
+    console.log(workerId);
+        navigate(`/client-dashboard/ClientWorkersProfile/${workerId}`, {
+            state: {
+                workerId: workerId,
+                workerData: workerId
+            }
+        });
+    };
     const handleShowRequestModal = (worker) => {
         setSelectedWorker(worker);
         setIsShowRequestModal(true);
@@ -160,7 +166,7 @@ function FindWorkers() {
         } else if (status === 'accepted') {
             return (
                 <button
-                    onClick={navigateToClientProfile}
+                    onClick={() => navigateToClientProfile(worker)}
                     type="button"
                     className="cursor-pointer inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-500 hover:bg-green-700  relative overflow-hidden"
                     style={{
