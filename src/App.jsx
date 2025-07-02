@@ -12,7 +12,6 @@ import WorkerDashboard from './Components/Dashboard/WorkerDashboard';
 import ClientHome from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientHome';
 import MakePost from './Components/Dashboard/DashboardComponents/Client Routes Component/MakePost';
 import WorkerHome from './Components/Dashboard/DashboardComponents/Worker Routes Component/WorkerHome';
-import MakeRequest from './Components/Dashboard/DashboardComponents/Worker Routes Component/MakeRequest';
 import MakeProfile from './Components/Dashboard/DashboardComponents/Client Routes Component/MakeProfile';
 import ProfilePage from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/ProfilePage';
 import MakeProfileOwrkers from './Components/Dashboard/DashboardComponents/Worker Routes Component/MakeProfileWorkers';
@@ -32,6 +31,7 @@ import FindWorkers from './Components/Dashboard/DashboardComponents/Client Route
 import ClientRequest from './Components/Dashboard/DashboardComponents/Worker Routes Component/ClientRequest';
 import MainProfilesForClient from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/Client Request Components/MainProfilesForClient';
 import CreateJobRequest from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/Complete job possition component/CreateJobRequest';
+import ClientRequestList from './Components/Dashboard/DashboardComponents/Worker Routes Component/ClientRequestList';
 
 function App() {
   return (
@@ -67,7 +67,7 @@ function App() {
           <Route index element={<WorkerHome />} />
           <Route path="workerhome" element={<WorkerHome />} />
           <Route path="makeworkerprofile" element={<MakeProfileOwrkers />} />
-          <Route path="makerequest" element={<MakeRequest />} />
+          <Route path="getrequest" element={<ClientRequestList />} />
           <Route path="makeprofile" element={<MakeProfile />} />
           <Route path="workerprofile" element={<WorkerProfile />} />
           <Route path="workeravailability" element={<Availability />} />

@@ -37,7 +37,7 @@ function CreateJobRequest() {
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
     </div>
   );
-  
+
   if (error) return (
     <div className="flex justify-center items-center h-screen">
       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
@@ -49,12 +49,12 @@ function CreateJobRequest() {
   return (
     <div className="bg-gray-50 min-h-screen p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900">My Job Requests</h1>
             <p className="text-gray-600 mt-1">Manage your service requests</p>
           </div>
-          <button 
+          <button
             onClick={handleRequestModal}
             className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
           >
@@ -64,11 +64,11 @@ function CreateJobRequest() {
             New Request
           </button>
         </div>
- {requests.length > 0 ? (
+        {requests.length > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {requests.map((request) => (
               <div key={request.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100">
-             <div className="p-6 pb-0 flex items-start gap-4">
+                <div className="p-6 pb-0 flex items-start gap-4">
                   <img
                     src={request.client.profile.profile_image}
                     alt={request.client.profile.username}
@@ -79,11 +79,10 @@ function CreateJobRequest() {
                       <h3 className="text-lg font-semibold text-gray-900">
                         {request.client.profile.first_name} {request.client.profile.last_name}
                       </h3>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        request.status === 'open' ? 'bg-green-100 text-green-800' :
-                        request.status === 'filled' ? 'bg-blue-100 text-blue-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span className={`px-2 py-1 text-xs rounded-full ${request.status === 'open' ? 'bg-green-100 text-green-800' :
+                          request.status === 'filled' ? 'bg-blue-100 text-blue-800' :
+                            'bg-gray-100 text-gray-800'
+                        }`}>
                         {request.status}
                       </span>
                     </div>
@@ -91,7 +90,6 @@ function CreateJobRequest() {
                   </div>
                 </div>
 
-                {/* Request Content */}
                 <div className="p-6">
                   <div className="mb-4">
                     <h2 className="text-xl font-bold text-gray-800 mb-3">Job Details</h2>
@@ -116,7 +114,7 @@ function CreateJobRequest() {
                     <div>
                       <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Dates</p>
                       <p className="text-gray-800 font-medium">
-                        {new Date(request.start_date).toLocaleDateString()} - 
+                        {new Date(request.start_date).toLocaleDateString()} -
                         {request.end_date ? ` ${new Date(request.end_date).toLocaleDateString()}` : ' Ongoing'}
                       </p>
                     </div>
@@ -160,7 +158,7 @@ function CreateJobRequest() {
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No job requests yet</h3>
             <p className="text-gray-500 mb-6 max-w-md mx-auto">Create your first job request to find qualified workers for your needs</p>
-            <button 
+            <button
               onClick={handleRequestModal}
               className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 inline-flex items-center gap-2"
             >
