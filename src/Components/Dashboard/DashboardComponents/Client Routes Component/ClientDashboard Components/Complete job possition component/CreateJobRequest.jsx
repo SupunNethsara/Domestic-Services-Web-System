@@ -65,7 +65,7 @@ function CreateJobRequest() {
           </button>
         </div>
         {requests.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 max-w-4xl gap-6">
             {requests.map((request) => (
               <div key={request.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100">
                 <div className="p-6 pb-0 flex items-start gap-4">

@@ -3,13 +3,12 @@ import { Link } from 'react-router-dom';
 
 function RouteLinksWorkers({ handleScrollPost, Dropdownpost }) {
   return (
-    <div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white h-full">
-
-      <div className="flex-grow space-y-1 px-2 py-4">
-<div className="relative group mb-2">
-          <Link 
-            to="workerhome" 
-            className="flex items-center px-3 py-3 text-sm font-medium rounded-lg text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors duration-200"
+<div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white flex flex-col min-h-screen">
+      <div className="flex-grow space-y-1 px-2 py-2">
+        <div className="relative group mb-2">
+          <Link
+            to="workerhome"
+            className="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors duration-200"
           >
             <div className="p-1.5 rounded-lg bg-indigo-100 mr-3">
               <svg className="h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -23,9 +22,9 @@ function RouteLinksWorkers({ handleScrollPost, Dropdownpost }) {
           </Link>
         </div>
 
-    <Link 
-          to="makeworkerprofile" 
-          className="flex items-center px-3 py-3 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 transition-colors duration-200 group"
+        <Link
+          to="makeworkerprofile"
+          className="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 transition-colors duration-200 group"
         >
           <div className="p-1.5 rounded-lg bg-gray-100 group-hover:bg-indigo-100 mr-3">
             <svg className="h-5 w-5 text-gray-500 group-hover:text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -35,22 +34,49 @@ function RouteLinksWorkers({ handleScrollPost, Dropdownpost }) {
           <span>My Profile</span>
         </Link>
 
-   
-        <Link 
-          to="workeravailability" 
-          className="flex items-center px-3 py-3 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 transition-colors duration-200 group"
+        <Link
+          to="workeravailability"
+          className="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 transition-colors duration-200 group"
         >
           <div className="p-1.5 rounded-lg bg-gray-100 group-hover:bg-indigo-100 mr-3">
             <svg className="h-5 w-5 text-gray-500 group-hover:text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <span>Availability</span>
+          <span>Add Availability</span>
         </Link>
-
-    <Link 
-          to="clientreqesting" 
-          className="flex items-center px-3 py-3 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 transition-colors duration-200 group relative"
+        <Link
+          to="addbankdetails"
+          className="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:text-green-700 hover:bg-green-50 transition-colors duration-200 group"
+        >
+          <div className="p-1.5 rounded-lg bg-gray-100 group-hover:bg-green-100 mr-3">
+            <svg className="h-5 w-5 text-gray-500 group-hover:text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor" > <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 6h18M3 12h18M3 18h18"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 6h18v12H3V6z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M7 10h1m4 0h1m4 0h1M7 14h1m4 0h1m4 0h1"
+              />
+            </svg>
+          </div>
+          <span>Add Bank Details</span>
+        </Link>
+        <Link
+          to="clientreqesting"
+          className="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 transition-colors duration-200 group relative"
         >
           <div className="p-1.5 rounded-lg bg-gray-100 group-hover:bg-indigo-100 mr-3">
             <svg className="h-5 w-5 text-gray-500 group-hover:text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -63,9 +89,9 @@ function RouteLinksWorkers({ handleScrollPost, Dropdownpost }) {
           </span>
         </Link>
 
-       <button 
-          onClick={handleScrollPost} 
-          className="flex items-center px-3 py-3 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 w-full transition-colors duration-200 group"
+        <button
+          onClick={handleScrollPost}
+          className="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 w-full transition-colors duration-200 group"
         >
           <div className="p-1.5 rounded-lg bg-gray-100 group-hover:bg-indigo-100 mr-3">
             <svg className="h-5 w-5 text-gray-500 group-hover:text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,10 +100,10 @@ function RouteLinksWorkers({ handleScrollPost, Dropdownpost }) {
           </div>
           <span>Client Requests</span>
         </button>
-     {Dropdownpost && (
+        {Dropdownpost && (
           <div className="ml-12 mt-1 space-y-1">
-            <Link 
-              to="getrequest" 
+            <Link
+              to="getrequest"
               className="block px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-indigo-700 hover:bg-gray-50 transition-colors duration-200"
             >
               New Request
@@ -85,9 +111,9 @@ function RouteLinksWorkers({ handleScrollPost, Dropdownpost }) {
           </div>
         )}
 
-       <Link 
-          to="chat" 
-          className="flex items-center px-3 py-3 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 transition-colors duration-200 group"
+        <Link
+          to="chat"
+          className="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 transition-colors duration-200 group"
         >
           <div className="p-1.5 rounded-lg bg-gray-100 group-hover:bg-indigo-100 mr-3">
             <svg className="h-5 w-5 text-gray-500 group-hover:text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -100,17 +126,16 @@ function RouteLinksWorkers({ handleScrollPost, Dropdownpost }) {
           </span>
         </Link>
       </div>
-
-     <div className="px-4 py-3 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+<div className="px-4 py-3 border-t border-gray-200 bg-gray-50 rounded-b-lg">
         <div className="flex items-center justify-between">
           <div>
             <div className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
               Worker Dashboard
             </div>
             <div className="text-xs text-gray-500 mt-0.5">
-              {new Date().toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric' 
+              {new Date().toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
               })}
             </div>
           </div>

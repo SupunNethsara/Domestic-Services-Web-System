@@ -32,6 +32,8 @@ import ClientRequest from './Components/Dashboard/DashboardComponents/Worker Rou
 import MainProfilesForClient from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/Client Request Components/MainProfilesForClient';
 import CreateJobRequest from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/Complete job possition component/CreateJobRequest';
 import ClientRequestList from './Components/Dashboard/DashboardComponents/Worker Routes Component/ClientRequestList';
+import AddBankDetails from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/Payment Process/AddBankDetails';
+
 
 function App() {
   return (
@@ -56,12 +58,12 @@ function App() {
           <Route path='worker_availability' element={<AvailabilityWorkers />} />
           <Route path="clienthome" element={<ClientHome />} />
           <Route path="makeprofile" element={<MakeProfile />} />
-          <Route path="create-job-request" element={<CreateJobRequest/>}/>
+          <Route path="create-job-request" element={<CreateJobRequest />} />
           <Route path="makepost" element={<MakePost />} />
           <Route path="profilepage" element={<ProfilePage />} />
           <Route path="findworkers" element={<FindWorkers />} />
-      <Route path="ClientWorkersProfile/:workerId" element={<MainProfilesForClient />} />
-          <Route path="online-users" element={<UserOnlineStatus />} />
+          <Route path="findworkers/ClientWorkersProfile" element={<MainProfilesForClient />} />
+      <Route path="online-users" element={<UserOnlineStatus />} />
         </Route>
         <Route path="/worker-dashboard" element={<WorkerDashboard />} >
           <Route index element={<WorkerHome />} />
@@ -73,6 +75,7 @@ function App() {
           <Route path="workeravailability" element={<Availability />} />
           <Route path='clientreqesting' element={<ClientRequest />} />
           <Route path="chat" element={<ChatSection />} />
+          <Route path="addbankdetails" element={<AddBankDetails />} />
         </Route>
 
 

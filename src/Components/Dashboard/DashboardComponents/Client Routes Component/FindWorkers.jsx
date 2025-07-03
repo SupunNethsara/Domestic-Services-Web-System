@@ -22,17 +22,17 @@ function FindWorkers() {
         maxPrice: '',
         sortBy: 'none'
     });
-    const {workerId } = useParams();
+    const { workerId } = useParams();
     const navigate = useNavigate();
-   const navigateToClientProfile = (workerId) => {
-    console.log(workerId);
-        navigate(`/client-dashboard/ClientWorkersProfile/${workerId}`, {
-            state: {
-                workerId: workerId,
-                workerData: workerId
-            }
-        });
-    };
+    //    const navigateToClientProfile = (workerId) => {
+    //     console.log(workerId);
+    //         navigate(`/client-dashboard/ClientWorkersProfile/${workerId}`, {
+    //             state: {
+    //                 workerId: workerId,
+    //                 workerData: workerId
+    //             }
+    //         });
+    //     };
     const handleShowRequestModal = (worker) => {
         setSelectedWorker(worker);
         setIsShowRequestModal(true);
@@ -166,7 +166,10 @@ function FindWorkers() {
         } else if (status === 'accepted') {
             return (
                 <button
-                    onClick={() => navigateToClientProfile(worker)}
+                    onClick={() => navigate(
+                        "ClientWorkersProfile",
+                        { state: { workerData: worker } }
+                    )}
                     type="button"
                     className="cursor-pointer inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-500 hover:bg-green-700  relative overflow-hidden"
                     style={{
