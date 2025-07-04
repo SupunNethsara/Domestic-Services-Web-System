@@ -30,7 +30,6 @@ export default function WorkerRequestPosts() {
         <div>
             {postData && postData.length > 0 ? (
                 postData.map(post => {
-                    // Parse content if it's a JSON string
                     let parsedContent = {};
                     try {
                         parsedContent = typeof post.content === 'string'

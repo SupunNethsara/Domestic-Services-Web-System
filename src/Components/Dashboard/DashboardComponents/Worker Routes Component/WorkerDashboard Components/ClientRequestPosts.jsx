@@ -40,7 +40,7 @@ export default function ClientRequestPosts() {
 
                     return (
                         <div key={post.id} className="w-full bg-white rounded-lg overflow-hidden shadow-md mt-5 mr-3">
-                            <div className="p-4 flex items-center justify-between border-b">
+                            <div className="p-4 flex items-center justify-between border-b border-gray-200">
                                 <div className="flex items-center space-x-2">
                                     <img
                                         src={post.user?.profile?.profile_image}
@@ -74,7 +74,7 @@ export default function ClientRequestPosts() {
                                 </div>
                             </div>
 
-                            <div className="p-4 border-t">
+                            <div className="p-4 border-t border-gray-200">
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center space-x-4">
                                         <button className="text-gray-700">
