@@ -4,7 +4,6 @@ import ClientRequestModal from './ClientDashboard Components/Client Request Comp
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router';
 
-
 function FindWorkers() {
     const [workers, setWorkers] = useState([]);
     const [filteredWorkers, setFilteredWorkers] = useState([]);
@@ -22,17 +21,10 @@ function FindWorkers() {
         maxPrice: '',
         sortBy: 'none'
     });
+    const [workerRatings, setWorkerRatings] = useState({});
     const { workerId } = useParams();
     const navigate = useNavigate();
-    //    const navigateToClientProfile = (workerId) => {
-    //     console.log(workerId);
-    //         navigate(`/client-dashboard/ClientWorkersProfile/${workerId}`, {
-    //             state: {
-    //                 workerId: workerId,
-    //                 workerData: workerId
-    //             }
-    //         });
-    //     };
+
     const handleShowRequestModal = (worker) => {
         setSelectedWorker(worker);
         setIsShowRequestModal(true);
@@ -91,6 +83,32 @@ function FindWorkers() {
 
         fetchWorkers();
     }, []);
+
+    // Fetch all worker ratings and group by worker_id
+    useEffect(() => {
+        const fetchRatings = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/api/worker-ratings');
+                const ratingsMap = {};
+                response.data.data.forEach(rating => {
+                    if (!ratingsMap[rating.worker_id]) ratingsMap[rating.worker_id] = [];
+                    ratingsMap[rating.worker_id].push(rating);
+                });
+                setWorkerRatings(ratingsMap);
+            } catch (err) {
+                // Optionally handle error
+            }
+        };
+        fetchRatings();
+    }, []);
+
+    // Helper to get average rating for a worker
+    const getAverageRating = (workerId) => {
+        const ratings = workerRatings[workerId];
+        if (!ratings || ratings.length === 0) return null;
+        const avg = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+        return avg.toFixed(1);
+    };
 
     useEffect(() => {
         if (workers.length > 0) {
@@ -420,9 +438,15 @@ function FindWorkers() {
                                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                 </svg>
                                                 <span className="ml-0.5 text-gray-600">
-                                                    Rate: {worker.expected_rate?.rate_type === 'hourly' ?
-                                                        `${worker.expected_rate?.max_rate} ${worker.expected_rate?.currency}/hr` :
-                                                        `${worker.expected_rate?.max_rate} ${worker.expected_rate?.currency}`}
+                                                    {getAverageRating(worker.worker_id)
+                                                        ? `Rating: ${getAverageRating(worker.worker_id)} (${workerRatings[worker.worker_id]?.length})`
+                                                        : 'No ratings yet'}
+                                                </span>
+                                                <span className="mx-1.5 text-gray-300">•</span>
+                                                <span className="text-gray-600 font-medium">
+                                                    {worker.expected_rate?.rate_type === 'hourly'
+                                                        ? `${worker.expected_rate?.max_rate} ${worker.expected_rate?.currency}/hr`
+                                                        : `${worker.expected_rate?.max_rate} ${worker.expected_rate?.currency}`}
                                                 </span>
                                             </div>
                                         </div>

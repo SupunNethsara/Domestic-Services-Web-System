@@ -1,7 +1,9 @@
 import React from 'react';
 import { FaUserCircle, FaStar, FaRegStar } from 'react-icons/fa';
 
-const WorkerProfileHeader = ({ worker }) => {
+const WorkerProfileHeader = ({ worker, averageRating, reviewCount }) => {
+const rating = averageRating !== undefined && averageRating !== null ? Number(averageRating) : Number(worker.rating) || 0;
+
   return (
     <div className="bg-gray-50 p-4 rounded-lg">
       <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
@@ -29,14 +31,16 @@ const WorkerProfileHeader = ({ worker }) => {
         <div>
           <h3 className="text-lg font-medium text-gray-900">{worker.name}</h3>
           <div className="flex items-center mt-1">
-            {[1, 2, 3, 4, 5].map((star) => (
-              star <= Math.floor(worker.rating) ? (
+            {[1, 2, 3, 4, 5].map((star) =>
+              star <= Math.round(rating) ? (
                 <FaStar key={star} className="text-yellow-400" />
               ) : (
                 <FaRegStar key={star} className="text-yellow-400" />
               )
-            ))}
-            <span className="ml-1 text-sm text-gray-600">({worker.rating})</span>
+            )}
+            <span className="ml-1 text-sm text-gray-600">
+              ({rating}{reviewCount !== undefined ? `, ${reviewCount} review${reviewCount === 1 ? '' : 's'}` : ''})
+            </span>
           </div>
         </div>
       </div>

@@ -21,6 +21,8 @@ function MainProfilesForClient() {
   const [error, setError] = useState(null);
   const [worker, setWorker] = useState(null);
   const [clientJob, setClientJob] = useState(null);
+  const [workerRatings, setWorkerRatings] = useState([]);
+  const [averageRating, setAverageRating] = useState(null);
 
   const location = useLocation();
   const { workerId } = useParams();
@@ -31,14 +33,29 @@ function MainProfilesForClient() {
       try {
         setLoading(true);
 
+        let workerObj = null;
         if (locationWorkerData) {
-          setWorker(transformWorkerData(locationWorkerData));
+          workerObj = transformWorkerData(locationWorkerData);
+          setWorker(workerObj);
         } else if (workerId) {
           const token = localStorage.getItem('token');
           const workerResponse = await axios.get(`http://127.0.0.1:8000/api/workers/${workerId}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
-          setWorker(transformWorkerData(workerResponse.data));
+          workerObj = transformWorkerData(workerResponse.data);
+          setWorker(workerObj);
+        }
+        if (workerObj?.id) {
+          const ratingsResponse = await axios.get('http://127.0.0.1:8000/api/worker-ratings');
+          const allRatings = ratingsResponse.data.data || [];
+          const thisWorkerRatings = allRatings.filter(r => r.worker_id === workerObj.id);
+          setWorkerRatings(thisWorkerRatings);
+          if (thisWorkerRatings.length > 0) {
+            const avg = thisWorkerRatings.reduce((sum, r) => sum + r.rating, 0) / thisWorkerRatings.length;
+            setAverageRating(avg.toFixed(1));
+          } else {
+            setAverageRating(null);
+          }
         }
 
         const token = localStorage.getItem('token');
@@ -92,7 +109,6 @@ function MainProfilesForClient() {
   };
 
   const handleRatingSubmit = ({ rating, review }) => {
-    console.log(`Submitted rating: ${rating}, review: ${review}`);
     alert(`Thank you for your ${rating} star rating and review!`);
     setShowRatingModal(false);
   };
@@ -186,7 +202,11 @@ function MainProfilesForClient() {
             {activeTab === 'details' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-gray-50 p-4 rounded-lg">
-                  <WorkerProfileHeader worker={worker} />
+                  <WorkerProfileHeader
+                    worker={worker}
+                    averageRating={averageRating}
+                    reviewCount={workerRatings.length}
+                  />
                   <WorkerDetails worker={worker} />
                   <div className="mt-6 flex space-x-3">
                     <button
