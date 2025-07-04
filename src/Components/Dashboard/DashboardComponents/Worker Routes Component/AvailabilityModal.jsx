@@ -260,6 +260,8 @@ function AvailabilityModal({ handleModal }) {
                                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                                 >
                                                     <option value="hourly">Hourly</option>
+                                                    <option value="weekly">Weekly</option>
+                                                    <option value="monthly">Monthly</option>
                                                     <option value="job">Per Job</option>
                                                     <option value="daily">Daily</option>
                                                 </select>
@@ -430,6 +432,8 @@ function AvailabilityModal({ handleModal }) {
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                             >
                                                 <option value="hourly">Hourly</option>
+                                                <option value="weekly">Weekly</option>
+                                                <option value="monthly">Monthly</option>
                                                 <option value="hourly">Month</option>
                                                 <option value="job">Per Job</option>
                                                 <option value="daily">Daily</option>
