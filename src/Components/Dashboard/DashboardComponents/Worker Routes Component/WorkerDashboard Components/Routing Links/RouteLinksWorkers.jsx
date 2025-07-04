@@ -1,9 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useRequestCount } from '../../../../../../Context/RequestCountContext';
 
 function RouteLinksWorkers({ handleScrollPost, Dropdownpost }) {
+
+    const { requestCount } = useRequestCount();
+
   return (
-<div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white flex flex-col min-h-screen">
+    <div className="hidden sm:block xl:flex-shrink-0 xl:w-84 xl:border-r xl:border-gray-200 m-2 bg-white flex flex-col min-h-screen">
       <div className="flex-grow space-y-1 px-2 py-2">
         <div className="relative group mb-2">
           <Link
@@ -84,9 +88,11 @@ function RouteLinksWorkers({ handleScrollPost, Dropdownpost }) {
             </svg>
           </div>
           <span>Coming Requests</span>
-          <span className="ml-auto inline-flex items-center justify-center h-5 w-5 text-xs font-bold text-white bg-red-500 rounded-full transform group-hover:scale-110 transition-transform">
-            5
-          </span>
+          {requestCount > 0 && (
+            <span className="ml-auto inline-flex items-center justify-center h-5 w-5 text-xs font-bold text-white bg-red-500 rounded-full transform group-hover:scale-110 transition-transform">
+              {requestCount}
+            </span>
+          )}
         </Link>
 
         <button
@@ -126,7 +132,7 @@ function RouteLinksWorkers({ handleScrollPost, Dropdownpost }) {
           </span>
         </Link>
       </div>
-<div className="px-4 py-3 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+      <div className="px-4 py-3 border-t border-gray-200 bg-gray-50 rounded-b-lg">
         <div className="flex items-center justify-between">
           <div>
             <div className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">

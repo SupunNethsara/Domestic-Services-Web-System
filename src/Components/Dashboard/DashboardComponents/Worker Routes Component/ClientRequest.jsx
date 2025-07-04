@@ -17,8 +17,9 @@ import { toast } from 'react-toastify';
 import { Dialog, Transition } from '@headlessui/react';
 import MessageInput from './WorkerDashboard Components/MessageInput';
 import ClientDetailsToWorkers from './WorkerDashboard Components/ClientDetailsToWorkers';
+import { useRequestCount } from '../../../../Context/RequestCountContext';
 
-function FindWorkers() {
+function FindWorkers({}) {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -28,8 +29,8 @@ function FindWorkers() {
     const [selectedClient, setSelectedClient] = useState(null);
     const [showSummary, setShowSummary] = useState(false);
     const [isSending, setIsSending] = useState(false);
-
-   const statusCounts = requests.reduce((acc, request) => {
+      const { setRequestCount } = useRequestCount();
+    const statusCounts = requests.reduce((acc, request) => {
         acc[request.status] = (acc[request.status] || 0) + 1;
         return acc;
     }, { accepted: 0, rejected: 0, pending: 0 });
@@ -44,7 +45,7 @@ function FindWorkers() {
                     params: { user_id: user_id },
                     headers: { Authorization: `Bearer ${token}` }
                 });
-
+               setRequestCount(response.data.requestCount || 0);
                 if (response.data.success) {
                     setRequests(response.data.data);
                 } else {
@@ -59,7 +60,7 @@ function FindWorkers() {
         };
 
         fetchRequests();
-    }, []);
+    }, [setRequestCount]);
 
     const handleRequest = async (id, action, workerMessage = '') => {
         try {
@@ -168,8 +169,8 @@ function FindWorkers() {
         <div className="bg-white max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
             <h1 className="text-2xl font-bold text-gray-900 mb-6">Client Requests</h1>
 
-           <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <div 
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                <div
                     className="flex justify-between items-center cursor-pointer"
                     onClick={() => setShowSummary(!showSummary)}
                 >
@@ -221,7 +222,7 @@ function FindWorkers() {
                 )}
             </div>
 
-         <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-800">
                     {filter === 'all' ? 'All Requests' : `${filter.charAt(0).toUpperCase() + filter.slice(1)} Requests`}
                     <span className="ml-2 text-sm font-normal text-gray-500">

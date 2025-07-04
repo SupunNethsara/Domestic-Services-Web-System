@@ -15,8 +15,7 @@ export default function WorkerDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const location = useLocation();
+ const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,23 +27,22 @@ export default function WorkerDashboard() {
 
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://127.0.0.1:8000/api/profile', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setProfile(response.data.profile);
-      } catch (err) {
-        console.error('Failed to fetch profile:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://127.0.0.1:8000/api/profile', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+       setProfile(response.data.profile);
+    } catch (err) {
+      console.error('Failed to fetch profile:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchProfile();
-  }, []);
-
+  fetchProfile();
+}, []);
   const openPostModal = () => !postmodal && setPostModal(true);
   const closemodal = () => postmodal && setPostModal(false);
 
@@ -225,7 +223,7 @@ export default function WorkerDashboard() {
           <RouteLinksWorkers
             handleScrollPost={handleScrollPost}
             Dropdownpost={Dropdownpost}
-          />
+            />
 
           {/* Main Content */}
           <div className="w-full m-2 h-screen overflow-y-scroll ">

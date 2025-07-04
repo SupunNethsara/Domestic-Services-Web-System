@@ -35,10 +35,12 @@ import ClientRequestList from './Components/Dashboard/DashboardComponents/Worker
 import AddBankDetails from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/Payment Process/AddBankDetails';
 import ExplainVideoSection from './Components/How to Use System/ExplainVedioSection';
 import ExplainVideoSectionWorkers from './Components/How to Use System/ExplainVedioSectionWorkers';
+import { RequestCountProvider } from './Context/RequestCountContext';
 
 function App() {
   return (
     <AuthProvider>
+          <RequestCountProvider>
       <Routes>
         <Route path='/' element={<UsersWeb />} />
         <Route path="/Welcome" element={<Welcome />} />
@@ -81,6 +83,7 @@ function App() {
               <Route path="workersvideos" element={<ExplainVideoSectionWorkers />} />
         </Route>
       </Routes>
+      </RequestCountProvider>
     </AuthProvider>
   );
 }

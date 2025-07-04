@@ -3,99 +3,105 @@ import { FaPlay, FaLightbulb, FaUsers, FaClock, FaCheckCircle } from 'react-icon
 
 function ExplainVideoSection() {
   return (
-    <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            How Our Platform Works
+    <section className="py-12 bg-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl font-semibold text-gray-800 sm:text-3xl">
+            How Our Service Works
           </h2>
-          <p className="mt-4 max-w-2xl text-xl text-gray-600 mx-auto">
-            Watch our quick guide to get the most out of our service
+          <p className="mt-3 max-w-2xl text-lg text-gray-600 mx-auto">
+            Learn how to easily connect with skilled professionals
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <div className="relative rounded-xl overflow-hidden shadow-2xl">
-            <div className="aspect-w-16 aspect-h-9 bg-gray-200 flex items-center justify-center">
-              <div className="text-center p-8">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-indigo-600 text-white mb-4 cursor-pointer hover:bg-indigo-700 transition-colors">
-                  <FaPlay className="h-6 w-6 ml-1" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div className="relative rounded-lg overflow-hidden shadow-md group">
+            <img
+              src={'/VedioImage.png'}
+              alt="Demo Video"
+              className="w-full h-auto object-cover"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-600 text-white mb-3 cursor-pointer hover:bg-blue-700 transition-all duration-300 transform group-hover:scale-110">
+                  <FaPlay className="h-5 w-5 ml-1 transition-transform duration-300 group-hover:scale-125" />
                 </div>
-                <h3 className="text-lg font-medium text-gray-900">Watch Demo</h3>
-                <p className="mt-1 text-gray-600">2:45 min</p>
+                <h3 className="text-base font-medium text-white transition-opacity duration-300 group-hover:opacity-90">
+                  Watch Overview
+                </h3>
               </div>
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            <div className="absolute inset-0 bg-black/30 transition-opacity duration-300 group-hover:opacity-40"></div>
           </div>
 
-    <div className="space-y-8">
+          <div className="space-y-6">
             <div className="flex items-start">
-              <div className="flex-shrink-0 bg-indigo-100 rounded-lg p-3">
-                <FaLightbulb className="h-6 w-6 text-indigo-600" />
+              <div className="flex-shrink-0 bg-blue-50 rounded-lg p-2">
+                <FaLightbulb className="h-5 w-5 text-blue-600" />
               </div>
               <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Find the Perfect Worker</h3>
-                <p className="mt-1 text-gray-600">
-                  Browse our verified professionals with detailed profiles, ratings, and service history.
+                <h3 className="text-base font-medium text-gray-800">Find Qualified Professionals</h3>
+                <p className="mt-1 text-gray-600 text-sm">
+                  Browse verified professionals with complete profiles and service history.
                 </p>
               </div>
             </div>
 
             <div className="flex items-start">
-              <div className="flex-shrink-0 bg-indigo-100 rounded-lg p-3">
-                <FaUsers className="h-6 w-6 text-indigo-600" />
+              <div className="flex-shrink-0 bg-blue-50 rounded-lg p-2">
+                <FaUsers className="h-5 w-5 text-blue-600" />
               </div>
               <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Easy Booking Process</h3>
-                <p className="mt-1 text-gray-600">
-                  Request services with just a few clicks and get instant confirmation.
+                <h3 className="text-base font-medium text-gray-800">Simple Booking</h3>
+                <p className="mt-1 text-gray-600 text-sm">
+                  Request services quickly and receive prompt confirmation.
                 </p>
               </div>
             </div>
 
             <div className="flex items-start">
-              <div className="flex-shrink-0 bg-indigo-100 rounded-lg p-3">
-                <FaClock className="h-6 w-6 text-indigo-600" />
+              <div className="flex-shrink-0 bg-blue-50 rounded-lg p-2">
+                <FaClock className="h-5 w-5 text-blue-600" />
               </div>
               <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Real-Time Tracking</h3>
-                <p className="mt-1 text-gray-600">
-                  Monitor your service request status and communicate directly with your worker.
+                <h3 className="text-base font-medium text-gray-800">Service Tracking</h3>
+                <p className="mt-1 text-gray-600 text-sm">
+                  Monitor your request status and communicate with your professional.
                 </p>
               </div>
             </div>
 
             <div className="flex items-start">
-              <div className="flex-shrink-0 bg-indigo-100 rounded-lg p-3">
-                <FaCheckCircle className="h-6 w-6 text-indigo-600" />
+              <div className="flex-shrink-0 bg-blue-50 rounded-lg p-2">
+                <FaCheckCircle className="h-5 w-5 text-blue-600" />
               </div>
               <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Secure Payments</h3>
-                <p className="mt-1 text-gray-600">
-                  Pay safely through our platform with multiple payment options available.
+                <h3 className="text-base font-medium text-gray-800">Secure Payment</h3>
+                <p className="mt-1 text-gray-600 text-sm">
+                  Pay safely through our platform with various payment options.
                 </p>
               </div>
             </div>
 
-            <button className="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              Get Started Now
+            <button className="mt-4 inline-flex items-center px-5 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              Get Started
             </button>
           </div>
         </div>
 
-    <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white p-6 rounded-xl shadow-md">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
             <div className="flex items-center">
-              <div className="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                <span className="text-indigo-600 font-medium">JD</span>
+              <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                <span className="text-blue-600 text-sm font-medium">JD</span>
               </div>
-              <div className="ml-4">
-                <h4 className="text-sm font-medium text-gray-900">John D.</h4>
+              <div className="ml-3">
+                <h4 className="text-sm font-medium text-gray-800">John D.</h4>
                 <div className="flex mt-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <svg
                       key={star}
-                      className="h-4 w-4 text-yellow-400"
+                      className="h-3.5 w-3.5 text-yellow-400"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -105,23 +111,23 @@ function ExplainVideoSection() {
                 </div>
               </div>
             </div>
-            <p className="mt-4 text-gray-600">
-              "Found an amazing plumber within minutes. The platform made it so easy to compare options and book immediately."
+            <p className="mt-3 text-gray-600 text-sm">
+              "Found a great plumber quickly. The platform makes it easy to compare options and book."
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-md">
+          <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
             <div className="flex items-center">
-              <div className="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                <span className="text-indigo-600 font-medium">SM</span>
+              <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                <span className="text-blue-600 text-sm font-medium">SM</span>
               </div>
-              <div className="ml-4">
-                <h4 className="text-sm font-medium text-gray-900">Sarah M.</h4>
+              <div className="ml-3">
+                <h4 className="text-sm font-medium text-gray-800">Sarah M.</h4>
                 <div className="flex mt-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <svg
                       key={star}
-                      className="h-4 w-4 text-yellow-400"
+                      className="h-3.5 w-3.5 text-yellow-400"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -131,23 +137,23 @@ function ExplainVideoSection() {
                 </div>
               </div>
             </div>
-            <p className="mt-4 text-gray-600">
-              "As a busy mom, this service has been a lifesaver. I can book trusted help whenever I need it."
+            <p className="mt-3 text-gray-600 text-sm">
+              "Very convenient for busy schedules. I can book trusted help when needed."
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-md">
+          <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
             <div className="flex items-center">
-              <div className="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                <span className="text-indigo-600 font-medium">RK</span>
+              <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                <span className="text-blue-600 text-sm font-medium">RK</span>
               </div>
-              <div className="ml-4">
-                <h4 className="text-sm font-medium text-gray-900">Raj K.</h4>
+              <div className="ml-3">
+                <h4 className="text-sm font-medium text-gray-800">Raj K.</h4>
                 <div className="flex mt-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <svg
                       key={star}
-                      className="h-4 w-4 text-yellow-400"
+                      className="h-3.5 w-3.5 text-yellow-400"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -157,8 +163,8 @@ function ExplainVideoSection() {
                 </div>
               </div>
             </div>
-            <p className="mt-4 text-gray-600">
-              "The payment system is so convenient and secure. Never worry about carrying cash for services anymore."
+            <p className="mt-3 text-gray-600 text-sm">
+              "The payment system is convenient and secure. No need to carry cash for services."
             </p>
           </div>
         </div>
