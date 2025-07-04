@@ -1,12 +1,12 @@
 import { React, useState, useEffect } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import BottomNav from './DashboardComponents/TooltipsWithTabs';
 import WorkerPostModal from './DashboardComponents/Worker Routes Component/WorkerDashboard Components/WorkerPostModal';
 import Popupadd from './DashboardComponents/Client Routes Component/ClientDashboard Components/Popupadd';
 import RouteLinksWorkers from './DashboardComponents/Worker Routes Component/WorkerDashboard Components/Routing Links/RouteLinksWorkers';
 import UserOnlineStatus from './DashboardComponents/Client Routes Component/ClientDashboard Components/UserOnlineStatus';
 import TopRatedServices from './DashboardComponents/Client Routes Component/ClientDashboard Components/TopRatedServices';
+import TooltipsWithTabsWorkers from './DashboardComponents/TooltipsWithTabsWorkers';
 export default function WorkerDashboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
@@ -98,7 +98,7 @@ export default function WorkerDashboard() {
               <div class="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
                 <div class="flex items-center px-6  md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
                   <div class="w-full">
-                    <BottomNav />
+                    <TooltipsWithTabsWorkers />
                   </div>
                 </div>
               </div>

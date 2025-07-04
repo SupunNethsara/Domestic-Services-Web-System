@@ -7,16 +7,16 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { IconButton } from "@mui/material";
 
-export default function TooltipsWithTabs() {
+export default function TooltipsWithTabsWorkers() {
   const location = useLocation();
   const [selected, setSelected] = useState("home");
 
  const tabs = [
-  { id: "home", icon: <HomeIcon />, label: "Home", path: "/client-dashboard" },
-  { id: "videos", icon: <OndemandVideoIcon />, label: "Videos", path: "videos" },
-  { id: "marketplace", icon: <StorefrontIcon />, label: "Marketplace", path: "marketplace" },
-  { id: "groups", icon: <GroupsIcon />, label: "Groups", path: "groups" },
-  { id: "add", icon: <AddCircleOutlineIcon />, label: "Add", path: "add" },
+  { id: "home", icon: <HomeIcon />, label: "Home", path: "/worker-dashboard" },
+  { id: "videos", icon: <OndemandVideoIcon />, label: "Videos", path: "workersvideos" },
+  { id: "marketplace", icon: <StorefrontIcon />, label: "Marketplace", path: "" },
+  { id: "groups", icon: <GroupsIcon />, label: "Groups", path: "" },
+  { id: "add", icon: <AddCircleOutlineIcon />, label: "Add", path: "" },
 ];
 
 useEffect(() => {

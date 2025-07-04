@@ -33,7 +33,8 @@ import MainProfilesForClient from './Components/Dashboard/DashboardComponents/Cl
 import CreateJobRequest from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/Complete job possition component/CreateJobRequest';
 import ClientRequestList from './Components/Dashboard/DashboardComponents/Worker Routes Component/ClientRequestList';
 import AddBankDetails from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/Payment Process/AddBankDetails';
-
+import ExplainVideoSection from './Components/How to Use System/ExplainVedioSection';
+import ExplainVideoSectionWorkers from './Components/How to Use System/ExplainVedioSectionWorkers';
 
 function App() {
   return (
@@ -63,7 +64,8 @@ function App() {
           <Route path="profilepage" element={<ProfilePage />} />
           <Route path="findworkers" element={<FindWorkers />} />
           <Route path="findworkers/ClientWorkersProfile" element={<MainProfilesForClient />} />
-      <Route path="online-users" element={<UserOnlineStatus />} />
+          <Route path="online-users" element={<UserOnlineStatus />} />
+          <Route path="videos" element={<ExplainVideoSection />} />
         </Route>
         <Route path="/worker-dashboard" element={<WorkerDashboard />} >
           <Route index element={<WorkerHome />} />
@@ -76,9 +78,10 @@ function App() {
           <Route path='clientreqesting' element={<ClientRequest />} />
           <Route path="chat" element={<ChatSection />} />
           <Route path="addbankdetails" element={<AddBankDetails />} />
+              <Route path="workersvideos" element={<ExplainVideoSectionWorkers />} />
         </Route>
       </Routes>
-      </AuthProvider>
+    </AuthProvider>
   );
 }
 
