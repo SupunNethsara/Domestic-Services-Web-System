@@ -29,24 +29,58 @@ function Header({ isScrolled, toggleMenu, toggleSearch, isSearchOpen, isMenuOpen
                                     <i className="fas fa-search"></i>
                                 </button>
                                 {isSearchOpen && (
-                                    <div className="absolute right-0 top-10 mt-2 w-64 bg-white rounded-lg shadow-lg p-2 z-10">
-                                        <div className="relative">
-                                            <input
-                                                type="text"
-                                                placeholder="Search..."
-                                                className="w-full pl-10 pr-4 py-2 rounded-lg border border-[#BBDEFB] focus:outline-none focus:border-[#1E88E5] text-sm"
-                                            />
-                                            <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                                    <div className="absolute right-0 top-12 mt-1 w-72 bg-white rounded-xl shadow-xl z-10 overflow-hidden animate-fade-in">
+                                        <div className="p-2">
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Search..."
+                                                    className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#1E88E5]/50 focus:border-transparent text-sm transition-all duration-200 shadow-sm"
+                                                    autoFocus
+                                                />
+                                                <svg
+                                                    className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                </svg>
+                                            </div>
+                                            <div className="mt-2 space-y-1">
+                                                <div className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors">
+                                                    Recent searches
+                                                </div>
+                                                <div className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors">
+                                                    Popular topics
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-gray-50 px-3 py-2 border-t border-gray-100 flex justify-between text-xs text-gray-500">
+                                            <span>Press Esc to close</span>
+                                            <span>↑↓ to navigate</span>
                                         </div>
                                     </div>
                                 )}
                             </div>
-                            <button onClick={() => navigate("/login")} className="bg-white text-[#1E88E5] border border-[#1E88E5] px-4 py-2 rounded-button hover:bg-[#F5F9FF] transition duration-300 whitespace-nowrap cursor-pointer">
-                                Login
-                            </button>
-                            <button onClick={() => navigate("/Welcome")} className="bg-[#1E88E5] text-white px-4 py-2 rounded-button hover:bg-[#1976D2] transition duration-300 whitespace-nowrap cursor-pointer">
-                                Register
-                            </button>
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={() => navigate("/login")}
+                                    className="relative overflow-hidden group bg-transparent text-[#1E88E5] border-2 border-[#1E88E5] px-6 py-2.5 rounded-full hover:bg-[#1E88E5]/5 transition-all duration-300 whitespace-nowrap font-medium text-sm shadow-sm hover:shadow-md"
+                                >
+                                    <span className="relative z-10">Login</span>
+                                    <span className="absolute inset-0 bg-[#1E88E5] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
+                                </button>
+
+                                <button
+                                    onClick={() => navigate("/Welcome")}
+                                    className="relative overflow-hidden group bg-gradient-to-r from-[#1E88E5] to-[#0D47A1] text-white px-6 py-2.5 rounded-full hover:shadow-lg transition-all duration-300 whitespace-nowrap font-medium text-sm shadow-md hover:translate-y-[-2px]"
+                                >
+                                    <span className="relative z-10">Get Started</span>
+                                    <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                                </button>
+                            </div>
                             <button
                                 onClick={toggleMenu}
                                 className="md:hidden text-gray-700 hover:text-[#1E88E5] transition duration-300 cursor-pointer"

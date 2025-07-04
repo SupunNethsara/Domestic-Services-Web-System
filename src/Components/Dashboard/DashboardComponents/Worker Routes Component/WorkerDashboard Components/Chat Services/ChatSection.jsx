@@ -160,22 +160,21 @@ function ChatSection() {
     }
 
     return (
-        <div className="h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex overflow-hidden">
-
-            <div className="w-80 border-r border-gray-200 bg-white/80 backdrop-blur-sm flex flex-col">
-                <div className="p-4 border-b border-gray-200">
-                    <h2 className="text-xl font-semibold text-gray-800 flex items-center">
-                        <FiMessageSquare className="mr-2 text-indigo-500" />
+        <div className="h-[90vh] bg-gradient-to-br from-gray-50 to-blue-50 flex overflow-hidden">
+            <div className="w-80 border-r border-gray-200 bg-white shadow-sm flex flex-col">
+                <div className="p-4 border-b border-gray-200 bg-indigo-600 text-white">
+                    <h2 className="text-xl font-semibold flex items-center">
+                        <FiMessageSquare className="mr-2" />
                         Messages
                     </h2>
                     <div className="mt-4 relative">
-                        <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-200" />
                         <input
                             type="text"
                             placeholder="Search clients..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-full pl-10 pr-4 py-2 rounded-lg bg-indigo-700 text-white placeholder-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-300"
                         />
                     </div>
                 </div>
@@ -185,8 +184,8 @@ function ChatSection() {
                         <div
                             key={client.id}
                             onClick={() => setSelectedClient(client)}
-                            className={`flex items-center p-4 border-b border-gray-100 cursor-pointer transition-all ${selectedClient?.id === client.id
-                                ? 'bg-indigo-50 border-l-4 border-l-indigo-500'
+                            className={`flex items-center p-4 cursor-pointer transition-all ${selectedClient?.id === client.id
+                                ? 'bg-indigo-100 border-l-4 border-l-indigo-500'
                                 : 'hover:bg-gray-50'
                                 }`}
                         >
@@ -195,16 +194,8 @@ function ChatSection() {
                                     src={getAvatarUrl(client)}
                                     alt="Profile"
                                     className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
-                                    onError={(e) => {
-                                        e.target.onerror = null;
-                                        e.target.src = getAvatarUrl({
-                                            ...client,
-                                            profile: { ...client.profile, profile_image: null }
-                                        });
-                                    }}
                                 />
-                                <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${client.online ? 'bg-green-500' : 'bg-gray-300'
-                                    }`}></div>
+                                <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${client.online ? 'bg-green-500' : 'bg-gray-300'}`} />
                             </div>
                             <div className="ml-3 flex-1 min-w-0">
                                 <div className="flex justify-between items-center">
@@ -226,25 +217,16 @@ function ChatSection() {
                 </div>
             </div>
 
-
             {selectedClient ? (
-                <div className="flex-1 flex flex-col bg-white/80 backdrop-blur-sm">
-                    <div className="p-4 border-b border-gray-200 bg-white flex items-center">
+                <div className="flex-1 flex flex-col h-full">
+                    <div className="p-4 border-b border-gray-200 bg-white flex items-center shadow-sm">
                         <div className="relative">
                             <img
                                 src={getAvatarUrl(selectedClient)}
                                 alt="Profile"
                                 className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
-                                onError={(e) => {
-                                    e.target.onerror = null;
-                                    e.target.src = getAvatarUrl({
-                                        ...selectedClient,
-                                        profile: { ...selectedClient.profile, profile_image: null }
-                                    });
-                                }}
                             />
-                            <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${selectedClient.online ? 'bg-green-500' : 'bg-gray-300'
-                                }`}></div>
+                            <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${selectedClient.online ? 'bg-green-500' : 'bg-gray-300'}`} />
                         </div>
                         <div className="ml-3">
                             <h3 className="text-sm font-medium text-gray-900">
@@ -255,13 +237,13 @@ function ChatSection() {
                             </p>
                         </div>
                         <div className="ml-auto flex space-x-2">
-                            <button className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition">
+                            <button className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-gray-100 rounded-full transition">
                                 <FiMoreVertical />
                             </button>
                         </div>
                     </div>
 
-                    <div className="flex-1 p-4 overflow-y-auto bg-gradient-to-b from-white to-indigo-50/50">
+                    <div className="flex-1 p-4 overflow-y-auto bg-gradient-to-b from-white to-blue-50">
                         <div className="space-y-4">
                             {messages.map((msg) => (
                                 <div
@@ -273,14 +255,14 @@ function ChatSection() {
                                 >
                                     <div
                                         className={`max-w-xs lg:max-w-md px-4 py-3 rounded-xl ${msg.sender_id === selectedClient.id
-                                            ? 'rounded-tl-none bg-white'
-                                            : 'rounded-tr-none bg-indigo-500 text-white'
-                                            } shadow-sm border border-gray-100`}
+                                            ? 'rounded-tl-none bg-white border border-gray-200'
+                                            : 'rounded-tr-none bg-indigo-600 text-white'
+                                            } shadow-sm`}
                                     >
                                         <p>{msg.message}</p>
                                         <p className={`text-xs mt-1 text-right ${msg.sender_id === selectedClient.id
                                             ? 'text-gray-400'
-                                            : 'text-indigo-100'
+                                            : 'text-indigo-200'
                                             }`}>
                                             {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </p>
@@ -291,9 +273,9 @@ function ChatSection() {
                         </div>
                     </div>
 
-                    <div className="p-4 border-t border-gray-200 bg-white">
-                        <div className="flex items-center">
-                            <button className="p-2 text-gray-500 hover:text-indigo-600 rounded-full transition">
+                    <div className="p-4 border-t border-gray-200 bg-white shadow-lg">
+                        <div className="flex items-center space-x-2">
+                            <button className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-gray-100 rounded-full transition">
                                 <FiPaperclip />
                             </button>
                             <input
@@ -302,14 +284,14 @@ function ChatSection() {
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                                className="flex-1 mx-2 px-4 py-3 rounded-full border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="flex-1 px-4 py-3 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             />
                             <button
                                 onClick={sendMessage}
                                 disabled={!message.trim()}
-                                className={`p-2 rounded-full transition ${message.trim()
-                                    ? 'text-indigo-600 hover:text-indigo-700'
-                                    : 'text-gray-400 cursor-not-allowed'
+                                className={`p-3 rounded-full transition ${message.trim()
+                                    ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                     }`}
                             >
                                 <FiSend />
@@ -318,10 +300,10 @@ function ChatSection() {
                     </div>
                 </div>
             ) : (
-                <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-white to-blue-50/50">
+                <div className="flex-1 flex items-center justify-center bg-white">
                     <div className="text-center p-8 max-w-md">
                         <div className="mx-auto h-16 w-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
-                            <FiUser className="text-indigo-500 text-2xl" />
+                            <FiUser className="text-indigo-600 text-2xl" />
                         </div>
                         <h3 className="text-lg font-medium text-gray-900 mb-2">Select a client</h3>
                         <p className="text-gray-500">Choose a client from the sidebar to start chatting</p>
