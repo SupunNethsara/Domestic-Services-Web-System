@@ -82,14 +82,14 @@ const PaymentsTab = ({ onPaymentClick, worker }) => {
                       : '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    ${payment.amount}
+                    LKR{payment.amount}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {payment.method || 'Debit Card'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      payment.status?.toLowerCase() === 'completed'
+                      payment.status?.toLowerCase() === 'paid'
                         ? 'bg-green-100 text-green-800'
                         : payment.status?.toLowerCase() === 'pending'
                         ? 'bg-yellow-100 text-yellow-800'

@@ -77,10 +77,8 @@ function App() {
           <Route path="chat" element={<ChatSection />} />
           <Route path="addbankdetails" element={<AddBankDetails />} />
         </Route>
-
-
       </Routes>
-    </AuthProvider>
+      </AuthProvider>
   );
 }
 
