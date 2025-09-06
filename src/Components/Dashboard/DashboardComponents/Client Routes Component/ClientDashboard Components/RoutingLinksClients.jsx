@@ -7,7 +7,7 @@ function RoutingLinksClients({ Dropdownpost, handleScrollPost, countAvailability
   return (
     <div className="h-[90vh] flex flex-col bg-gradient-to-b from-white to-gray-50 shadow-lg rounded-xl overflow-hidden">
       <div className="flex-grow space-y-1 p-3">
-        <div 
+        <div
           className="relative group mb-2"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
@@ -73,11 +73,22 @@ function RoutingLinksClients({ Dropdownpost, handleScrollPost, countAvailability
 
         <Link
           to="findworkers"
-          className="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 transition-all duration-200 group transform hover:-translate-y-0.5 relative"
+          className="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 transition-all duration-200 group transform hover:-translate-y-0.5 relative"
         >
           <div className="p-1.5 rounded-lg bg-gray-100 group-hover:bg-indigo-100 group-hover:scale-110 transition-all duration-200 mr-3">
-            <svg className="h-5 w-5 text-gray-50 group-hover:text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            <svg
+              className="h-5 w-5 text-gray-500 group-hover:text-indigo-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+              />
             </svg>
           </div>
           <span>Find Workers</span>
