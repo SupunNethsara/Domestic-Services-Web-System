@@ -27,7 +27,7 @@ export default function ClientRequestPosts() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
         </div>
     );
-    
+
     if (error) return (
         <div className="w-full mx-auto p-6 bg-white rounded-xl shadow-sm border border-gray-100 text-center mt-4 mr-3">
             <div className="flex justify-center mb-4">
@@ -37,8 +37,8 @@ export default function ClientRequestPosts() {
             </div>
             <h3 className="text-lg font-medium text-gray-800 mb-2">Error Loading Posts</h3>
             <p className="text-gray-500 mb-4">{error}</p>
-            <button 
-                onClick={() => window.location.reload()} 
+            <button
+                onClick={() => window.location.reload()}
                 className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
             >
                 Try Again
@@ -151,10 +151,10 @@ export default function ClientRequestPosts() {
 
                                 <div className="flex items-center mt-3 space-x-3">
                                     <div className="flex-1 bg-gray-50 rounded-full pl-4 pr-2 py-2 flex items-center">
-                                        <input 
-                                            type="text" 
-                                            placeholder="Add a comment..." 
-                                            className="flex-1 bg-transparent border-none focus:ring-0 text-sm placeholder-gray-400" 
+                                        <input
+                                            type="text"
+                                            placeholder="Add a comment..."
+                                            className="flex-1 bg-transparent border-none focus:ring-0 text-sm placeholder-gray-400"
                                         />
                                         <button className="text-gray-400 hover:text-indigo-500 p-1 rounded-full">
                                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

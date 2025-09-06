@@ -91,14 +91,36 @@ function RoutingLinksClients({ Dropdownpost, handleScrollPost, countAvailability
               />
             </svg>
           </div>
-          <span>Find Workers</span>
+          <span>Make Request to Users</span>
           {countAvailability > 0 && (
             <span className="ml-auto inline-flex items-center justify-center h-5 w-5 text-xs font-bold text-white bg-gradient-to-r from-red-500 to-rose-500 rounded-full transform group-hover:scale-110 transition-transform shadow-sm">
               {countAvailability}
             </span>
           )}
         </Link>
+        <Link
+          to=""
+          className="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 transition-all duration-200 group transform hover:-translate-y-0.5 relative"
+        >
+          <div className="p-1.5 rounded-lg bg-gray-100 group-hover:bg-indigo-100 group-hover:scale-110 transition-all duration-200 mr-3">
+            <svg
+              className="h-5 w-5 text-gray-500 group-hover:text-indigo-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905a3.61 3.61 0 01-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
+              />
+            </svg>
+          </div>
+          <span>Worker Responses</span>
 
+        </Link>
         <button
           onClick={handleScrollPost}
           className="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 w-full transition-all duration-200 group transform hover:-translate-y-0.5"
