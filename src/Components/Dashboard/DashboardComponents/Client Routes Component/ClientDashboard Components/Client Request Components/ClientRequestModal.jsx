@@ -3,6 +3,7 @@ import { FiX, FiCalendar, FiMessageSquare, FiTool } from 'react-icons/fi';
 import axios from 'axios';
 
 function ClientRequestModal({ workers, onClose }) {
+  console.log("Worker Data in Modal:", workers);
  const [requestData, setRequestData] = useState({
         message: '',
         requestedDate: '',
@@ -32,7 +33,7 @@ function ClientRequestModal({ workers, onClose }) {
             const response = await axios.post(
                 'http://127.0.0.1:8000/api/service-requests',
                 {
-                    worker_id: workers.worker_id,
+                    worker_id: workers.worker_id || workers,
                     message: requestData.message,
                     requested_date: requestData.requestedDate,
                     special_requirements: requestData.specialRequirements
@@ -44,8 +45,6 @@ function ClientRequestModal({ workers, onClose }) {
                     }
                 }
             );
-
-            console.log('Request successful:', response.data);
             setSuccess(true);
 
             setTimeout(() => {

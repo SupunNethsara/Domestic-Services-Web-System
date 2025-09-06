@@ -84,7 +84,6 @@ function FindWorkers() {
         fetchWorkers();
     }, []);
 
-    // Fetch all worker ratings and group by worker_id
     useEffect(() => {
         const fetchRatings = async () => {
             try {
@@ -96,13 +95,12 @@ function FindWorkers() {
                 });
                 setWorkerRatings(ratingsMap);
             } catch (err) {
-                // Optionally handle error
+               
             }
         };
         fetchRatings();
     }, []);
 
-    // Helper to get average rating for a worker
     const getAverageRating = (workerId) => {
         const ratings = workerRatings[workerId];
         if (!ratings || ratings.length === 0) return null;

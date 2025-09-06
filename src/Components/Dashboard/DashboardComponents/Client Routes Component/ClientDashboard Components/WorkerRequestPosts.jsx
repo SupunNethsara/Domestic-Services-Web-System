@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import ClientRequestModal from './Client Request Components/ClientRequestModal';
 
 export default function WorkerRequestPosts() {
     const [postData, setPostData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isShowRequestModal, setIsShowRequestModal] = useState(false);
+    const [selectedWorker, setSelectedWorker] = useState(null);
 
+    const handleShowRequest = () => {
+        setIsShowRequestModal(!isShowRequestModal);
+    }
     useEffect(() => {
         const fetchPosts = async () => {
             try {
                 const response = await axios.get('http://127.0.0.1:8000/api/GetWorkerPost');
                 setPostData(response.data.posts);
+                setSelectedWorker(response.data.posts[0].user_id);
                 setLoading(false);
-                console.log("Posts fetched successfully:", response.data.posts);
-            } catch (err) {
+               } catch (err) {
                 console.error("Error fetching posts:", err.response?.data || err.message);
                 setError(err.response?.data?.message || err.message);
                 setLoading(false);
@@ -103,8 +109,16 @@ export default function WorkerRequestPosts() {
 
                                 <div className="flex items-center mt-3 space-x-2">
                                     <input type="text" placeholder="Add a comment..." className="flex-1 border-none focus:ring-0 text-sm" />
-                                    <button className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm font-semibold hover:bg-blue-600">Post</button>
-                                    <button className="bg-green-500 text-white px-3 py-1 rounded-md text-sm font-semibold hover:bg-green-600">Connect</button>
+                                    <button
+                                        onClick={() => {
+                                            setSelectedWorker(post.user_id);
+                                            handleShowRequest();
+                                        }}
+                                        className="bg-green-500 text-white px-3 py-1 rounded-md text-sm font-semibold hover:bg-green-600"
+                                    >
+                                        Connect
+                                    </button>
+
                                 </div>
                             </div>
                         </div>
@@ -134,6 +148,12 @@ export default function WorkerRequestPosts() {
                         This space is empty. Be the first to share something!
                     </p>
                 </div>
+            )}
+            {isShowRequestModal && (
+                <ClientRequestModal
+                    onClose={() => setIsShowRequestModal(false)}
+                    workers={selectedWorker}
+                />
             )}
         </div>
     )
