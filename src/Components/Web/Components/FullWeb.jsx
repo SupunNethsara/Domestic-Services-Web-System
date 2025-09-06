@@ -24,7 +24,7 @@ const FullWeb = () => {
     const testimonials = [
         {
             id: 1,
-            name: "Sarah Johnson",
+            name: "kamal Jayantha",
             role: "Business Owner",
             image: "https://readdy.ai/api/search-image?query=professional%20business%20woman%20portrait%20with%20short%20brown%20hair%2C%20blue%20background%2C%20professional%20headshot%2C%20high%20quality%2C%208k%2C%20photorealistic%2C%20soft%20lighting%2C%20professional%20attire&width=100&height=100&seq=1&orientation=squarish",
             quote: "This platform has completely transformed how I find and collaborate with professionals. The communication tools are seamless and intuitive.",
@@ -32,7 +32,7 @@ const FullWeb = () => {
         },
         {
             id: 2,
-            name: "Michael Chen",
+            name: "Kalpana Udara",
             role: "Freelance Designer",
             image: "https://readdy.ai/api/search-image?query=professional%20asian%20man%20portrait%20with%20glasses%2C%20blue%20background%2C%20professional%20headshot%2C%20high%20quality%2C%208k%2C%20photorealistic%2C%20soft%20lighting%2C%20professional%20attire&width=100&height=100&seq=2&orientation=squarish",
             quote: "As a freelancer, finding reliable clients was always challenging until I discovered this platform. The review system helps build trust quickly.",
@@ -40,7 +40,7 @@ const FullWeb = () => {
         },
         {
             id: 3,
-            name: "Emily Rodriguez",
+            name: "Ruwan Desapriya",
             role: "Project Manager",
             image: "https://readdy.ai/api/search-image?query=professional%20latina%20woman%20portrait%20with%20long%20dark%20hair%2C%20blue%20background%2C%20professional%20headshot%2C%20high%20quality%2C%208k%2C%20photorealistic%2C%20soft%20lighting%2C%20professional%20attire&width=100&height=100&seq=3&orientation=squarish",
             quote: "The platform's intuitive design makes project management a breeze. I can easily communicate with my team and track progress in real-time.",

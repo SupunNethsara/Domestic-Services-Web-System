@@ -89,10 +89,10 @@ function Sidebar() {
                 </div>
                 <div className="mt-auto p-4 flex items-center">
                     <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium">
-                        DL
+                        SN
                     </div>
                     <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900">Deadloads2173</p>
+                        <p className="text-sm font-medium text-gray-900">Admin Panel</p>
                         <p className="text-xs text-gray-500">Free Plan</p>
                     </div>
                 </div>
