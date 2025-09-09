@@ -45,15 +45,15 @@ export default function Availability() {
             setError('User not authenticated');
         }
     }, [user_id]);
-    const handledeleteAvilability = async (user_id) => {
-        try {
-            const response = await axios.delete(`http://127.0.0.1:8000/api/deleteAvailability/${user_id}`);
-            fetchAvailabilityData();
-        } catch (err) {
-            console.error('Delete error:', err);
-            setError('Failed to delete availability');
-        }
-    };
+   const handledeleteAvilability = async (worker_id) => {
+    try {
+        const response = await axios.delete(`http://127.0.0.1:8000/api/deleteAvailability/${worker_id}`);
+        fetchAvailabilityData();
+    } catch (err) {
+        console.error('Delete error:', err);
+        setError('Failed to delete availability');
+    }
+};
     return (
         <div className="min-h-screen bg-gray-50 p-6">
             <div className="max-w-7xl mx-auto">

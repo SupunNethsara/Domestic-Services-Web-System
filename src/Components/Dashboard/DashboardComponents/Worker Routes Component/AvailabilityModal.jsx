@@ -174,9 +174,9 @@ function AvailabilityModal({ handleModal }) {
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Worker ID</label>
+                                <div className="grid m-2 p-2 grid-cols-1 md:grid-cols-1 gap-6">
+                                    <div className='hidden'>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1  ">Worker ID</label>
                                         <input
                                             type="text"
                                             name="worker_id"
