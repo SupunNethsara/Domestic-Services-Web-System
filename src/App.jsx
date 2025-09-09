@@ -36,53 +36,55 @@ import AddBankDetails from './Components/Dashboard/DashboardComponents/Client Ro
 import ExplainVideoSection from './Components/How to Use System/ExplainVedioSection';
 import ExplainVideoSectionWorkers from './Components/How to Use System/ExplainVedioSectionWorkers';
 import { RequestCountProvider } from './Context/RequestCountContext';
+import WorkerResponse from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientDashboard Components/WorkerResponse';
 
 function App() {
   return (
     <AuthProvider>
-          <RequestCountProvider>
-      <Routes>
-        <Route path='/' element={<UsersWeb />} />
-        <Route path="/Welcome" element={<Welcome />} />
-        <Route path="/user-select" element={<UserSelection />} />
-        <Route path="/select-role" element={<RoleSelection />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/Client-Register" element={<ClientRegister />} />
-        <Route path="/Worker-Register" element={<WorkersRegister />} />
+      <RequestCountProvider>
+        <Routes>
+          <Route path='/' element={<UsersWeb />} />
+          <Route path="/Welcome" element={<Welcome />} />
+          <Route path="/user-select" element={<UserSelection />} />
+          <Route path="/select-role" element={<RoleSelection />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/Client-Register" element={<ClientRegister />} />
+          <Route path="/Worker-Register" element={<WorkersRegister />} />
 
-        <Route path="/adminpanel" element={<AdminDashbaord />}>
-          <Route index element={<Statics_dashboard />} />
-          <Route path="statics" element={<Statics_dashboard />} />
-          <Route path="user_manage" element={<UserTable />} />
-          <Route path="post_manage" element={<PostTable />} />
-        </Route>
-        <Route path="/client-dashboard" element={<ClientDashboard />} >
-          <Route index element={<ClientHome />} />
-          <Route path='worker_availability' element={<AvailabilityWorkers />} />
-          <Route path="clienthome" element={<ClientHome />} />
-          <Route path="makeprofile" element={<MakeProfile />} />
-          <Route path="create-job-request" element={<CreateJobRequest />} />
-          <Route path="makepost" element={<MakePost />} />
-          <Route path="profilepage" element={<ProfilePage />} />
-          <Route path="findworkers" element={<FindWorkers />} />
-          <Route path="findworkers/ClientWorkersProfile" element={<MainProfilesForClient />} />
-          <Route path="online-users" element={<UserOnlineStatus />} />
-          <Route path="videos" element={<ExplainVideoSection />} />
-        </Route>
-        <Route path="/worker-dashboard" element={<WorkerDashboard />} >
-          <Route index element={<WorkerHome />} />
-          <Route path="workerhome" element={<WorkerHome />} />
-          <Route path="makeworkerprofile" element={<MakeProfileOwrkers />} />
-          <Route path="getrequest" element={<ClientRequestList />} />
-          <Route path="makeprofile" element={<MakeProfile />} />
-          <Route path="workerprofile" element={<WorkerProfile />} />
-          <Route path="workeravailability" element={<Availability />} />
-          <Route path='clientreqesting' element={<ClientRequest />} />
-          <Route path="chat" element={<ChatSection />} />
-          <Route path="addbankdetails" element={<AddBankDetails />} />
-              <Route path="workersvideos" element={<ExplainVideoSectionWorkers />} />
-        </Route>
-      </Routes>
+          <Route path="/adminpanel" element={<AdminDashbaord />}>
+            <Route index element={<Statics_dashboard />} />
+            <Route path="statics" element={<Statics_dashboard />} />
+            <Route path="user_manage" element={<UserTable />} />
+            <Route path="post_manage" element={<PostTable />} />
+          </Route>
+          <Route path="/client-dashboard" element={<ClientDashboard />} >
+            <Route index element={<ClientHome />} />
+            <Route path='worker_availability' element={<AvailabilityWorkers />} />
+            <Route path="clienthome" element={<ClientHome />} />
+            <Route path="makeprofile" element={<MakeProfile />} />
+            <Route path="create-job-request" element={<CreateJobRequest />} />
+            <Route path="makepost" element={<MakePost />} />
+            <Route path="profilepage" element={<ProfilePage />} />
+            <Route path="findworkers" element={<FindWorkers />} />
+            <Route path="findworkers/ClientWorkersProfile" element={<MainProfilesForClient />} />
+            <Route path="online-users" element={<UserOnlineStatus />} />
+            <Route path="videos" element={<ExplainVideoSection />} />
+            <Route path="worker_response" element={<WorkerResponse/>} />
+          </Route>
+          <Route path="/worker-dashboard" element={<WorkerDashboard />} >
+            <Route index element={<WorkerHome />} />
+            <Route path="workerhome" element={<WorkerHome />} />
+            <Route path="makeworkerprofile" element={<MakeProfileOwrkers />} />
+            <Route path="getrequest" element={<ClientRequestList />} />
+            <Route path="makeprofile" element={<MakeProfile />} />
+            <Route path="workerprofile" element={<WorkerProfile />} />
+            <Route path="workeravailability" element={<Availability />} />
+            <Route path='clientreqesting' element={<ClientRequest />} />
+            <Route path="chat" element={<ChatSection />} />
+            <Route path="addbankdetails" element={<AddBankDetails />} />
+            <Route path="workersvideos" element={<ExplainVideoSectionWorkers />} />
+          </Route>
+        </Routes>
       </RequestCountProvider>
     </AuthProvider>
   );
