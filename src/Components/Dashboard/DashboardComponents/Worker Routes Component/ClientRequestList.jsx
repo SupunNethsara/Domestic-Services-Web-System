@@ -15,11 +15,11 @@ const ClientRequestList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isJobAsked, setIsJobAsked] = useState(false);
 
-
   const handleAskAboutJob = (request) => {
     setSelectedRequest(request);
     setIsJobAsked(true);
   };
+  
   useEffect(() => {
     const fetchRequests = async () => {
       try {
@@ -167,7 +167,7 @@ const ClientRequestList = () => {
       </div>
 
       {isModalOpen && selectedRequest && (
-        <div style={{ backgroundColor: 'rgb(0,0,0,0.5' }} className="fixed inset-0 flex items-center justify-center p-4 z-50">
+        <div style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} className="fixed inset-0 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
