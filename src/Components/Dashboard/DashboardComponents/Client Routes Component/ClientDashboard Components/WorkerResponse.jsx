@@ -163,10 +163,8 @@ function WorkerResponse() {
           )}
         </div>
       </div>
-
-      {/* Response Details Modal */}
       {isModalOpen && selectedResponse && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-start mb-6">
@@ -179,7 +177,6 @@ function WorkerResponse() {
               </div>
 
               <div className="space-y-6">
-                {/* Worker Information */}
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h3 className="font-medium text-gray-800 mb-3">Worker Information</h3>
                   <div className="flex items-center gap-4">
@@ -211,8 +208,6 @@ function WorkerResponse() {
                     </div>
                   </div>
                 </div>
-
-                {/* Response Content */}
                 <div>
                   <h3 className="font-medium text-gray-800 mb-3">Response Content</h3>
                   <div className="space-y-4">
@@ -245,8 +240,6 @@ function WorkerResponse() {
                     </div>
                   </div>
                 </div>
-
-                {/* Action Buttons */}
                 <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                   <button
                     onClick={closeModal}
@@ -256,8 +249,7 @@ function WorkerResponse() {
                   </button>
                   <button
                     onClick={() => {
-                      // Add functionality to contact the worker
-                      console.log('Contact worker:', selectedResponse.worker_profile);
+                    console.log('Contact worker:', selectedResponse.worker_profile);
                     }}
                     className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
                   >
