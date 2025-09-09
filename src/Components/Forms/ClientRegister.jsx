@@ -159,6 +159,15 @@ export default function ClientRegister() {
                 </svg>
               </button>
             </form>
+            <p className="mt-6 text-sm text-left text-gray-500">
+              Do you have an account?{" "}
+              <button
+                onClick={() => navigate("/login")}
+                className="text-blue-500 hover:underline focus:outline-none"
+              >
+                Login
+              </button>
+            </p>
           </motion.div>
         </div>
       </div>
