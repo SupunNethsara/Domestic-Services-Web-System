@@ -142,31 +142,9 @@ export default function ClientRequestPosts() {
                                             <span className="text-sm ml-1">7</span>
                                         </button>
                                     </div>
-                                    <button className="text-gray-500 hover:text-indigo-500 transition-colors">
-                                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                                        </svg>
+                                    <button className="bg-gradient-to-r from-indigo-600 to-indigo-500 text-white px-5 py-2 rounded-full text-sm font-semibold hover:from-indigo-700 hover:to-indigo-600 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                                        Ask about job
                                     </button>
-                                </div>
-
-                                <div className="flex items-center mt-3 space-x-3">
-                                    <div className="flex-1 bg-gray-50 rounded-full pl-4 pr-2 py-2 flex items-center">
-                                        <input
-                                            type="text"
-                                            placeholder="Add a comment..."
-                                            className="flex-1 bg-transparent border-none focus:ring-0 text-sm placeholder-gray-400"
-                                        />
-                                        <button className="text-gray-400 hover:text-indigo-500 p-1 rounded-full">
-                                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div className="flex space-x-2">
-                                        <button className="bg-gradient-to-r from-indigo-600 to-indigo-500 text-white px-5 py-2 rounded-full text-sm font-semibold hover:from-indigo-700 hover:to-indigo-600 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-                                            Ask about job
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>

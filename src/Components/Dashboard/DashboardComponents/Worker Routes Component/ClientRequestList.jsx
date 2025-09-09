@@ -5,6 +5,7 @@ import {
   FiMapPin,
   FiX, FiChevronDown, FiMessageSquare
 } from 'react-icons/fi';
+import AskJobModal from './WorkerDashboard Components/AskJobModal';
 
 const ClientRequestList = () => {
   const [requests, setRequests] = useState([]);
@@ -12,7 +13,13 @@ const ClientRequestList = () => {
   const [error, setError] = useState(null);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isJobAsked, setIsJobAsked] = useState(false);
 
+
+  const handleAskAboutJob = (request) => {
+    setSelectedRequest(request);
+    setIsJobAsked(true);
+  };
   useEffect(() => {
     const fetchRequests = async () => {
       try {
@@ -22,6 +29,7 @@ const ClientRequestList = () => {
             'Authorization': `Bearer ${token}`
           }
         });
+        console.log('displaying data', response.data);
         setRequests(response.data || []);
       } catch (err) {
         setError(err.message || 'Failed to fetch requests');
@@ -77,7 +85,7 @@ const ClientRequestList = () => {
             requests.map((request) => (
               <div key={request.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all hover:shadow-md">
                 <div className="p-5 flex flex-col sm:flex-row justify-between gap-4">
-               <div className="flex items-start gap-4 flex-1 min-w-0">
+                  <div className="flex items-start gap-4 flex-1 min-w-0">
                     <div className="flex-shrink-0">
                       <img
                         src={request.client?.profile?.profile_image || '/default-avatar.png'}
@@ -102,7 +110,7 @@ const ClientRequestList = () => {
                     </div>
                   </div>
 
-                 <div className="flex sm:flex-col items-center sm:items-end gap-3">
+                  <div className="flex sm:flex-col items-center sm:items-end gap-3">
                     <div className={`px-3 py-1 text-xs rounded-full ${request.status === 'open'
                       ? 'bg-green-50 text-green-700'
                       : 'bg-gray-50 text-gray-700'
@@ -112,7 +120,7 @@ const ClientRequestList = () => {
 
                     <div className="flex gap-2">
                       <button
-                        onClick={() => handleAskAboutJob(request.id)}
+                        onClick={() => handleAskAboutJob(request)}
                         className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors"
                       >
                         <FiMessageSquare size={16} />
@@ -280,6 +288,11 @@ const ClientRequestList = () => {
           </div>
         </div>
       )}
+      <AskJobModal
+        isOpen={isJobAsked}
+        onClose={() => setIsJobAsked(false)}
+        request={selectedRequest}
+      />
     </div>
   );
 };

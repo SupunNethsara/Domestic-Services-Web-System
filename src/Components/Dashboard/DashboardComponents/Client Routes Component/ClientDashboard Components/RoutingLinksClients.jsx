@@ -121,28 +121,7 @@ function RoutingLinksClients({ Dropdownpost, handleScrollPost, countAvailability
           <span>Worker Responses</span>
 
         </Link>
-        <button
-          onClick={handleScrollPost}
-          className="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-gray-50 w-full transition-all duration-200 group transform hover:-translate-y-0.5"
-        >
-          <div className="p-1.5 rounded-lg bg-gray-100 group-hover:bg-indigo-100 group-hover:scale-110 transition-all duration-200 mr-3">
-            <svg className="h-5 w-5 text-gray-500 group-hover:text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-          </div>
-          <span>Create Post</span>
-        </button>
 
-        {Dropdownpost && (
-          <div className="ml-10 mt-1 space-y-1 animate-fadeIn">
-            <Link
-              to="makepost"
-              className="block px-3 py-1.5 text-sm font-medium rounded-lg text-gray-600 hover:text-indigo-700 hover:bg-gray-50 transition-all duration-200 transform hover:-translate-y-0.5"
-            >
-              New Post
-            </Link>
-          </div>
-        )}
       </div>
 
       <div className="px-4 py-3 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-indigo-50 rounded-b-xl">
