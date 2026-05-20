@@ -1,176 +1,227 @@
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router";
 import axios from 'axios';
-import './Style.css'
 import { useState } from "react";
+
 export default function ClientRegister() {
   const navigate = useNavigate();
-
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handlesubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setError('');
     if (password.trim() !== confirmPassword.trim()) {
-      alert("Password and confirmation password do not match");
+      setError("Passwords do not match. Please check and try again.");
       return;
     }
-
+    setLoading(true);
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/ClientRegister', {
-        fname, lname, mobile, email, password, password_confirmation: confirmPassword
+      await axios.post('http://127.0.0.1:8000/api/ClientRegister', {
+        fname, lname, mobile, email, password, password_confirmation: confirmPassword,
       });
-     alert("Registration Successful!");
       navigate('/login');
-    } catch (error) {
-      console.error("Error:", error.response ? error.response.data : error.message);
-      alert("Registration failed!");
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const EyeIcon = ({ show, toggle }) => (
+    <button type="button" onClick={toggle} className="absolute right-3 top-3.5 text-slate-400 hover:text-slate-600 transition-colors">
+      {show ? (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+        </svg>
+      ) : (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+      )}
+    </button>
+  );
+
   return (
-    <section class="bg-white ">
-      <div class="flex justify-center min-h-screen ">
-        <motion.div
-          initial={{ x: -100 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1 }}
-          className="hidden bg-cover p-10 justify-center items-center lg:flex lg:w-2/5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-xl relative"
-        >
-          <div className="text-center">
-            <h2 className="text-5xl font-bold text-white mb-4 tracking-tighter">HOME HEROES</h2>
-            <p className="text-blue-100 text-lg mb-8">Modern living solutions</p>
-            <div className="mt-12 mx-auto w-3/4">
-              <svg
-                viewBox="0 0 512 512"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-full h-auto"
-              >
-                <path
-                  d="M256 32L0 160V480H512V160L256 32Z"
-                  fill="white"
-                  fillOpacity="0.2"
-                />
-                <path
-                  d="M416 480V256H320V480H416Z"
-                  fill="white"
-                  fillOpacity="0.4"
-                />
-                <path
-                  d="M192 480V256H96V480H192Z"
-                  fill="white"
-                  fillOpacity="0.4"
-                />
-                <path
-                  d="M256 32L0 160H512L256 32Z"
-                  fill="white"
-                  fillOpacity="0.6"
-                />
+    <div className="min-h-screen flex bg-slate-950">
+      {/* Left panel */}
+      <div className="hidden lg:flex lg:w-2/5 relative flex-col justify-between p-12 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/60 via-slate-950 to-violet-900/40" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_80%_60%_at_10%_20%,rgba(99,102,241,0.25),transparent)] pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-violet-900/20 rounded-full blur-3xl pointer-events-none" />
+
+        <button onClick={() => navigate('/')} className="relative flex items-center gap-2.5 group w-fit">
+          <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+            </svg>
+          </div>
+          <span className="text-white font-bold text-lg group-hover:text-indigo-300 transition-colors">HomeHero</span>
+        </button>
+
+        <div className="relative">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-6">
+            <span className="w-2 h-2 bg-indigo-400 rounded-full" />
+            <span className="text-indigo-300 text-xs font-medium">Client Account</span>
+          </div>
+          <h2 className="text-4xl font-bold text-white mb-4 leading-tight">
+            Hire trusted<br />
+            <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">professionals</span>
+          </h2>
+          <p className="text-slate-400 text-base mb-10 leading-relaxed">
+            Create your client account and start connecting with verified home service professionals today.
+          </p>
+          <div className="space-y-4">
+            {[
+              { icon: '🔍', text: 'Browse & hire verified workers' },
+              { icon: '📅', text: 'Schedule services at your convenience' },
+              { icon: '💳', text: 'Secure payments & full protection' },
+              { icon: '⭐', text: 'Rate and review professionals' },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <span className="text-base">{item.icon}</span>
+                <span className="text-slate-300 text-sm">{item.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <p className="relative text-slate-600 text-xs">© {new Date().getFullYear()} HomeHero. All rights reserved.</p>
+      </div>
+
+      {/* Right panel — form */}
+      <div className="flex-1 flex items-start justify-center p-6 lg:p-12 bg-white overflow-y-auto">
+        <div className="w-full max-w-lg py-4">
+          {/* Mobile logo */}
+          <button onClick={() => navigate('/')} className="flex items-center gap-2 mb-6 lg:hidden">
+            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-lg flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
               </svg>
             </div>
+            <span className="font-bold text-slate-900">HomeHero</span>
+          </button>
+
+          {/* Role switcher */}
+          <div className="flex rounded-xl bg-slate-100 p-1 mb-6">
+            <button className="flex-1 py-2 rounded-lg bg-white shadow-sm text-sm font-semibold text-indigo-600 transition-all">
+              🏠 Client
+            </button>
+            <button
+              onClick={() => navigate('/Worker-Register')}
+              className="flex-1 py-2 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700 transition-all"
+            >
+              💼 Professional
+            </button>
           </div>
 
-        </motion.div>
+          <h1 className="text-2xl font-bold text-slate-900 mb-1">Create your account</h1>
+          <p className="text-slate-500 text-sm mb-6">Fill in your details to get started as a client.</p>
 
-        <div class="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5 ">
+          {error && (
+            <div className="mb-5 flex items-start gap-3 px-4 py-3 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm">
+              <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {error}
+            </div>
+          )}
 
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ duration: 1 }} class="w-full">
-
-            <h1 class="text-2xl font-semibold tracking-wider text-gray-800 capitalize ">
-              Get your free account now.
-            </h1>
-
-            <p class="mt-4 text-gray-500 ">
-              Let’s get you all set up so you can verify your personal account and begin setting up your profile.
-            </p>
-
-            <div class="mt-6">
-              <h1 class="text-gray-500 ">Select type of account</h1>
-
-              <div class="mt-3 md:flex md:items-center md:-mx-2">
-                <button class="flex justify-center w-full px-6 py-3 text-white bg-blue-500 rounded-lg md:w-auto md:mx-2 focus:outline-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-
-                  <span class="mx-2">
-                    client
-                  </span>
-                </button>
-
-                <button onClick={() => navigate("/Worker-Register")} class="flex justify-center w-full px-6 py-3 mt-4 text-blue-500 border border-blue-500 rounded-lg md:mt-0 md:w-auto md:mx-2 dark:border-blue-400 dark:text-blue-400 focus:outline-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-
-                  <span class="mx-2">
-                    worker
-                  </span>
-                </button>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">First name</label>
+                <input
+                  type="text" placeholder="John" value={fname}
+                  onChange={(e) => setFname(e.target.value)} required
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all placeholder-slate-400 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Last name</label>
+                <input
+                  type="text" placeholder="Snow" value={lname}
+                  onChange={(e) => setLname(e.target.value)} required
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all placeholder-slate-400 text-sm"
+                />
               </div>
             </div>
 
-            <form onSubmit={handlesubmit} class="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Phone number</label>
+              <input
+                type="tel" placeholder="+94 77 123 4567" value={mobile}
+                onChange={(e) => setMobile(e.target.value)} required
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all placeholder-slate-400 text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Email address</label>
+              <input
+                type="email" placeholder="you@example.com" value={email}
+                onChange={(e) => setEmail(e.target.value)} required
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all placeholder-slate-400 text-sm"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label class="block mb-2 text-sm text-gray-600">First Name</label>
-                <input type="text" placeholder="John" onChange={(e) => setFname(e.target.value)} value={fname} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg    focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'} placeholder="Min. 8 characters" value={password}
+                    onChange={(e) => setPassword(e.target.value)} required
+                    className="w-full px-4 py-3 pr-11 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all placeholder-slate-400 text-sm"
+                  />
+                  <EyeIcon show={showPassword} toggle={() => setShowPassword(!showPassword)} />
+                </div>
               </div>
-
               <div>
-                <label class="block mb-2 text-sm text-gray-600 ">Last name</label>
-                <input type="text" placeholder="Snow" onChange={(e) => setLname(e.target.value)} value={lname} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg    focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Confirm password</label>
+                <div className="relative">
+                  <input
+                    type={showConfirm ? 'text' : 'password'} placeholder="Repeat password" value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)} required
+                    className="w-full px-4 py-3 pr-11 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all placeholder-slate-400 text-sm"
+                  />
+                  <EyeIcon show={showConfirm} toggle={() => setShowConfirm(!showConfirm)} />
+                </div>
               </div>
+            </div>
 
-              <div>
-                <label class="block mb-2 text-sm text-gray-600 ">Phone number</label>
-                <input type="text" placeholder="XXX-XX-XXXX-XXX" onChange={(e) => setMobile(e.target.value)} value={mobile} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg    focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
-              </div>
+            <button
+              type="submit" disabled={loading}
+              className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 mt-2"
+            >
+              {loading ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Creating account…
+                </>
+              ) : 'Create Client Account →'}
+            </button>
+          </form>
 
-              <div>
-                <label class="block mb-2 text-sm text-gray-600 ">Email address</label>
-                <input type="email" placeholder="johnsnow@example.com" onChange={(e) => setEmail(e.target.value)} value={email} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg    focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
-              </div>
-
-              <div>
-                <label class="block mb-2 text-sm text-gray-600 ">Password</label>
-                <input type="password" placeholder="Enter your password" onChange={(e) => setPassword(e.target.value)} value={password} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
-              </div>
-
-              <div>
-                <label class="block mb-2 text-sm text-gray-600 ">Confirm password</label>
-                <input type="password" placeholder="Enter your password" onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg  dark:text-gray-300  focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
-              </div>
-
-              <button type="submit"
-                class="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
-                <span>Sign Up </span>
-
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 rtl:-scale-x-100" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clip-rule="evenodd" />
-                </svg>
-              </button>
-            </form>
-            <p className="mt-6 text-sm text-left text-gray-500">
-              Do you have an account?{" "}
-              <button
-                onClick={() => navigate("/login")}
-                className="text-blue-500 hover:underline focus:outline-none"
-              >
-                Login
-              </button>
-            </p>
-          </motion.div>
+          <p className="mt-5 text-sm text-center text-slate-500">
+            Already have an account?{' '}
+            <button onClick={() => navigate('/login')} className="text-indigo-600 hover:text-indigo-500 font-semibold">
+              Sign in
+            </button>
+          </p>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
