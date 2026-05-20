@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import './App.css';
-import Welcome from './Components/Onboard Flow Components/Welcome';
+import Onboarding from './Components/Onboard Flow Components/Onboarding';
 import { Routes, Route, Navigate } from 'react-router-dom';  // Import from react-router-dom
-import RoleSelection from './Components/Onboard Flow Components/Role';
 import ClientRegister from './Components/Forms/ClientRegister';
 import WorkersRegister from './Components/Forms/WorkersRegister';
 import Login from './Components/Forms/Loging Forms/Login';
-import UserSelection from './Components/Onboard Flow Components/UserSelection';
 import ClientDashboard from './Components/Dashboard/ClientDashboard';
 import WorkerDashboard from './Components/Dashboard/WorkerDashboard';
 import ClientHome from './Components/Dashboard/DashboardComponents/Client Routes Component/ClientHome';
@@ -44,9 +42,9 @@ function App() {
       <RequestCountProvider>
         <Routes>
           <Route path='/' element={<UsersWeb />} />
-          <Route path="/Welcome" element={<Welcome />} />
-          <Route path="/user-select" element={<UserSelection />} />
-          <Route path="/select-role" element={<RoleSelection />} />
+          <Route path="/Welcome" element={<Onboarding />} />
+          <Route path="/user-select" element={<Navigate to="/Welcome" replace />} />
+          <Route path="/select-role" element={<Navigate to="/Welcome" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/Client-Register" element={<ClientRegister />} />
           <Route path="/Worker-Register" element={<WorkersRegister />} />

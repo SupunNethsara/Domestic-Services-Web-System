@@ -77,7 +77,7 @@ const FullWeb = () => {
             <HeroSection/>
             <FutureShowCase/>
             <Description/>
-            <Testimonal activeTestimonial={activeTestimonial} testimonials={testimonials} handlePrevTestimonial={handlePrevTestimonial} handleNextTestimonial={handleNextTestimonial}/>
+            <Testimonal activeTestimonial={activeTestimonial} testimonials={testimonials} handlePrevTestimonial={handlePrevTestimonial} handleNextTestimonial={handleNextTestimonial} setActiveTestimonial={setActiveTestimonial}/>
             <Benefits/>
             <Footer/>
 
